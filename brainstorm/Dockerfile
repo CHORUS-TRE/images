@@ -21,7 +21,7 @@ ARG UPDATE
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install --no-install-recommends -y \
-    curl unzip libxt6 && \
+    ca-certificates curl unzip libxt6 && \
     mkdir files && \
     curl -sSO https://ssd.mathworks.com/supportfiles/downloads/${VERSION}/Release/${UPDATE}/deployment_files/installer/complete/glnxa64/MATLAB_Runtime_${VERSION}_Update_${UPDATE}_glnxa64.zip && \
     unzip -q -d files MATLAB_Runtime_${VERSION}_Update_${UPDATE}_glnxa64.zip && \
