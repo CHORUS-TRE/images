@@ -8,12 +8,12 @@ SCRIPT_PATH=/apps/$APP_NAME/scripts
 #  exit $retVal
 #fi
 
-#$SCRIPT_PATH/create-user.sh $HIP_USER $APP_NAME
-#retVal=$?
-#if [ $retVal -ne 0 ]; then
-#  echo "return value is $retVal"
-#  exit $retVal
-#fi
+$SCRIPT_PATH/create-user.sh $HIP_USER $APP_NAME
+retVal=$?
+if [ $retVal -ne 0 ]; then
+  echo "return value is $retVal"
+  exit $retVal
+fi
 
 #$SCRIPT_PATH/fix-video-groups.sh $CARD $HIP_USER
 #retVal=$?
@@ -62,12 +62,12 @@ SCRIPT_PATH=/apps/$APP_NAME/scripts
 #  exit $retVal
 #fi
 
-##run $APP_NAME as $HIP_USER
-#$SCRIPT_PATH/run-app.sh
-#retVal=$?
-#if [ $retVal -ne 0 ]; then
-#  exit $retVal
-#fi
+#run $APP_NAME as $HIP_USER
+$SCRIPT_PATH/run-app.sh
+retVal=$?
+if [ $retVal -ne 0 ]; then
+  exit $retVal
+fi
 
 ##umount docker-fs share for $HIP_USER
 #if [ "$DOCKERFS_TYPE" = "davfs2" ]; then
