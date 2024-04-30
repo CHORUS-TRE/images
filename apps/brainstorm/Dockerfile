@@ -14,8 +14,8 @@ LABEL app_tag=$TAG
 
 WORKDIR /apps/${APP_NAME}
 
-ARG VERSION
-ARG UPDATE
+ARG MAT_VERSION
+ARG MAT_UPDATE
 
 #matlab-runtime
 RUN apt-get update && \
@@ -23,10 +23,10 @@ RUN apt-get update && \
     apt-get install --no-install-recommends -y \
     ca-certificates curl unzip libxt6 && \
     mkdir files && \
-    curl -sSO https://ssd.mathworks.com/supportfiles/downloads/${VERSION}/Release/${UPDATE}/deployment_files/installer/complete/glnxa64/MATLAB_Runtime_${VERSION}_Update_${UPDATE}_glnxa64.zip && \
-    unzip -q -d files MATLAB_Runtime_${VERSION}_Update_${UPDATE}_glnxa64.zip && \
+    curl -sSO https://ssd.mathworks.com/supportfiles/downloads/${MAT_VERSION}/Release/${MAT_UPDATE}/deployment_files/installer/complete/glnxa64/MATLAB_Runtime_${MAT_VERSION}_Update_${MAT_UPDATE}_glnxa64.zip && \
+    unzip -q -d files MATLAB_Runtime_${MAT_VERSION}_Update_${MAT_UPDATE}_glnxa64.zip && \
     ./files/install -agreeToLicense yes -mode silent && \
-    rm -rf MATLAB_Runtime_${VERSION}_Update_${UPDATE}_glnxa64.zip files && \
+    rm -rf MATLAB_Runtime_${MAT_VERSION}_Update_${MAT_UPDATE}_glnxa64.zip files && \
     rm -rf /usr/local/MATLAB/MATLAB_Runtime/v9*/sys/os/glnxa64/libstdc++.so.6 && \
     apt-get remove -y --purge curl unzip && \
     apt-get autoremove -y --purge && \
