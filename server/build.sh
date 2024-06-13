@@ -3,7 +3,7 @@
 VERSION=0.0.1
 APP_NAME="xpra"
 APP_VERSION="latest"
-REGISTRY="registry.build.chorus-tre.ch"
+REGISTRY="registry.build.chorus-tre.local"
 
 XPRA_VERSION="master"
 XPRA_KEYCLOAK_AUTH="False" # True or False
@@ -23,16 +23,11 @@ OUTPUT="type=${OUTPUT:-docker}"
 
 # Tip: use `BUILDKIT_PROGRESS=plain` to see more.
 
-# to build locally \
-#-t ${APP_NAME} \
-# to push to registry \
-#-t ${REGISTRY}/${APP_NAME} \
-#-t ${REGISTRY}/${APP_NAME}:${VERSION} \
-    
 exec docker buildx build \
 	--pull \
     -f "Dockerfile.ubuntu-main" \
-    -t ${APP_NAME} \
+    -t ${REGISTRY}/${APP_NAME} \
+    -t ${REGISTRY}/${APP_NAME}:${VERSION} \
 	--label "APP_NAME=${APP_NAME}" \
 	--label "APP_VERSION=${APP_VERSION}" \
 	--build-arg "APP_NAME=${APP_NAME}" \
