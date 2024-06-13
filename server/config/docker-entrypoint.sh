@@ -1,7 +1,6 @@
 #!/bin/bash
 # based on https://github.com/ffeldhaus/docker-xpra-html5-gpu-minimal/blob/master/docker-entrypoint.sh
 
-XPRA_KEYCLOAK_AUTH=${XPRA_KEYCLOAK_AUTH:-False}
 XPRA_USER=xpra
 SCRIPT_PATH=./scripts
 
