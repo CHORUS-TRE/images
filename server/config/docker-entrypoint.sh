@@ -1,26 +1,27 @@
 #!/bin/bash
 # based on https://github.com/ffeldhaus/docker-xpra-html5-gpu-minimal/blob/master/docker-entrypoint.sh
 
+XPRA_KEYCLOAK_AUTH=${XPRA_KEYCLOAK_AUTH:-False}
 XPRA_USER=xpra
 SCRIPT_PATH=./scripts
 
-$SCRIPT_PATH/check-dri.sh $CARD
-retVal=$?
-if [ $retVal -ne 0 ]; then
-  exit $retVal
-fi
+# $SCRIPT_PATH/check-dri.sh $CARD
+# retVal=$?
+# if [ $retVal -ne 0 ]; then
+#   exit $retVal
+# fi
 
-$SCRIPT_PATH/fix-video-groups.sh $CARD $XPRA_USER
-retVal=$?
-if [ $retVal -ne 0 ]; then
-  exit $retVal
-fi
+# $SCRIPT_PATH/fix-video-groups.sh $CARD $XPRA_USER
+# retVal=$?
+# if [ $retVal -ne 0 ]; then
+#   exit $retVal
+# fi
 
-$SCRIPT_PATH/fix-audio-groups.sh $XPRA_USER
-retVal=$?
-if [ $retVal -ne 0 ]; then
-  exit $retVal
-fi
+# $SCRIPT_PATH/fix-audio-groups.sh $XPRA_USER
+# retVal=$?
+# if [ $retVal -ne 0 ]; then
+#   exit $retVal
+# fi
 
 # make the socket accessible to HIP apps
 chmod -R 1777 /tmp/.X11-unix/
