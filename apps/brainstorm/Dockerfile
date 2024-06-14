@@ -1,5 +1,6 @@
 # syntax=docker/dockerfile:1
 FROM ubuntu:22.04
+SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 
 ARG APP_NAME
 ARG APP_VERSION

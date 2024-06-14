@@ -3,9 +3,11 @@
 VERSION=0.0.1
 APP_NAME="xpra-server"
 APP_VERSION="latest"
-REGISTRY="registry.build.chorus-tre.local"
+REGISTRY="${REGISTRY:=registry.build.chorus-tre.local}"
 
-XPRA_VERSION="master"
+# See: https://xpra.org/dists/jammy/main/binary-amd64/
+XPRA_VERSION="6.0-r0"
+XPRA_HTML5_VERSION="13-r1569"
 XPRA_KEYCLOAK_AUTH="False" # True or False
 XPRA_KEYCLOAK_SERVER_URL=""
 XPRA_KEYCLOAK_REALM_NAME=""
@@ -32,6 +34,7 @@ exec docker buildx build \
     --build-arg "APP_NAME=${APP_NAME}" \
     --build-arg "APP_VERSION=${APP_VERSION}" \
     --build-arg "XPRA_VERSION=${XPRA_VERSION}" \
+    --build-arg "XPRA_HTML5_VERSION=${XPRA_HTML5_VERSION}" \
     --build-arg "XPRA_KEYCLOAK_AUTH=${XPRA_KEYCLOAK_AUTH}" \
     --build-arg "XPRA_KEYCLOAK_SERVER_URL=${XPRA_KEYCLOAK_SERVER_URL}" \
     --build-arg "XPRA_KEYCLOAK_REALM_NAME=${XPRA_KEYCLOAK_REALM_NAME}" \
