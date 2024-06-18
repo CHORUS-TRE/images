@@ -1,7 +1,9 @@
 # syntax=docker/dockerfile:1
 FROM ubuntu:22.04
+SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 
 ARG XPRA_VERSION
+ARG XPRA_HTML5_VERSION
 ARG XPRA_KEYCLOAK_AUTH
 ARG XPRA_KEYCLOAK_SERVER_URL
 ARG XPRA_KEYCLOAK_REALM_NAME
@@ -14,39 +16,55 @@ ARG XPRA_KEYCLOAK_AUTH_GROUPS
 ARG XPRA_KEYCLOAK_AUTH_CONDITION
 ARG XPRA_KEYCLOAK_GRANT_TYPE
 
-LABEL server_version=$XPRA_VERSION
-
 ARG DEBIAN_FRONTEND=noninteractive
 
-#TODO : Still need to add the virtualgl parts 
+#TODO : Still need to add the virtualgl parts
 RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update && \
     apt-get upgrade -y && \
     apt-get install --no-install-recommends -y \
-    software-properties-common gnupg \
-    xvfb x11-xserver-utils python3-pip python3-dev\
-    python3-gst-1.0 \
-    dbus-x11 python3-dbus pulseaudio \
-    python3-xdg menu-xdg curl gcc && \
-    pip3 install requests==2.25.1 urllib3==1.26.5 \
-    pyinotify netifaces oauthlib python-keycloak && \
-    #pip3 install python-uinput && \
-    curl -sSL https://xpra.org/gpg.asc | apt-key add - && \
-    add-apt-repository "deb https://xpra.org/ jammy main" && \
+        curl \
+        dbus-x11 \
+        gnupg \
+        lsb-release \
+        menu-xdg \
+        pulseaudio \
+        python3-dbus \
+        python3-dev \
+        python3-gst-1.0 \
+        python3-jose \
+        python3-netifaces \
+        python3-oauthlib \
+        python3-pip \
+        python3-pyinotify \
+        python3-requests \
+        python3-urllib3 \
+        python3-xdg \
+        software-properties-common \
+        x11-xserver-utils \
+        xvfb && \
+    python3 -m pip install --no-cache \
+        python-keycloak && \
+    curl -sSL https://xpra.org/gpg.asc | gpg --dearmor > /usr/share/keyrings/xpra.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/xpra.gpg] https://xpra.org/ $(lsb_release -s --codename) main" > /etc/apt/sources.list.d/xpra.list && \
     apt-get update && \
-    apt-get install --no-install-recommends -y xpra xpra-html5 xpra-x11 && \
-    apt-get remove -y --purge gnupg && \
+    apt-get install --no-install-recommends -y \
+        xpra=${XPRA_VERSION}-1 \
+        xpra-html5=${XPRA_HTML5_VERSION}-1 \
+        xpra-x11=${XPRA_VERSION}-1 && \
+    apt-get remove -y --purge \
+        gnupg \
+        lsb-release \
+        software-properties-common && \
     apt-get autoremove -y --purge && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
     chmod 644 /etc/xpra/ssl-cert.pem && \
     # make all applications started with vglrun use video stream encoding
     echo "\nclass-instance:vglrun=video" >> /etc/xpra/content-type/50_class.conf && \
     # create the xpra user and socket directory
     useradd --create-home --shell /bin/bash xpra --gid xpra --uid 1000 && \
     mkdir -p /run/user/1000/xpra && \
-    chown -R 1000 /run/user/1000 && \
-    chmod -R 700 /run/user/1000
+    chown -R xpra: /run/user/1000 && \
+    chmod -R 0700 /run/user/1000
 
 WORKDIR /home/xpra
 
