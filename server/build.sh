@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VERSION=0.0.1
+VERSION=0.0.2
 APP_NAME="xpra-server"
 APP_VERSION="latest"
 REGISTRY="${REGISTRY:=registry.build.chorus-tre.local}"
