@@ -27,6 +27,10 @@ chmod -R 1777 /tmp/.X11-unix/
 # remove a previous lock, if it exists
 rm -rf /tmp/.X80-lock
 
+DISPLAY_NUMBER=80;
+socat TCP-LISTEN:$((6000 + DISPLAY_NUMBER)),fork,bind=0.0.0.0 UNIX-CONNECT:/tmp/.X11-unix/X${DISPLAY_NUMBER} &
+export DISPLAY=:$DISPLAY_NUMBER;
+
 # start xpra as $XPRA_USER
 if [ $XPRA_KEYCLOAK_AUTH = "True" ]; then
   AUTH=",auth=keycloak"

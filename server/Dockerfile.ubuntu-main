@@ -42,7 +42,8 @@ RUN --mount=type=cache,target=/var/cache/apt \
         python3-xdg \
         software-properties-common \
         x11-xserver-utils \
-        xvfb && \
+        xvfb \
+        socat && \
     python3 -m pip install --no-cache \
         python-keycloak && \
     curl -sSL https://xpra.org/gpg.asc | gpg --dearmor > /usr/share/keyrings/xpra.gpg && \
