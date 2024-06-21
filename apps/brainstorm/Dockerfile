@@ -41,7 +41,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     curl -sSJ -O "http://neuroimage.usc.edu/bst/getupdate.php?c=UbsM09&src=0&bin=1" && \
     mkdir install && \
     unzip -q -d install brainstorm_*_bin.zip && \
-    rm -r install brainstorm_*_bin.zip && \
+    rm -r brainstorm_*_bin.zip && \
     apt-get remove -y --purge \
         curl \
         unzip && \
