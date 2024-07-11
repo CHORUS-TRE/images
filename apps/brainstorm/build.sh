@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VERSION=0.0.3
+VERSION=0.0.1
 APP_NAME="brainstorm"
 APP_VERSION="latest"
 REGISTRY="${REGISTRY:=registry.build.chorus-tre.local}"
