@@ -5,7 +5,7 @@ APP_NAME="xpra-server"
 APP_VERSION="latest"
 REGISTRY="${REGISTRY:=registry.build.chorus-tre.local}"
 
-# See: https://xpra.org/dists/jammy/main/binary-amd64/
+# See: https://xpra.org/dists/noble/main/binary-amd64/
 XPRA_VERSION="6.1-r0"
 XPRA_HTML5_VERSION="15-r1605"
 XPRA_KEYCLOAK_AUTH="False" # True or False
