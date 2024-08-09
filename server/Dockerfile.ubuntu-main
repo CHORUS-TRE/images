@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 
 ARG XPRA_VERSION
@@ -18,7 +18,6 @@ ARG XPRA_KEYCLOAK_GRANT_TYPE
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-#TODO : Still need to add the virtualgl parts
 RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update && \
     apt-get upgrade -y && \
@@ -40,11 +39,10 @@ RUN --mount=type=cache,target=/var/cache/apt \
         python3-requests \
         python3-urllib3 \
         python3-xdg \
+        python3-keycloak \
         software-properties-common \
         x11-xserver-utils \
         xvfb && \
-    python3 -m pip install --no-cache \
-        python-keycloak && \
     curl -sSL https://xpra.org/gpg.asc | gpg --dearmor > /usr/share/keyrings/xpra.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/xpra.gpg] https://xpra.org/ $(lsb_release -s --codename) main" > /etc/apt/sources.list.d/xpra.list && \
     apt-get update && \
@@ -61,10 +59,10 @@ RUN --mount=type=cache,target=/var/cache/apt \
     # make all applications started with vglrun use video stream encoding
     echo "\nclass-instance:vglrun=video" >> /etc/xpra/content-type/50_class.conf && \
     # create the xpra user and socket directory
-    useradd --create-home --shell /bin/bash xpra --gid xpra --uid 1000 && \
-    mkdir -p /run/user/1000/xpra && \
-    chown -R xpra: /run/user/1000 && \
-    chmod -R 0700 /run/user/1000
+    useradd --create-home --shell /bin/bash xpra --gid xpra --uid 1001 && \
+    mkdir -p /run/user/1001/xpra && \
+    chown -R xpra: /run/user/1001 && \
+    chmod -R 0700 /run/user/1001
 
 WORKDIR /home/xpra
 

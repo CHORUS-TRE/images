@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 
 ARG APP_NAME
@@ -48,7 +48,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get autoremove -y --purge
 
 ENV APP_SPECIAL="no"
-ENV APP_CMD="/apps/${APP_NAME}/install/brainstorm3/bin/R2022b/brainstorm3.command /usr/local/MATLAB/MATLAB_Runtime/R2022b"
+ENV APP_CMD="/apps/${APP_NAME}/install/brainstorm3/bin/R2023a/brainstorm3.command /usr/local/MATLAB/MATLAB_Runtime/R2023a"
 ENV PROCESS_NAME="brainstorm3.jar"
 ENV APP_DATA_DIR_ARRAY="brainstorm_db .brainstorm"
 #ENV APP_DATA_DIR_ARRAY="brainstorm_db .brainstorm .mcrCache9.8"

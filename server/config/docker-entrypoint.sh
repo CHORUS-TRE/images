@@ -2,7 +2,8 @@
 # based on https://github.com/ffeldhaus/docker-xpra-html5-gpu-minimal/blob/master/docker-entrypoint.sh
 
 XPRA_USER=xpra
-SCRIPT_PATH=./scripts
+
+# SCRIPT_PATH=./scripts
 
 # $SCRIPT_PATH/check-dri.sh $CARD
 # retVal=$?
@@ -22,13 +23,14 @@ SCRIPT_PATH=./scripts
 #   exit $retVal
 # fi
 
-# make the socket accessible to HIP apps
+# make the socket accessible to socat
 chmod -R 1777 /tmp/.X11-unix/
+
 # remove a previous lock, if it exists
 rm -rf /tmp/.X80-lock
 
 # start xpra as $XPRA_USER
-if [ $XPRA_KEYCLOAK_AUTH = "True" ]; then
+if [ "$XPRA_KEYCLOAK_AUTH" = "True" ]; then
   AUTH=",auth=keycloak"
 fi
 

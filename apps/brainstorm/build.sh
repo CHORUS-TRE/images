@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VERSION=0.0.1
+VERSION=0.0.2
 APP_NAME="brainstorm"
 APP_VERSION="latest"
 REGISTRY="${REGISTRY:=registry.build.chorus-tre.local}"
@@ -18,7 +18,7 @@ exec docker buildx build \
     --label "APP_VERSION=${APP_VERSION}" \
     --build-arg "APP_NAME=${APP_NAME}" \
     --build-arg "APP_VERSION=${APP_VERSION}" \
-    --build-arg "MAT_VERSION=R2022b" \
-    --build-arg "MAT_UPDATE=7" \
+    --build-arg "MAT_VERSION=R2023a" \
+    --build-arg "MAT_UPDATE=6" \
     --output=$OUTPUT \
     .
