@@ -48,7 +48,12 @@ RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update && \
     apt-get install --no-install-recommends -y \
         xpra=${XPRA_VERSION}-1 \
+        xpra-client-gtk3=${XPRA_VERSION}-1 \
+        xpra-client=${XPRA_VERSION}-1 \
+        xpra-codecs=${XPRA_VERSION}-1 \
+        xpra-common=${XPRA_VERSION}-1 \
         xpra-html5=${XPRA_HTML5_VERSION}-1 \
+        xpra-server=${XPRA_VERSION}-1 \
         xpra-x11=${XPRA_VERSION}-1 && \
     apt-get remove -y --purge \
         gnupg \
