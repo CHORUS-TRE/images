@@ -1,13 +1,19 @@
 #!/bin/sh
 
-VERSION=0.0.4
 APP_NAME="xpra-server"
-APP_VERSION="latest"
-REGISTRY="${REGISTRY:=registry.build.chorus-tre.local}"
+APP_VERSION="6.1.1"
+PKG_REL="1"
+
+# If the APP_VERSION is bumped, reset the PKG_REL
+# otherwhise, please bump the PKG_REL on any changes.
+VERSION="${APP_VERSION}-${PKG_REL}"
 
 # See: https://xpra.org/dists/noble/main/binary-amd64/
-XPRA_VERSION="6.1.1-r0"
+XPRA_VERSION="${APP_VERSION}-r0"
 XPRA_HTML5_VERSION="15-r0"
+
+REGISTRY="${REGISTRY:=registry.build.chorus-tre.local}"
+
 XPRA_KEYCLOAK_AUTH="False" # True or False
 XPRA_KEYCLOAK_SERVER_URL=""
 XPRA_KEYCLOAK_REALM_NAME=""
