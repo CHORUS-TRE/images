@@ -48,7 +48,12 @@ RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update && \
     apt-get install --no-install-recommends -y \
         xpra=${XPRA_VERSION}-1 \
+        xpra-client-gtk3=${XPRA_VERSION}-1 \
+        xpra-client=${XPRA_VERSION}-1 \
+        xpra-codecs=${XPRA_VERSION}-1 \
+        xpra-common=${XPRA_VERSION}-1 \
         xpra-html5=${XPRA_HTML5_VERSION}-1 \
+        xpra-server=${XPRA_VERSION}-1 \
         xpra-x11=${XPRA_VERSION}-1 && \
     apt-get remove -y --purge \
         gnupg \
@@ -60,14 +65,14 @@ RUN --mount=type=cache,target=/var/cache/apt \
     echo "\nclass-instance:vglrun=video" >> /etc/xpra/content-type/50_class.conf && \
     # create the xpra user and socket directory
     useradd --create-home --shell /bin/bash xpra --gid xpra --uid 1001 && \
-    mkdir -p /run/user/1001/xpra && \
-    chown -R xpra: /run/user/1001 && \
-    chmod -R 0700 /run/user/1001
+    mkdir -p /run/user/1001/xpra /home/xpra/.xpra && \
+    chown -R xpra: /run/user/1001 /home/xpra/.xpra && \
+    chmod -R 0700 /run/user/1001 /home/xpra/.xpra
 
 WORKDIR /home/xpra
 
 # copy xpra config files
-COPY config/xpra.conf /etc/xpra/xpra.conf
+COPY config/xpra.conf .xpra/xpra.conf
 COPY config/10_content_security_policy.txt /etc/xpra/http-headers/10_content_security_policy.txt
 COPY config/default.png /usr/share/backgrounds/images/default.png
 COPY config/default-settings.txt /etc/xpra/html5-client/default-settings.txt
