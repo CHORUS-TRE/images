@@ -83,14 +83,22 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get remove -y --purge \
         curl && \
     apt-get autoremove -y --purge
-
-ENV APP_SPECIAL="no"
-ENV APP_CMD="jlab --no-sandbox"
+    
 ENV APP_CMD_PREFIX="export PATH=${CONDA_DIR}/bin:${PATH}"
+ENV APP_SPECIAL="no"
+ENV APP_CMD="jlab"
 ENV PROCESS_NAME="jlab"
 ENV APP_DATA_DIR_ARRAY=".jupyter"
 ENV DATA_DIR_ARRAY=""
 
-COPY . .
-
-ENTRYPOINT ["tini", "--", "./docker-entrypoint.sh"]
+# Install vgl + whatever is necessary for chorus use
+RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=false \
+    pushd /tmp/core_scripts && \
+    pushd /tmp/core_scripts/utilities && \
+    ./chorus-utils.sh && \
+    popd && mv entrypoint/docker-entrypoint.sh / && \
+    mv entrypoint/1-create-user.sh /docker-entrypoint.d && \
+    mv entrypoint/2-run-app.sh /docker-entrypoint.d && \
+    popd 
+    
+ENTRYPOINT ["/docker-entrypoint.sh"]
