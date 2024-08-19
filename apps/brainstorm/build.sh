@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 VERSION=0.0.3
 APP_NAME="brainstorm"
