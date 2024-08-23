@@ -3,12 +3,18 @@
 set -e
 trap 'echo "docker-entrypoint.sh : Error occurred on line $LINENO, exiting."; exit 1;' ERR
 
-# Set default CHORUS_USER if not provided
+# Ensure that variables are set
 if [ -z "$CHORUS_USER" ]; then
     echo "CHORUS_USER is not set. Defaulting to 'chorus'"
     export CHORUS_USER="chorus"
 fi
 
+if [ -z "$CARD" ]; then
+    echo "CARD is not set. Defaulting to 'none'"
+    CARD="none"
+fi
+
+# Source any envsh, run any sh scripts in /docker-entrypoint.d/
 if /usr/bin/find "/docker-entrypoint.d/" -mindepth 1 -maxdepth 1 -type f -print -quit 2>/dev/null | read v; then
     echo "$0: /docker-entrypoint.d/ is not empty, will attempt to perform configuration"
 
@@ -49,8 +55,7 @@ else
     APP_CMD_PREFIX="export DISPLAY=$DISPLAY"
 fi
 
-# Ensure CARD and APP_CMD are set
-: "${CARD:?Environment variable CARD is required but not set}"
+# Ensure APP_CMD is set
 : "${APP_CMD:?Environment variable APP_CMD is required but not set}"
 
 # Run $APP_NAME as $CHORUS_USER
