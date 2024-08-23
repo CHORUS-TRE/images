@@ -9,18 +9,27 @@ if [ -z "$CHORUS_USER" ]; then
     export CHORUS_USER="chorus"
 fi
 
-# Check if /docker-entrypoint.d/ contains any files
-if /usr/bin/find "/docker-entrypoint.d/" -mindepth 1 -maxdepth 1 -type f -print -quit 2>/dev/null | read -r _; then
+if /usr/bin/find "/docker-entrypoint.d/" -mindepth 1 -maxdepth 1 -type f -print -quit 2>/dev/null | read v; then
     echo "$0: /docker-entrypoint.d/ is not empty, will attempt to perform configuration"
 
     echo "$0: Looking for shell scripts in /docker-entrypoint.d/"
-    find "/docker-entrypoint.d/" -follow -type f -print | sort -V | while IFS= read -r f; do
+    find "/docker-entrypoint.d/" -follow -type f -print | sort -V | while read -r f; do
         case "$f" in
-            *.envsh|*.sh)
+            *.envsh)
                 if [ -x "$f" ]; then
-                    echo "$0: Executing $f";
+                    echo "$0: Sourcing $f";
+                    . "$f"
+                else
+                    # warn on shell scripts without exec bit
+                    echo "$0: Ignoring $f, not executable";
+                fi
+                ;;
+            *.sh)
+                if [ -x "$f" ]; then
+                    echo "$0: Launching $f";
                     "$f"
                 else
+                    # warn on shell scripts without exec bit
                     echo "$0: Ignoring $f, not executable";
                 fi
                 ;;
@@ -60,6 +69,4 @@ case "$CARD" in
     ;;
 esac
 
-runuser -l "$CHORUS_USER" -c "$CMD"
-retVal=$?
-exit $retVal
+exec runuser -l "$CHORUS_USER" -c "$CMD"
