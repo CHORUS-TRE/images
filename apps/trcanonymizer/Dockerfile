@@ -36,7 +36,6 @@ RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=false \
     ./chorus-utils.sh && \
     popd && mv entrypoint/docker-entrypoint.sh / && \
     mv entrypoint/1-create-user.sh /docker-entrypoint.d && \
-    mv entrypoint/2-run-app.sh /docker-entrypoint.d && \
     popd 
     
 ENTRYPOINT ["/docker-entrypoint.sh"]
