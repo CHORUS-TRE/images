@@ -6,6 +6,7 @@ echo ""
 
 set -e
 
+script_dir=$(dirname "$0")
 while getopts ":a:" opt; do
   case ${opt} in
 	a )
@@ -14,7 +15,7 @@ while getopts ":a:" opt; do
 	  for app in "${ADDR[@]}"; do
 		case $app in
 		  terminal)
-			./install-terminal.sh
+			"$script_dir"/install-terminal.sh
 			;;
 		  *)
 			echo "===> Unknown application: $app"
