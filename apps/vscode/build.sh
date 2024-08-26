@@ -1,7 +1,7 @@
 #!/bin/sh
 
 APP_NAME="vscode"
-APP_VERSION=1.92.2-1723660989
+APP_VERSION=1.92.2
 PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
