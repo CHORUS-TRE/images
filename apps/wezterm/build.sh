@@ -1,8 +1,11 @@
 #!/bin/sh
 
-VERSION=0.0.1
 APP_NAME="wezterm"
-APP_VERSION="latest"
+APP_VERSION="20240203"
+PKG_REL="1"
+
+VERSION="${APP_VERSION}-${PKG_REL}"
+
 REGISTRY="${REGISTRY:=registry.build.chorus-tre.local}"
 
 # Use `registry` to build and push

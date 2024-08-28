@@ -2,7 +2,7 @@
 FROM ubuntu:22.04
 SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 
-FROM ubuntu:24.04 AS base
+ARG APP_VERSION
 
 RUN <<EOT
   #!/bin/bash -xe -o -pipefail
@@ -11,6 +11,7 @@ RUN <<EOT
     > /etc/apt/apt.conf.d/keep-cache
 EOT
 
+ARG DEBIAN_FRONTEND=noninteractive
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
   --mount=type=cache,target=/var/lib/apt,sharing=locked \
   bash -xe -o pipefail <<EOT
@@ -20,12 +21,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     curl \
     gpg \
     lsb-release
-EOT
-
-ARG DEBIAN_FRONTEND=noninteractive
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-  --mount=type=cache,target=/var/lib/apt,sharing=locked \
-  bash -xe -o pipefail <<EOT
 
   curl -fsSL https://apt.fury.io/wez/gpg.key | \
     gpg --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg
@@ -33,11 +28,15 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     tee /etc/apt/sources.list.d/wezterm.list
 
   apt-get update -qy
+EOT
+
+# The sub command is evaluated first in the bash multiline setup.
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,target=/var/lib/apt,sharing=locked \
+  version="$(apt-cache madison wezterm | grep -o "${APP_VERSION}-[0-9]*-[a-f0-9]*")" && \
   apt-get install -qy --no-install-recommends \
     libegl-dev \
-    wezterm
-
-EOT
+    wezterm=${version}
 
 USER 1000
 CMD ["wezterm"]
