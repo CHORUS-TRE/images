@@ -1,16 +1,18 @@
 #!/bin/sh
 
 APP_NAME="xpra-server"
-APP_VERSION="6.1.1"
+APP_VERSION="6.1.2"
 PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.
 VERSION="${APP_VERSION}-${PKG_REL}"
 
+# See: https://github.com/VirtualGL/virtualgl/releases
+VIRTUALGL_VERSION=3.1.1
 # See: https://xpra.org/dists/noble/main/binary-amd64/
-XPRA_VERSION="${APP_VERSION}-r0"
-XPRA_HTML5_VERSION="15-r0"
+XPRA_VERSION="${APP_VERSION}-r1"
+XPRA_HTML5_VERSION="15.1-r0"
 
 REGISTRY="${REGISTRY:=registry.build.chorus-tre.local}"
 
@@ -35,10 +37,7 @@ exec docker buildx build \
     --pull \
     -t ${REGISTRY}/${APP_NAME} \
     -t ${REGISTRY}/${APP_NAME}:${VERSION} \
-    --label "APP_NAME=${APP_NAME}" \
-    --label "APP_VERSION=${APP_VERSION}" \
-    --build-arg "APP_NAME=${APP_NAME}" \
-    --build-arg "APP_VERSION=${APP_VERSION}" \
+    --build-arg "VIRTUALGL_VERSION=${VIRTUALGL_VERSION}" \
     --build-arg "XPRA_VERSION=${XPRA_VERSION}" \
     --build-arg "XPRA_HTML5_VERSION=${XPRA_HTML5_VERSION}" \
     --build-arg "XPRA_KEYCLOAK_AUTH=${XPRA_KEYCLOAK_AUTH}" \
