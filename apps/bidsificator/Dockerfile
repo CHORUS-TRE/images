@@ -16,7 +16,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     add-apt-repository ppa:deadsnakes/ppa && \
     apt-get update -qy && \
     apt-get install --no-install-recommends -qy \
-    vim git python3.10 python3.10-venv python3.10-dev python3-pip \
+    git python3.10 python3.10-venv python3.10-dev python3-pip \
     # lib necessary to have a working pyqt application \
     libxcb-icccm4 libxcb-randr0 libxcb-render-util0 \
     libxcb-shape0 libxcursor1 libxkbcommon-x11-0 \
