@@ -46,7 +46,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     cp entrypoint/docker-entrypoint.sh / && \
     cp entrypoint/1-create-user.sh /docker-entrypoint.d
 
+ENV PATH="${PATH}:/apps/${APP_NAME}/bin"
 ENV APP_CMD="itksnap"
-ENV PATH=$PATH:/apps/${APP_NAME}/bin
+ENV APP_CMD_PREFIX="export PATH=${PATH}"
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
