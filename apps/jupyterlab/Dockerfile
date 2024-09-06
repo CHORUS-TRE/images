@@ -1,9 +1,10 @@
 # syntax=docker/dockerfile:1
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 
 ARG APP_NAME
 ARG APP_VERSION
+ARG APP_VERSION_FULL
 ARG MINIFORGE3_VERSION
 
 WORKDIR /apps/${APP_NAME}
@@ -41,7 +42,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get install --no-install-recommends -qy \
         dbus-x11 \
         curl \
-        libasound2 \
+        libasound2t64 \
         libatspi2.0-0 \
         libdrm2 \
         libgbm1 \
@@ -54,8 +55,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         tini \
         xdg-utils && \
     pushd /var/cache/curl && \
-    curl -sSL -C - -o JupyterLab-Setup-${APP_VERSION}.deb "https://github.com/jupyterlab/jupyterlab-desktop/releases/download/v${APP_VERSION}/JupyterLab-Setup-Debian-x64.deb" && \
-    dpkg -i JupyterLab-Setup-${APP_VERSION}.deb && \
+    curl -sSL -C - -o JupyterLab-Setup-${APP_VERSION_FULL}.deb "https://github.com/jupyterlab/jupyterlab-desktop/releases/download/v${APP_VERSION_FULL}/JupyterLab-Setup-Debian-x64.deb" && \
+    dpkg -i JupyterLab-Setup-${APP_VERSION_FULL}.deb && \
     popd && \
     rm -r /opt/JupyterLab/chrome-sandbox && \
     source "${CONDA_DIR}/etc/profile.d/conda.sh" && \
@@ -83,7 +84,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get remove -y --purge \
         curl && \
     apt-get autoremove -y --purge
-    
+
 ENV APP_CMD_PREFIX="export PATH=${CONDA_DIR}/bin:${PATH}"
 ENV APP_SPECIAL="no"
 ENV APP_CMD="jlab"
@@ -92,13 +93,10 @@ ENV APP_DATA_DIR_ARRAY=".jupyter"
 ENV DATA_DIR_ARRAY=""
 
 # Install vgl + whatever is necessary for chorus use
-RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=false \
+RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=true \
     pushd /tmp/core_scripts && \
-    pushd /tmp/core_scripts/utilities && \
-    ./chorus-utils.sh && \
-    popd && mv entrypoint/docker-entrypoint.sh / && \
-    mv entrypoint/1-create-user.sh /docker-entrypoint.d && \
-    mv entrypoint/2-run-app.sh /docker-entrypoint.d && \
-    popd 
-    
+    ./utilities/chorus-utils.sh && \
+    cp entrypoint/docker-entrypoint.sh / && \
+    cp entrypoint/1-create-user.sh /docker-entrypoint.d
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
