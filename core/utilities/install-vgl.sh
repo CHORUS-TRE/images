@@ -19,7 +19,7 @@ echo 'deb [signed-by=/usr/share/keyrings/virtualgl.gpg] https://packagecloud.io/
 tee /etc/apt/sources.list.d/virtualgl.list
 
 apt-get -qq update && \
-apt-get install -qq --no-install-recommends -y libglu1-mesa libegl1-mesa-dev libxv1 libxtst6 libegl-mesa0 primus virtualgl=${VGL_VERSION} && \
+apt-get install -qq --no-install-recommends -y libglu1-mesa libegl1-mesa-dev libxv1 libxtst6 libegl-mesa0 primus virtualgl="${VGL_VERSION}" && \
 apt-get -qq autoremove -y --purge
 
 echo "    VirtualGL driver version $VGL_VERSION installed"
