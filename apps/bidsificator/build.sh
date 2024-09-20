@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 APP_NAME="bidsificator"
 APP_VERSION="1.0.0"
 PKG_REL="1"
