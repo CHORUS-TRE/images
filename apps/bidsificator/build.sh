@@ -18,6 +18,8 @@ OUTPUT="type=${OUTPUT:-docker}"
 # Tip: use `BUILDKIT_PROGRESS=plain` to see more.
 BUILDKIT_PROGRESS=plain
 cp -r ../../core ./core
+trap "rm -rf core" EXIT
+
 docker buildx build \
     --pull \
     -t ${REGISTRY}/${APP_NAME} \
@@ -26,8 +28,5 @@ docker buildx build \
     --label "APP_VERSION=${APP_VERSION}" \
     --build-arg "APP_NAME=${APP_NAME}" \
     --build-arg "APP_VERSION=${APP_VERSION}" \
-    --no-cache \
     --output=$OUTPUT \
     .
-
-rm -rf core
