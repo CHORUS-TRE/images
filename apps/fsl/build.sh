@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 APP_NAME="fsl"
 APP_VERSION="6.0.7.13"
 PKG_REL="1"
