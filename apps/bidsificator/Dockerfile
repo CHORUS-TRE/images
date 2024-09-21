@@ -8,26 +8,21 @@ ARG APP_VERSION
 WORKDIR /apps/${APP_NAME}
 
 ARG DEBIAN_FRONTEND=noninteractive
-ADD https://github.com/HIP-infrastructure/Bidsificator/archive/refs/tags/V${APP_VERSION}.zip .
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update -qy && \
     apt-get install --no-install-recommends -qy \
-    unzip python3 python3-pip \
+    git python3 python3-pip \
     # lib necessary to have a working pyqt application \
     libxcb-icccm4 libxcb-randr0 libxcb-render-util0 \
     libxcb-shape0 libxcursor1 libxkbcommon-x11-0 \
     libxcb-keysyms1 libglib2.0-0 libdbus-1-3 libxcb-icccm4 \
     libxcb-randr0 libxcb-render-util0 libxcb-shape0 fontconfig \
     libfontconfig1 libxcb-image0 libxcb-util1 && \
-    # unpack and put the app in the right place \ 
-    unzip V${APP_VERSION}.zip && \
-    mv Bidsificator-${APP_VERSION}/* . && \
-    rm -rf Bidsificator-${APP_VERSION} V${APP_VERSION}.zip && \
-    # install poetry project via pip \
-    pip install . && \
-    apt-get remove -y --purge unzip && \
-    apt-get autoremove -y --purge 
+    # install using pip and git \
+    pip install --no-cache git+https://github.com/HIP-infrastructure/Bidsificator/@V${APP_VERSION}#egg=Bidsificator && \
+    apt-get remove -y --purge git && \
+    apt-get autoremove -y --purge
 
 ENV APP_SPECIAL="no"
 ENV APP_CMD="bidsificator"
