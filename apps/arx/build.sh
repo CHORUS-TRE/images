@@ -1,8 +1,8 @@
 #!/bin/sh
 
-APP_NAME="localizer"
-APP_VERSION="4.4.5"
-PKG_REL="2"
+APP_NAME="arx"
+APP_VERSION="3.9.1"
+PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.
