@@ -16,8 +16,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     # lib necessary to have a working pyqt application \
     libxcb-icccm4 libxcb-randr0 libxcb-render-util0 \
     libxcb-shape0 libxcursor1 libxkbcommon-x11-0 \
-    libxcb-keysyms1 libglib2.0-0 libdbus-1-3 libxcb-icccm4 \
-    libxcb-randr0 libxcb-render-util0 libxcb-shape0 fontconfig \
+    libxcb-keysyms1 libglib2.0-0 libdbus-1-3 fontconfig \
     libfontconfig1 libxcb-image0 libxcb-util1 && \
     # install using pip and git \
     pip install --no-cache git+https://github.com/HIP-infrastructure/Bidsificator/@V${APP_VERSION}#egg=Bidsificator && \
