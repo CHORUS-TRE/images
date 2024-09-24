@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 APP_NAME="rstudio"
 APP_VERSION=2024.09.0
 PKG_REL="1"
