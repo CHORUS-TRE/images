@@ -17,10 +17,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     libclang-dev libnss3 libatk1.0-0 libatk-bridge2.0-0 \
     libcups2 libgtk-3-0 libasound2t64 gfortran liblapack-dev \
     libopenblas-dev libpng-dev libxkbcommon-x11-0 && \
-    wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | gpg --dearmor > cran-archive-keyring.gpg && \
-    install -D -o root -g root -m 644 cran-archive-keyring.gpg /etc/apt/keyrings/cran-archive-keyring.gpg && \
-    sh -c 'echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/cran-archive-keyring.gpg] https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/" > /etc/apt/sources.list.d/cran.list' && \
-    rm -f cran-archive-keyring.gpg && \
+    curl https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | gpg --dearmor -o /etc/apt/keyrings/cran-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/cran-archive-keyring.gpg] https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/" > /etc/apt/sources.list.d/cran.list && \
     apt-get update -qy && \
     apt-get install --no-install-recommends -y r-base r-cran-rstan r-cran-tidyverse && \
     curl -sSO https://download1.rstudio.org/electron/jammy/amd64/rstudio-${APP_VERSION}-375-amd64.deb && \
