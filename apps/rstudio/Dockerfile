@@ -12,7 +12,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update -qy && \
     apt-get install --no-install-recommends -qy \
-    curl wget gpg gpg-agent software-properties-common \
+    curl gpg gpg-agent software-properties-common \
     build-essential cmake dirmngr file libssl-dev libpq5 \
     libclang-dev libnss3 libatk1.0-0 libatk-bridge2.0-0 \
     libcups2 libgtk-3-0 libasound2t64 gfortran liblapack-dev \
@@ -26,7 +26,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     rm -rf rstudio-${APP_VERSION}-375-amd64.deb && \
     R -e "install.packages('devtools', repos='http://cloud.r-project.org')" && \
     R -e "devtools::install_github('Mikata-Project/ggthemr')" && \
-    apt-get remove -y --purge curl gpg wget && \
+    apt-get remove -y --purge curl gpg && \
     apt-get autoremove -y --purge
 
 ENV APP_SPECIAL="no"
