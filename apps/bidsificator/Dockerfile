@@ -19,7 +19,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     libxcb-keysyms1 libglib2.0-0 libdbus-1-3 fontconfig \
     libfontconfig1 libxcb-image0 libxcb-util1 && \
     # install using pip and git \
-    pip install --no-cache git+https://github.com/HIP-infrastructure/Bidsificator/@V${APP_VERSION}#egg=Bidsificator && \
+    pip install --no-cache git+https://github.com/HIP-infrastructure/Bidsificator/@v${APP_VERSION}#egg=Bidsificator && \
     apt-get remove -y --purge git && \
     apt-get autoremove -y --purge
 
