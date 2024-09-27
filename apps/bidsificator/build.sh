@@ -11,6 +11,7 @@ PKG_REL="1"
 VERSION="${APP_VERSION}-${PKG_REL}"
 
 REGISTRY="${REGISTRY:=registry.build.chorus-tre.local}"
+REPOSITORY="${REPOSITORY:=apps}"
 
 # Use `registry` to build and push
 OUTPUT="type=${OUTPUT:-docker}"
@@ -22,8 +23,7 @@ trap "rm -rf core" EXIT
 
 docker buildx build \
     --pull \
-    -t ${REGISTRY}/${APP_NAME} \
-    -t ${REGISTRY}/${APP_NAME}:${VERSION} \
+    -t ${REGISTRY}/${REPOSITORY}/${APP_NAME}:${VERSION} \
     --label "APP_NAME=${APP_NAME}" \
     --label "APP_VERSION=${APP_VERSION}" \
     --build-arg "APP_NAME=${APP_NAME}" \
