@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 
 ARG APP_VERSION
@@ -38,5 +38,18 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     libegl-dev \
     wezterm=${version}
 
-USER 1000
-CMD ["wezterm"]
+ENV APP_SPECIAL="no"
+ENV APP_CMD="wezterm"
+ENV PROCESS_NAME="wezterm"
+ENV APP_DATA_DIR_ARRAY=""
+ENV DATA_DIR_ARRAY=""
+
+# Install vgl + whatever is necessary for chorus use
+RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=false \
+    pushd /tmp/core_scripts && \
+    ./utilities/chorus-utils.sh && \
+    mv entrypoint/docker-entrypoint.sh / && \
+    mv entrypoint/1-create-user.sh /docker-entrypoint.d && \
+    popd 
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
