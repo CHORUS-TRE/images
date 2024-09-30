@@ -12,7 +12,7 @@ VERSION="${APP_VERSION}-${PKG_REL}"
 VIRTUALGL_VERSION=3.1.1
 # See: https://xpra.org/dists/noble/main/binary-amd64/
 XPRA_VERSION="${APP_VERSION}-r0"
-XPRA_HTML5_VERSION="15.1-r0"
+XPRA_HTML5_VERSION="16.1-r0"
 
 REGISTRY="${REGISTRY:=registry.build.chorus-tre.local}"
 
