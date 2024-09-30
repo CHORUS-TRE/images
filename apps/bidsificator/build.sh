@@ -1,8 +1,10 @@
 #!/bin/sh
 
-APP_NAME="vscode"
-APP_VERSION=1.93.1
-PKG_REL="2"
+set -e
+
+APP_NAME="bidsificator"
+APP_VERSION="1.0.0"
+PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.
@@ -14,8 +16,10 @@ REGISTRY="${REGISTRY:=registry.build.chorus-tre.local}"
 OUTPUT="type=${OUTPUT:-docker}"
 
 # Tip: use `BUILDKIT_PROGRESS=plain` to see more.
-
+BUILDKIT_PROGRESS=plain
 cp -r ../../core ./core
+trap "rm -rf core" EXIT
+
 docker buildx build \
     --pull \
     -t ${REGISTRY}/${APP_NAME} \
@@ -26,4 +30,3 @@ docker buildx build \
     --build-arg "APP_VERSION=${APP_VERSION}" \
     --output=$OUTPUT \
     .
-rm -rf core

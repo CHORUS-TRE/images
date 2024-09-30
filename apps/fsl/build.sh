@@ -1,8 +1,10 @@
 #!/bin/sh
 
-APP_NAME="vscode"
-APP_VERSION=1.93.1
-PKG_REL="2"
+set -e
+
+APP_NAME="fsl"
+APP_VERSION="6.0.7.13"
+PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.
