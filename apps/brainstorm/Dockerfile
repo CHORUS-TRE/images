@@ -56,11 +56,9 @@ ENV DATA_DIR_ARRAY=""
 # Install vgl + whatever is necessary for chorus use
 RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=false \
     pushd /tmp/core_scripts && \
-    pushd /tmp/core_scripts/utilities && \
-    ./chorus-utils.sh && \
-    popd && mv entrypoint/docker-entrypoint.sh / && \
+    ./utilities/chorus-utils.sh && \
+    mv entrypoint/docker-entrypoint.sh / && \
     mv entrypoint/1-create-user.sh /docker-entrypoint.d && \
-    mv entrypoint/2-run-app.sh /docker-entrypoint.d && \
-    popd 
+    popd
     
 ENTRYPOINT ["/docker-entrypoint.sh"]
