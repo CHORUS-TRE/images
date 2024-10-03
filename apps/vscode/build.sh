@@ -1,7 +1,7 @@
 #!/bin/sh
 
-APP_NAME="localizer"
-APP_VERSION="4.4.5"
+APP_NAME="vscode"
+APP_VERSION=1.93.1
 PKG_REL="2"
 
 # If the APP_VERSION is bumped, reset the PKG_REL

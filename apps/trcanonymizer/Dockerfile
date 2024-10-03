@@ -11,22 +11,21 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update -qy && \
-    apt-get install --no-install-recommends -qy ca-certificates curl gpg lsb-release \
-    unzip libgomp1 libglib2.0-0 libdbus-1-3 libfftw3-single3 \
-    libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 \
-    libxcb-render-util0 libxcb-xinerama0 libxcb-xkb1 libxkbcommon-x11-0 \
-    libxcb-xinput0 libxcb-shape0 fontconfig && \
-    curl -sSOL https://github.com/CRNL-Eduwell/Localizer/releases/download/V${APP_VERSION}/Localizer.${APP_VERSION}.linux64.zip && \
+    apt-get install --no-install-recommends -qy \
+    ca-certificates curl unzip libxkbcommon-x11-0 libxcb-keysyms1 \
+    libglib2.0-0 libdbus-1-3 libxcb-icccm4 \
+    libxcb-randr0 libxcb-render-util0 libxcb-shape0 libxcb-cursor0 fontconfig && \
+    curl -sSOL https://github.com/floriansipp/TRCAnonymizer/releases/download/V${APP_VERSION}/TRCAnonymizer.${APP_VERSION}.linux64.zip && \
     mkdir ./install && \
-    unzip -q -d ./install Localizer.${APP_VERSION}.linux64.zip && \
-    chmod -R 757 ./install/Localizer.${APP_VERSION}.linux64 && \
-    rm Localizer.${APP_VERSION}.linux64.zip && \
+    unzip -q -d ./install TRCAnonymizer.${APP_VERSION}.linux64.zip && \
+    chmod -R 757 ./install/TRCAnonymizer.${APP_VERSION}.linux64 && \
+    rm TRCAnonymizer.${APP_VERSION}.linux64.zip && \
     apt-get remove -y --purge curl unzip && \
     apt-get autoremove -y --purge
 
 ENV APP_SPECIAL="no"
-ENV APP_CMD="/apps/${APP_NAME}/install/Localizer.${APP_VERSION}.linux64/Localizer"
-ENV PROCESS_NAME="/apps/${APP_NAME}/install/Localizer.${APP_VERSION}.linux64/Localizer"
+ENV APP_CMD="/apps/${APP_NAME}/install/TRCAnonymizer.${APP_VERSION}.linux64/TRCAnonymizer"
+ENV PROCESS_NAME="/apps/${APP_NAME}/install/TRCAnonymizer.${APP_VERSION}.linux64/TRCAnonymizer"
 ENV APP_DATA_DIR_ARRAY=""
 ENV DATA_DIR_ARRAY=""
 
