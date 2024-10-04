@@ -3,7 +3,9 @@
 VERSION=0.0.2
 APP_NAME="brainstorm"
 APP_VERSION="latest"
+
 REGISTRY="${REGISTRY:=registry.build.chorus-tre.local}"
+REPOSITORY="${REPOSITORY:=apps}"
 
 # Use `registry` to build and push
 OUTPUT="type=${OUTPUT:-docker}"
@@ -12,8 +14,7 @@ OUTPUT="type=${OUTPUT:-docker}"
 
 exec docker buildx build \
     --pull \
-    -t ${REGISTRY}/${APP_NAME} \
-    -t ${REGISTRY}/${APP_NAME}:${VERSION} \
+    -t ${REGISTRY}/${REPOSITORY}/${APP_NAME}:${VERSION} \
     --label "APP_NAME=${APP_NAME}" \
     --label "APP_VERSION=${APP_VERSION}" \
     --build-arg "APP_NAME=${APP_NAME}" \

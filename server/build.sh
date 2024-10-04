@@ -15,6 +15,7 @@ XPRA_VERSION="${APP_VERSION}-r0"
 XPRA_HTML5_VERSION="16.1-r0"
 
 REGISTRY="${REGISTRY:=registry.build.chorus-tre.local}"
+REPOSITORY="${REPOSITORY:=apps}"
 
 XPRA_KEYCLOAK_AUTH="False" # True or False
 XPRA_KEYCLOAK_SERVER_URL=""
@@ -35,8 +36,7 @@ OUTPUT="type=${OUTPUT:-docker}"
 
 exec docker buildx build \
     --pull \
-    -t ${REGISTRY}/${APP_NAME} \
-    -t ${REGISTRY}/${APP_NAME}:${VERSION} \
+    -t ${REGISTRY}/${REPOSITORY}/${APP_NAME}:${VERSION} \
     --build-arg "VIRTUALGL_VERSION=${VIRTUALGL_VERSION}" \
     --build-arg "XPRA_VERSION=${XPRA_VERSION}" \
     --build-arg "XPRA_HTML5_VERSION=${XPRA_HTML5_VERSION}" \
