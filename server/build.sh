@@ -1,7 +1,7 @@
 #!/bin/sh
 
 APP_NAME="xpra-server"
-APP_VERSION="6.1.2"
+APP_VERSION="6.1.3"
 PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
@@ -11,8 +11,8 @@ VERSION="${APP_VERSION}-${PKG_REL}"
 # See: https://github.com/VirtualGL/virtualgl/releases
 VIRTUALGL_VERSION=3.1.1
 # See: https://xpra.org/dists/noble/main/binary-amd64/
-XPRA_VERSION="${APP_VERSION}-r1"
-XPRA_HTML5_VERSION="15.1-r0"
+XPRA_VERSION="${APP_VERSION}-r0"
+XPRA_HTML5_VERSION="16.1-r0"
 
 REGISTRY="${REGISTRY:=registry.build.chorus-tre.local}"
 
