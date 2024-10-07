@@ -16,3 +16,4 @@ echo "===> Creating directory /docker-entrypoint.d"
 mkdir /docker-entrypoint.d
 
 apt-get -qq autoremove -y --purge
+rm -rf /var/lib/apt/lists/*
