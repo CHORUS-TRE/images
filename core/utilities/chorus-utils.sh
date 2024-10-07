@@ -7,7 +7,6 @@ echo "========================================================================"
 echo ""
 
 apt-get -qq update && \
-apt-get -qq upgrade -y && \
 apt-get install -qq --no-install-recommends -y curl ca-certificates gnupg && \
 
 script_dir=$(dirname "$0")
