@@ -2,8 +2,8 @@
 
 set -e
 
-APP_NAME="brainstorm"
-APP_VERSION="0.0.4"
+APP_NAME="rstudio"
+APP_VERSION=2024.09.0
 PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
@@ -19,7 +19,7 @@ OUTPUT="type=${OUTPUT:-docker}"
 # Tip: use `BUILDKIT_PROGRESS=plain` to see more.
 
 cp -r ../../core ./core
-trap "rm -rf core" EXIT
+trap "rm -rf ./core" EXIT
 
 docker buildx build \
     --pull \
@@ -28,7 +28,5 @@ docker buildx build \
     --label "APP_VERSION=${APP_VERSION}" \
     --build-arg "APP_NAME=${APP_NAME}" \
     --build-arg "APP_VERSION=${APP_VERSION}" \
-    --build-arg "MAT_VERSION=R2023a" \
-    --build-arg "MAT_UPDATE=6" \
     --output=$OUTPUT \
     .
