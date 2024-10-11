@@ -12,14 +12,17 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update -qy && \
     apt-get install --no-install-recommends -qy \
-    curl language-pack-en binutils libx11-dev gettext \
-    xterm x11-apps perl make csh tcsh file bc xorg \
-    xorg-dev xserver-xorg-video-intel libncurses5 \
-    libgomp1  libice6 libjpeg62 libsm6 libxft2 \
-    libxmu6 libxt6 libquadmath0 libwayland-cursor0 \
-    libxcb-icccm4 libxcb-randr0 libxcb-render-util0 \
-    libxcb-render0 libxcb-xinerama0 libxcb-xinput0 \
-    libxcb-image0 libxcb-keysyms1 libxcb-xkb1 libxkbcommon-x11-0 libxkbcommon0 && \
+    curl ca-certificates language-pack-en binutils libx11-dev \
+    gettext xterm x11-apps perl make csh tcsh file bc xorg \
+    xorg-dev xserver-xorg-video-intel libncurses5 libdrm2 libegl1 \
+    libexpat1 libfontconfig1 libfreetype6 libgl1 libglib2.0-0 \
+    libglu1-mesa libglu1 libglvnd0 libglx0 libgomp1 libice6 \
+    libjpeg62 libopengl0 libpng16-16 libquadmath0 libsm6 \
+    libwayland-client0 libwayland-cursor0 libx11-6 libx11-xcb1 \
+    libxcb-icccm4 libxcb-randr0 libxcb-render-util0 libxcb-render0 libxcb-shape0 \
+    libxcb-sync1 libxcb-xfixes0 libxcb-xinerama0 libxcb-xinput0 libxext6 libxft2 \
+    libxcb-image0 libxcb-keysyms1 libxcb-xkb1 libxkbcommon-x11-0 libxkbcommon0 \
+    libxi6 libxmu6 libxrender1 libxss1 libxt6 && \
     curl -sSO https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/${APP_VERSION}/freesurfer_ubuntu22-${APP_VERSION}_amd64.deb && \
     dpkg -i freesurfer_ubuntu22-${APP_VERSION}_amd64.deb && \
     rm freesurfer_ubuntu22-${APP_VERSION}_amd64.deb && \
