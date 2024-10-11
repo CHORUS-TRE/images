@@ -51,9 +51,14 @@ ENV APP_SPECIAL="no"
 ENV APP_CMD="/apps/${APP_NAME}/install/brainstorm3/bin/R2023a/brainstorm3.command /usr/local/MATLAB/MATLAB_Runtime/R2023a"
 ENV PROCESS_NAME="brainstorm3.jar"
 ENV APP_DATA_DIR_ARRAY="brainstorm_db .brainstorm"
-#ENV APP_DATA_DIR_ARRAY="brainstorm_db .brainstorm .mcrCache9.8"
 ENV DATA_DIR_ARRAY=""
 
-COPY . .
-
-ENTRYPOINT ["./scripts/docker-entrypoint.sh"]
+# Install vgl + whatever is necessary for chorus use
+RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=false \
+    pushd /tmp/core_scripts && \
+    ./utilities/chorus-utils.sh && \
+    mv entrypoint/docker-entrypoint.sh / && \
+    mv entrypoint/1-create-user.sh /docker-entrypoint.d && \
+    popd
+    
+ENTRYPOINT ["/docker-entrypoint.sh"]
