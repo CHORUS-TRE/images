@@ -29,6 +29,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get remove -y --purge curl && \
     apt-get autoremove -y --purge
 
+ENV APP_NAME=${APP_NAME}
 ENV APP_SPECIAL="no"
 ENV APP_CMD="/usr/bin/wezterm"
 ENV PROCESS_NAME="/usr/bin/wezterm"
