@@ -2,42 +2,63 @@
 FROM ubuntu:24.04
 SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 
+ARG APP_NAME
 ARG APP_VERSION
 
-RUN <<EOT
-  #!/bin/bash -xe -o -pipefail
-  rm -f /etc/apt/apt.conf.d/docker-clean
-  echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' \
-    > /etc/apt/apt.conf.d/keep-cache
-EOT
+WORKDIR /apps/${APP_NAME}
 
 ARG DEBIAN_FRONTEND=noninteractive
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-  --mount=type=cache,target=/var/lib/apt,sharing=locked \
-  bash -xe -o pipefail <<EOT
-  apt-get update -qy
-  apt-get install --no-install-recommends -qy \
-    ca-certificates \
-    curl \
-    gpg \
-    lsb-release
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get update -qy && \
+    apt-get install --no-install-recommends -qy \
+    curl unzip ca-certificates cmake build-essential \
+    #plink2 \
+    bzip2 \
+    #bcftools \
+    libbz2-dev zlib1g-dev liblzma-dev libcurl4-openssl-dev && \
+    #install plink2 \
+    mkdir plink2 && \
+    cd plink2 && \
+    curl -sSOL https://s3.amazonaws.com/plink2-assets/plink2_linux_x86_64_latest.zip && \
+    unzip plink2_linux_x86_64_*.zip && \
+    rm plink2_linux_x86_64_*.zip && \
+    cd ../ && \
+    #install bcftools \
+    mkdir bcftools && \
+    curl -sSOL https://github.com/samtools/bcftools/releases/download/1.21/bcftools-1.21.tar.bz2 && \
+    tar jxvf bcftools-1.21.tar.bz2 && \
+    rm bcftools-1.21.tar.bz2 && \
+    cd bcftools-1.21 && \
+    ./configure --prefix=/apps/${APP_NAME}/bcftools && \
+    make -j7 && \
+    make install && \
+    cd ../ && \
+    rm -rf bcftools-1.21 && \
+    #install shapeit5 \
+    mkdir shapeit5 && \
+    cd shapeit5 && \
+    curl -sSOL https://github.com/odelaneau/shapeit5/releases/download/v5.1.1/ligate_static && \
+    curl -sSOL https://github.com/odelaneau/shapeit5/releases/download/v5.1.1/phase_common_static && \
+    curl -sSOL https://github.com/odelaneau/shapeit5/releases/download/v5.1.1/phase_rare_static && \
+    curl -sSOL https://github.com/odelaneau/shapeit5/releases/download/v5.1.1/simulate_static && \
+    curl -sSOL https://github.com/odelaneau/shapeit5/releases/download/v5.1.1/switch_static && \
+    curl -sSOL https://github.com/odelaneau/shapeit5/releases/download/v5.1.1/xcftools_static && \
+    chmod -R 755 . && \
+    cd ../ && \
+    #install impute5 \
+    curl -sSOL https://www.dropbox.com/sh/mwnceyhir8yze2j/AABKBCgZsQqz8TlZGo7yXwx6a/impute5_v1.2.0.zip && \
+    unzip -q -d . impute5_v1.2.0.zip && \
+    mv impute5_v1.2.0 impute5 && \
+    rm impute5_v1.2.0.zip && \
+    rm -rf __MACOSX && \
+    rm -rf impute5/test && \
+    chmod -R 755 impute5 && \
+    #cleanup
+    apt-get remove -y --purge curl unzip cmake build-essential bzip2 && \
+    apt-get autoremove -y --purge
 
-  curl -fsSL https://apt.fury.io/wez/gpg.key | \
-    gpg --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg
-  echo 'deb [signed-by=/usr/share/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | \
-    tee /etc/apt/sources.list.d/wezterm.list
-
-  apt-get update -qy
-EOT
-
-# The sub command is evaluated first in the bash multiline setup.
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-  --mount=type=cache,target=/var/lib/apt,sharing=locked \
-  version="$(apt-cache madison wezterm | grep -o "${APP_VERSION}-[0-9]*-[a-f0-9]*")" && \
-  apt-get install -qy --no-install-recommends \
-    libegl-dev \
-    wezterm=${version}
-
+ENV APP_CMD_PREFIX="export PATH=/apps/${APP_NAME}/plink2:/apps/${APP_NAME}/bcftools/bin:/apps/${APP_NAME}/shapeit5:/apps/${APP_NAME}/impute5:${PATH}"
 ENV APP_SPECIAL="no"
 ENV APP_CMD="wezterm"
 ENV PROCESS_NAME="wezterm"
@@ -45,11 +66,10 @@ ENV APP_DATA_DIR_ARRAY=""
 ENV DATA_DIR_ARRAY=""
 
 # Install vgl + whatever is necessary for chorus use
-RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=false \
+RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=true \
     pushd /tmp/core_scripts && \
-    ./utilities/chorus-utils.sh && \
-    mv entrypoint/docker-entrypoint.sh / && \
-    mv entrypoint/1-create-user.sh /docker-entrypoint.d && \
-    popd 
+    ./utilities/chorus-utils.sh -a terminal && \
+    cp entrypoint/docker-entrypoint.sh / && \
+    cp entrypoint/1-create-user.sh /docker-entrypoint.d
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
