@@ -9,4 +9,6 @@ LC_NUMERIC=en_GB.UTF-8
 export LC_NUMERIC
 
 # Load the default .profile
-[[ -s "$HOME/.profile" ]] && source "$HOME/.profile"
+if [ -s "$HOME/.profile" ]; then
+    . "$HOME/.profile"
+fi
