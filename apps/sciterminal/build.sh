@@ -8,9 +8,13 @@ PKG_REL="1"
 
 VERSION="${APP_VERSION}-${PKG_REL}"
 
+# Trust me bro
 PLINK_VERSION="latest"
+# See: https://github.com/samtools/bcftools/releases/
 BCFTOOLS_VERSION="1.21"
+# See: https://github.com/odelaneau/shapeit5/releases
 SHAPEIT_VERSION="5.1.1"
+# See: https://jmarchini.org/software/#impute-5
 IMPUTE_VERSION="1.2.0"
 
 REGISTRY="${REGISTRY:=registry.build.chorus-tre.local}"
