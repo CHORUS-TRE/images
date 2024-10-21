@@ -3,7 +3,10 @@ FROM ubuntu:24.04
 SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 
 ARG APP_NAME
-ARG APP_VERSION
+ARG PLINK_VERSION
+ARG BCFTOOLS_VERSION
+ARG SHAPEIT_VERSION
+ARG IMPUTE_VERSION
 
 WORKDIR /apps/${APP_NAME}
 
@@ -20,37 +23,37 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     #install plink2 \
     mkdir plink2 && \
     cd plink2 && \
-    curl -sSOL https://s3.amazonaws.com/plink2-assets/plink2_linux_x86_64_latest.zip && \
+    curl -sSOL https://s3.amazonaws.com/plink2-assets/plink2_linux_x86_64_${PLINK_VERSION}.zip && \
     unzip plink2_linux_x86_64_*.zip && \
     rm plink2_linux_x86_64_*.zip && \
     cd ../ && \
     #install bcftools \
     mkdir bcftools && \
-    curl -sSOL https://github.com/samtools/bcftools/releases/download/1.21/bcftools-1.21.tar.bz2 && \
-    tar jxvf bcftools-1.21.tar.bz2 && \
-    rm bcftools-1.21.tar.bz2 && \
-    cd bcftools-1.21 && \
+    curl -sSOL https://github.com/samtools/bcftools/releases/download/${BCFTOOLS_VERSION}/bcftools-${BCFTOOLS_VERSION}.tar.bz2 && \
+    tar jxvf bcftools-${BCFTOOLS_VERSION}.tar.bz2 && \
+    rm bcftools-${BCFTOOLS_VERSION}.tar.bz2 && \
+    cd bcftools-${BCFTOOLS_VERSION} && \
     ./configure --prefix=/apps/${APP_NAME}/bcftools && \
     make -j7 && \
     make install && \
     cd ../ && \
-    rm -rf bcftools-1.21 && \
+    rm -rf bcftools-${BCFTOOLS_VERSION} && \
     #install shapeit5 \
     mkdir shapeit5 && \
     cd shapeit5 && \
-    curl -sSOL https://github.com/odelaneau/shapeit5/releases/download/v5.1.1/ligate_static && \
-    curl -sSOL https://github.com/odelaneau/shapeit5/releases/download/v5.1.1/phase_common_static && \
-    curl -sSOL https://github.com/odelaneau/shapeit5/releases/download/v5.1.1/phase_rare_static && \
-    curl -sSOL https://github.com/odelaneau/shapeit5/releases/download/v5.1.1/simulate_static && \
-    curl -sSOL https://github.com/odelaneau/shapeit5/releases/download/v5.1.1/switch_static && \
-    curl -sSOL https://github.com/odelaneau/shapeit5/releases/download/v5.1.1/xcftools_static && \
+    curl -sSOL https://github.com/odelaneau/shapeit5/releases/download/v${SHAPEIT_VERSION}/ligate_static && \
+    curl -sSOL https://github.com/odelaneau/shapeit5/releases/download/v${SHAPEIT_VERSION}/phase_common_static && \
+    curl -sSOL https://github.com/odelaneau/shapeit5/releases/download/v${SHAPEIT_VERSION}/phase_rare_static && \
+    curl -sSOL https://github.com/odelaneau/shapeit5/releases/download/v${SHAPEIT_VERSION}/simulate_static && \
+    curl -sSOL https://github.com/odelaneau/shapeit5/releases/download/v${SHAPEIT_VERSION}/shapeit_static && \
+    curl -sSOL https://github.com/odelaneau/shapeit5/releases/download/v${SHAPEIT_VERSION}/shapeit4_static && \
     chmod -R 755 . && \
     cd ../ && \
     #install impute5 \
-    curl -sSOL https://www.dropbox.com/sh/mwnceyhir8yze2j/AABKBCgZsQqz8TlZGo7yXwx6a/impute5_v1.2.0.zip && \
-    unzip -q -d . impute5_v1.2.0.zip && \
-    mv impute5_v1.2.0 impute5 && \
-    rm impute5_v1.2.0.zip && \
+    curl -sSOL https://www.dropbox.com/sh/mwnceyhir8yze2j/AABKBCgZsQqz8TlZGo7yXwx6a/impute5_v${IMPUTE_VERSION}.zip && \
+    unzip -q -d . impute5_v${IMPUTE_VERSION}.zip && \
+    mv impute5_v${IMPUTE_VERSION} impute5 && \
+    rm impute5_v${IMPUTE_VERSION}.zip && \
     rm -rf __MACOSX && \
     rm -rf impute5/test && \
     chmod -R 755 impute5 && \
