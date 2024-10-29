@@ -1,5 +1,7 @@
 # syntax=docker/dockerfile:1
-FROM ubuntu:24.04
+# Electron is not yet ready for 24.04
+# https://github.com/cypress-io/cypress/issues/29521
+FROM ubuntu:22.04
 SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 
 ARG APP_NAME
@@ -38,11 +40,12 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     --mount=type=cache,target=/var/cache/curl,sharing=locked \
+    --mount=type=cache,target=/mambaforge/pkgs,sharing=locked \
     apt-get update -q && \
     apt-get install --no-install-recommends -qy \
         dbus-x11 \
         curl \
-        libasound2t64 \
+        libasound2 \
         libatspi2.0-0 \
         libdrm2 \
         libgbm1 \
@@ -52,14 +55,14 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         libsecret-1-0 \
         libxss1 \
         libxtst6 \
-        tini \
         xdg-utils && \
     pushd /var/cache/curl && \
     curl -sSL -C - -o JupyterLab-Setup-${APP_VERSION_FULL}.deb "https://github.com/jupyterlab/jupyterlab-desktop/releases/download/v${APP_VERSION_FULL}/JupyterLab-Setup-Debian-x64.deb" && \
     dpkg -i JupyterLab-Setup-${APP_VERSION_FULL}.deb && \
     popd && \
     rm -r /opt/JupyterLab/chrome-sandbox && \
-    source "${CONDA_DIR}/etc/profile.d/conda.sh" && \
+    . "${CONDA_DIR}/etc/profile.d/conda.sh" && \
+    . "${CONDA_DIR}/etc/profile.d/mamba.sh" && \
     conda activate base && \
     mamba create -y --override-channels --channel=conda-forge --name=jlab_env \
         ipykernel \

@@ -10,7 +10,7 @@ PKG_REL="1"
 
 # https://conda-forge.org/miniforge/
 # https://github.com/conda-forge/miniforge/releases
-MINIFORGE3_VERSION="24.7.1-0"
+MINIFORGE3_VERSION="24.9.0-0"
 
 VERSION="${APP_VERSION}-${PKG_REL}"
 
