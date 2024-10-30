@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 # Electron is not yet ready for 24.04
 # https://github.com/cypress-io/cypress/issues/29521
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 
 ARG APP_NAME
@@ -45,7 +45,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get install --no-install-recommends -qy \
         dbus-x11 \
         curl \
-        libasound2 \
+        libasound2t64 \
         libatspi2.0-0 \
         libdrm2 \
         libgbm1 \
