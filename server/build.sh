@@ -1,7 +1,7 @@
 #!/bin/sh
 
 APP_NAME="xpra-server"
-APP_VERSION="6.2.0"
+APP_VERSION="6.2.1"
 PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
