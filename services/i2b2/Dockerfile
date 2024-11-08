@@ -1,16 +1,22 @@
 FROM rockylinux:8.9 AS downloader
 
-ARG I2B2_VERSION=1.8.1.0001
+SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
+
+ARG APP_NAME
+ARG APP_VERSION
 
 WORKDIR /app
-RUN curl -SL https://github.com/i2b2/i2b2-webclient/archive/refs/tags/v${I2B2_VERSION}.tar.gz \
+RUN curl -SL https://github.com/i2b2/i2b2-webclient/archive/refs/tags/v${APP_VERSION}.tar.gz \
   | tar -xzC . \
-&& mv i2b2-webclient-${I2B2_VERSION} webclient
+&& mv i2b2-webclient-${APP_VERSION} webclient
 
 
 FROM rockylinux:8.9 as i2b2-web
 
 SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
+
+ARG APP_NAME
+ARG APP_VERSION
 
 RUN yum -y install httpd mod_ssl php && \
     yum clean all
