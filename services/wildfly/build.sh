@@ -8,7 +8,8 @@ PKG_REL="1"
 # otherwhise, please bump the PKG_REL on any changes.
 VERSION="${APP_VERSION}-${PKG_REL}"
 
-REGISTRY="${REGISTRY:=registry.build.chorus-tre.local}"
+REGISTRY="${REGISTRY:=harbor.build.chorus-tre.local}"
+REPOSITORY="${REPOSITORY:=services}"
 
 # Use `registry` to build and push
 OUTPUT="type=${OUTPUT:-docker}"
@@ -17,8 +18,7 @@ OUTPUT="type=${OUTPUT:-docker}"
 
 docker buildx build \
     --pull \
-    -t ${REGISTRY}/${APP_NAME} \
-    -t ${REGISTRY}/${APP_NAME}:${VERSION} \
+    -t ${REGISTRY}/${REPOSITORY}/${APP_NAME}:${VERSION} \
     --label "APP_NAME=${APP_NAME}" \
     --label "APP_VERSION=${APP_VERSION}" \
     --build-arg "APP_NAME=${APP_NAME}" \

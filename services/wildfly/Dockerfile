@@ -9,6 +9,9 @@ COPY --from=i2b2 /opt/jboss/wildfly/customization /opt/bitnami/wildfly/customiza
 RUN chown root:root -R /opt/bitnami/wildfly/customization
 RUN chmod +x /opt/bitnami/wildfly/customization/execute.sh
 RUN sed -i 's/\/opt\/jboss\/wildfly/\/opt\/bitnami\/wildfly/g' /opt/bitnami/wildfly/customization/execute.sh
+RUN mkdir -p /opt/bitnami/wildfly/standalone/configuration
+
+RUN apt-get update && apt-get install -y vim
 
 #I2B2 env
 ENV DS_IM_PASS=
@@ -43,6 +46,8 @@ ENV DS_WD_PASS=demouser
 ENV DS_PM_PORT=
 ENV DS_PM_IP=
 ENV DS_CRC_PORT=5432
+ENV TEST=TEST
+
 
 ENTRYPOINT [ "/opt/bitnami/scripts/wildfly/entrypoint.sh" ]
 
