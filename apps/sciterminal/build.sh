@@ -17,7 +17,7 @@ SHAPEIT_VERSION="5.1.1"
 # See: https://jmarchini.org/software/#impute-5
 IMPUTE_VERSION="1.2.0"
 
-REGISTRY="${REGISTRY:=registry.build.chorus-tre.local}"
+REGISTRY="${REGISTRY:=harbor.build.chorus-tre.local}"
 REPOSITORY="${REPOSITORY:=apps}"
 
 # Use `registry` to build and push

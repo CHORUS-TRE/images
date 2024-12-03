@@ -10,7 +10,7 @@ PKG_REL="3"
 # otherwhise, please bump the PKG_REL on any changes.
 VERSION="${APP_VERSION}-${PKG_REL}"
 
-REGISTRY="${REGISTRY:=registry.build.chorus-tre.local}"
+REGISTRY="${REGISTRY:=harbor.build.chorus-tre.local}"
 REPOSITORY="${REPOSITORY:=apps}"
 
 # Use `registry` to build and push

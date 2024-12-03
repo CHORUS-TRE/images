@@ -14,7 +14,7 @@ VIRTUALGL_VERSION=3.1.1
 XPRA_VERSION="${APP_VERSION}-r0"
 XPRA_HTML5_VERSION="16.2-r0"
 
-REGISTRY="${REGISTRY:=registry.build.chorus-tre.local}"
+REGISTRY="${REGISTRY:=harbor.build.chorus-tre.local}"
 REPOSITORY="${REPOSITORY:=apps}"
 
 XPRA_KEYCLOAK_AUTH="False" # True or False
