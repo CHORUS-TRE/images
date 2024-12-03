@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM ubuntu:24.04
+FROM ubuntu:22.04
 SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 
 ARG APP_NAME
@@ -12,16 +12,20 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update -qy && \
     apt-get install --no-install-recommends -qy \
-    ca-certificates curl dc file libgomp1 libquadmath0 locales python3 && \
-    locale-gen en_US.UTF-8 en_GB.UTF-8 && \
-    curl -sSL https://fsl.fmrib.ox.ac.uk/fsldownloads/fslinstaller.py -o fslinstaller.py && \
-    sed -i -E "s/(printmsg\(([^,]+, )?end='(\\\\r)?')/# SILENCE \\1/g" ./fslinstaller.py && \
-    python3 ./fslinstaller.py \
-        -d /usr/local/fsl \
-        -V ${APP_VERSION} \
-    && \
-    rm -rf /usr/local/fsl/src && \
-    rm fslinstaller.py && \
+    curl ca-certificates language-pack-en binutils libx11-dev \
+    gettext xterm x11-apps perl make csh tcsh file bc xorg \
+    xorg-dev xserver-xorg-video-intel libncurses5 libdrm2 libegl1 \
+    libexpat1 libfontconfig1 libfreetype6 libgl1 libglib2.0-0 \
+    libglu1-mesa libglu1 libglvnd0 libglx0 libgomp1 libice6 \
+    libjpeg62 libopengl0 libpng16-16 libquadmath0 libsm6 \
+    libwayland-client0 libwayland-cursor0 libx11-6 libx11-xcb1 \
+    libxcb-icccm4 libxcb-randr0 libxcb-render-util0 libxcb-render0 libxcb-shape0 \
+    libxcb-sync1 libxcb-xfixes0 libxcb-xinerama0 libxcb-xinput0 libxext6 libxft2 \
+    libxcb-image0 libxcb-keysyms1 libxcb-xkb1 libxkbcommon-x11-0 libxkbcommon0 \
+    libxi6 libxmu6 libxrender1 libxss1 libxt6 && \
+    curl -sSO https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/${APP_VERSION}/freesurfer_ubuntu22-${APP_VERSION}_amd64.deb && \
+    dpkg -i freesurfer_ubuntu22-${APP_VERSION}_amd64.deb && \
+    rm freesurfer_ubuntu22-${APP_VERSION}_amd64.deb && \
     apt-get remove -y --purge curl && \
     apt-get autoremove -y --purge
 
@@ -43,5 +47,5 @@ RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=false \
     mv entrypoint/1-create-user.sh /docker-entrypoint.d && \
     mv entrypoint/2-copy-config.sh /docker-entrypoint.d && \
     popd
-
+    
 ENTRYPOINT ["/docker-entrypoint.sh"]
