@@ -10,7 +10,7 @@ PKG_REL="1"
 
 VERSION="${APP_VERSION}-${PKG_REL}"
 
-REGISTRY="${REGISTRY:=registry.build.chorus-tre.local}"
+REGISTRY="${REGISTRY:=harbor.build.chorus-tre.local}"
 
 # Use `registry` to build and push
 OUTPUT="type=${OUTPUT:-docker}"
