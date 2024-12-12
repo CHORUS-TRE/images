@@ -1,3 +1,3 @@
-# Kiosk
+# Didata
 
 TODO fill me.
