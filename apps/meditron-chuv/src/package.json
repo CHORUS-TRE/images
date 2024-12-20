@@ -1,0 +1,13 @@
+{
+    "name": "meditron-chuv",
+    "version": "1.0.0",
+    "main": "index.html",
+    "window": {
+      "kiosk": true,
+      "frame": true,
+      "position": "center",
+      "width": 1024,
+      "height": 768
+    },
+    "chromium-args": "--disable-features=Vulkan --disable-gpu-compositing --no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-software-rasterizer"
+  }
