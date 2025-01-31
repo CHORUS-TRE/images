@@ -16,6 +16,7 @@ XPRA_HTML5_VERSION="16.2-r0"
 
 REGISTRY="${REGISTRY:=harbor.build.chorus-tre.local}"
 REPOSITORY="${REPOSITORY:=apps}"
+CACHE="${CACHE:=cache}"
 
 XPRA_KEYCLOAK_AUTH="False" # True or False
 XPRA_KEYCLOAK_SERVER_URL=""
@@ -31,6 +32,11 @@ XPRA_KEYCLOAK_GRANT_TYPE="authorization_code"
 
 # Use `registry` to build and push
 OUTPUT="type=${OUTPUT:-docker}"
+
+if [ "$OUTPUT" = "type=registry" ]; then
+    CACHE_FROM="type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:${VERSION}"
+    CACHE_TO="type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:${VERSION},mode=max"
+fi
 
 # Tip: use `BUILDKIT_PROGRESS=plain` to see more.
 
@@ -51,5 +57,7 @@ exec docker buildx build \
     --build-arg "XPRA_KEYCLOAK_AUTH_GROUPS=${XPRA_KEYCLOAK_AUTH_GROUPS}" \
     --build-arg "XPRA_KEYCLOAK_AUTH_CONDITION=${XPRA_KEYCLOAK_AUTH_CONDITION}" \
     --build-arg "XPRA_KEYCLOAK_GRANT_TYPE=${XPRA_KEYCLOAK_GRANT_TYPE}" \
+    ${CACHE_FROM:+--cache-from=$CACHE_FROM} \
+    ${CACHE_TO:+--cache-to=$CACHE_TO} \
     --output=$OUTPUT \
     .
