@@ -16,6 +16,8 @@ XPRA_HTML5_VERSION="16.2-r0"
 
 REGISTRY="${REGISTRY:=harbor.build.chorus-tre.local}"
 REPOSITORY="${REPOSITORY:=apps}"
+CACHE="${CACHE:=cache}"
+BUILDER_NAME="docker-container"
 
 XPRA_KEYCLOAK_AUTH="False" # True or False
 XPRA_KEYCLOAK_SERVER_URL=""
@@ -32,10 +34,30 @@ XPRA_KEYCLOAK_GRANT_TYPE="authorization_code"
 # Use `registry` to build and push
 OUTPUT="type=${OUTPUT:-docker}"
 
+if [ "$OUTPUT" = "type=registry" ]; then
+    CACHE_FROM="\
+        --cache-from=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:${VERSION} \
+        --cache-from=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:latest"
+
+    CACHE_TO="\
+        --cache-to=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:${VERSION},mode=max,image-manifest=true \
+        --cache-to=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:latest,mode=max,image-manifest=true"
+else
+    mkdir -p /tmp/.buildx-cache  # Ensure cache directory exists
+    CACHE_FROM="--cache-from=type=local,src=/tmp/.buildx-cache"
+    CACHE_TO="--cache-to=type=local,dest=/tmp/.buildx-cache"
+fi
+
+# Check if the builder exists
+if ! docker buildx inspect "${BUILDER_NAME}" >/dev/null 2>&1; then
+    docker buildx create --name "${BUILDER_NAME}" --driver docker-container
+fi
+
 # Tip: use `BUILDKIT_PROGRESS=plain` to see more.
 
 exec docker buildx build \
     --pull \
+    --builder ${BUILDER_NAME} \
     -t ${REGISTRY}/${REPOSITORY}/${APP_NAME}:${VERSION} \
     --build-arg "VIRTUALGL_VERSION=${VIRTUALGL_VERSION}" \
     --build-arg "XPRA_VERSION=${XPRA_VERSION}" \
@@ -51,5 +73,7 @@ exec docker buildx build \
     --build-arg "XPRA_KEYCLOAK_AUTH_GROUPS=${XPRA_KEYCLOAK_AUTH_GROUPS}" \
     --build-arg "XPRA_KEYCLOAK_AUTH_CONDITION=${XPRA_KEYCLOAK_AUTH_CONDITION}" \
     --build-arg "XPRA_KEYCLOAK_GRANT_TYPE=${XPRA_KEYCLOAK_GRANT_TYPE}" \
+    ${CACHE_FROM} \
+    ${CACHE_TO} \
     --output=$OUTPUT \
     .
