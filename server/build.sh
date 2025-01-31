@@ -35,12 +35,17 @@ XPRA_KEYCLOAK_GRANT_TYPE="authorization_code"
 OUTPUT="type=${OUTPUT:-docker}"
 
 if [ "$OUTPUT" = "type=registry" ]; then
-    CACHE_FROM="type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:${VERSION}"
-    CACHE_TO="type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:${VERSION},mode=max"
+    CACHE_FROM="\
+        --cache-from=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:${VERSION} \
+        --cache-from=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:latest"
+
+    CACHE_TO="\
+        --cache-to=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:${VERSION},mode=max \
+        --cache-to=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:latest,mode=max"
 else
     mkdir -p /tmp/.buildx-cache  # Ensure cache directory exists
-    CACHE_FROM="type=local,src=/tmp/.buildx-cache"
-    CACHE_TO="type=local,dest=/tmp/.buildx-cache"
+    CACHE_FROM="--cache-from=type=local,src=/tmp/.buildx-cache"
+    CACHE_TO="--cache-to=type=local,dest=/tmp/.buildx-cache"
 fi
 
 # Check if the builder exists
@@ -68,7 +73,7 @@ exec docker buildx build \
     --build-arg "XPRA_KEYCLOAK_AUTH_GROUPS=${XPRA_KEYCLOAK_AUTH_GROUPS}" \
     --build-arg "XPRA_KEYCLOAK_AUTH_CONDITION=${XPRA_KEYCLOAK_AUTH_CONDITION}" \
     --build-arg "XPRA_KEYCLOAK_GRANT_TYPE=${XPRA_KEYCLOAK_GRANT_TYPE}" \
-    --cache-from ${CACHE_FROM} \
-    --cache-to ${CACHE_TO} \
+    ${CACHE_FROM} \
+    ${CACHE_TO} \
     --output=$OUTPUT \
     .
