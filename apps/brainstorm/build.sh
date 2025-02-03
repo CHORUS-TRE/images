@@ -19,7 +19,7 @@ OUTPUT="type=${OUTPUT:-docker}"
 # Tip: use `BUILDKIT_PROGRESS=plain` to see more.
 
 cp -r ../../core ./core
-trap "rm -rf core" EXIT
+trap "rm -rf ./core" EXIT
 
 docker buildx build \
     --pull \
