@@ -37,11 +37,11 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         libatomic1 \
         xvfb && \
     # Download and install NW.js
-    wget https://dl.nwjs.io/v0.94.0/nwjs-v0.94.0-linux-x64.tar.gz && \
-    tar -xzf nwjs-v0.94.0-linux-x64.tar.gz && \
-    mv nwjs-v0.94.0-linux-x64 /opt/nwjs && \
+    wget https://dl.nwjs.io/v${APP_VERSION}/nwjs-v${APP_VERSION}-linux-x64.tar.gz && \
+    tar -xzf nwjs-v${APP_VERSION}-linux-x64.tar.gz && \
+    mv nwjs-v${APP_VERSION}-linux-x64 /opt/nwjs && \
     ln -s /opt/nwjs/nw /usr/local/bin/nw && \
-    rm nwjs-v0.94.0-linux-x64.tar.gz && \
+    rm nwjs-v${APP_VERSION}-linux-x64.tar.gz && \
     apt-get remove -y --purge wget gpg && \
     apt-get autoremove -y --purge
 

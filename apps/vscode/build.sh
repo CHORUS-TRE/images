@@ -28,5 +28,7 @@ docker buildx build \
     --label "APP_VERSION=${APP_VERSION}" \
     --build-arg "APP_NAME=${APP_NAME}" \
     --build-arg "APP_VERSION=${APP_VERSION}" \
+    ${CACHE_FROM} \
+    ${CACHE_TO} \
     --output=$OUTPUT \
     .

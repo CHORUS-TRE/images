@@ -8,26 +8,52 @@ APP_VERSION="4.2.0"
 APP_VERSION_FULL="${APP_VERSION}-20240422"
 PKG_REL="1"
 
+# If the APP_VERSION is bumped, reset the PKG_REL
+# otherwhise, please bump the PKG_REL on any changes.
 VERSION="${APP_VERSION}-${PKG_REL}"
 
 REGISTRY="${REGISTRY:=harbor.build.chorus-tre.local}"
+REPOSITORY="${REPOSITORY:=apps}"
+CACHE="${CACHE:=cache}"
+BUILDER_NAME="docker-container"
 
 # Use `registry` to build and push
 OUTPUT="type=${OUTPUT:-docker}"
 
+if [ "$OUTPUT" = "type=registry" ]; then
+    CACHE_FROM="\
+        --cache-from=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:${VERSION} \
+        --cache-from=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:latest"
+
+    CACHE_TO="\
+        --cache-to=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:${VERSION},mode=max,image-manifest=true \
+        --cache-to=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:latest,mode=max,image-manifest=true"
+else
+    mkdir -p /tmp/.buildx-cache  # Ensure cache directory exists
+    CACHE_FROM="--cache-from=type=local,src=/tmp/.buildx-cache"
+    CACHE_TO="--cache-to=type=local,dest=/tmp/.buildx-cache"
+fi
+
+# Check if the builder exists
+if ! docker buildx inspect "${BUILDER_NAME}" >/dev/null 2>&1; then
+    docker buildx create --name "${BUILDER_NAME}" --driver docker-container
+fi
+
 # Tip: use `BUILDKIT_PROGRESS=plain` to see more.
 
-cp -rp ../../core .
-trap "rm -rf core" EXIT
+cp -r ../../core ./core
+trap "rm -rf ./core" EXIT
 
 docker buildx build \
     --pull \
-    -t ${REGISTRY}/${APP_NAME} \
-    -t ${REGISTRY}/${APP_NAME}:${VERSION} \
+    --builder ${BUILDER_NAME} \
+    -t ${REGISTRY}/${REPOSITORY}/${APP_NAME}:${VERSION} \
     --label "APP_NAME=${APP_NAME}" \
     --label "APP_VERSION=${APP_VERSION}" \
     --build-arg "APP_NAME=${APP_NAME}" \
     --build-arg "APP_VERSION=${APP_VERSION}" \
     --build-arg "APP_VERSION_FULL=${APP_VERSION_FULL}" \
     --output=$OUTPUT \
+    ${CACHE_FROM} \
+    ${CACHE_TO} \
     .

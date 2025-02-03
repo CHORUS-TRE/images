@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 APP_NAME="xpra-server"
 APP_VERSION="6.2.3"
 PKG_REL="1"
