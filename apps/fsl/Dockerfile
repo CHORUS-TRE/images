@@ -14,7 +14,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get install --no-install-recommends -qy \
     ca-certificates curl dc file libgomp1 libquadmath0 locales python3 && \
     locale-gen en_US.UTF-8 en_GB.UTF-8 && \
-    curl -sSL https://fsl.fmrib.ox.ac.uk/fsldownloads/fslinstaller.py -o fslinstaller.py && \
+    curl -sSL https://fsl.fmrib.ox.ac.uk/fsldownloads/fslconda/releases/fslinstaller.py -o fslinstaller.py && \
     sed -i -E "s/(printmsg\(([^,]+, )?end='(\\\\r)?')/# SILENCE \\1/g" ./fslinstaller.py && \
     python3 ./fslinstaller.py \
         -d /usr/local/fsl \
