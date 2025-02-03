@@ -3,7 +3,8 @@
 set -e
 
 APP_NAME="brainstorm"
-APP_VERSION="0.0.4"
+# See: curl -s -I -L "http://neuroimage.usc.edu/bst/getupdate.php?c=UbsM09&src=0&bin=1" | grep -i "content-disposition" | awk -F 'filename=' '{print $2}' | tr -d '\r\n"'
+APP_VERSION="250203"
 PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
@@ -12,9 +13,30 @@ VERSION="${APP_VERSION}-${PKG_REL}"
 
 REGISTRY="${REGISTRY:=harbor.build.chorus-tre.local}"
 REPOSITORY="${REPOSITORY:=apps}"
+CACHE="${CACHE:=cache}"
+BUILDER_NAME="docker-container"
 
 # Use `registry` to build and push
 OUTPUT="type=${OUTPUT:-docker}"
+
+if [ "$OUTPUT" = "type=registry" ]; then
+    CACHE_FROM="\
+        --cache-from=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:${VERSION} \
+        --cache-from=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:latest"
+
+    CACHE_TO="\
+        --cache-to=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:${VERSION},mode=max,image-manifest=true \
+        --cache-to=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:latest,mode=max,image-manifest=true"
+else
+    mkdir -p /tmp/.buildx-cache  # Ensure cache directory exists
+    CACHE_FROM="--cache-from=type=local,src=/tmp/.buildx-cache"
+    CACHE_TO="--cache-to=type=local,dest=/tmp/.buildx-cache"
+fi
+
+# Check if the builder exists
+if ! docker buildx inspect "${BUILDER_NAME}" >/dev/null 2>&1; then
+    docker buildx create --name "${BUILDER_NAME}" --driver docker-container
+fi
 
 # Tip: use `BUILDKIT_PROGRESS=plain` to see more.
 
@@ -23,6 +45,7 @@ trap "rm -rf ./core" EXIT
 
 docker buildx build \
     --pull \
+    --builder ${BUILDER_NAME} \
     -t ${REGISTRY}/${REPOSITORY}/${APP_NAME}:${VERSION} \
     --label "APP_NAME=${APP_NAME}" \
     --label "APP_VERSION=${APP_VERSION}" \
@@ -30,5 +53,7 @@ docker buildx build \
     --build-arg "APP_VERSION=${APP_VERSION}" \
     --build-arg "MAT_VERSION=R2023a" \
     --build-arg "MAT_UPDATE=6" \
+    ${CACHE_FROM} \
+    ${CACHE_TO} \
     --output=$OUTPUT \
     .
