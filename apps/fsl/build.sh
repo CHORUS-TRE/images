@@ -24,8 +24,8 @@ if [ "$OUTPUT" = "type=registry" ]; then
         --cache-from=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:latest"
 
     CACHE_TO="\
-        --cache-to=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:${VERSION},mode=min,image-manifest=true \
-        --cache-to=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:latest,mode=min,image-manifest=true"
+        --cache-to=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:${VERSION},mode=max,image-manifest=true \
+        --cache-to=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:latest,mode=max,image-manifest=true"
 else
     mkdir -p /tmp/.buildx-cache  # Ensure cache directory exists
     CACHE_FROM="--cache-from=type=local,src=/tmp/.buildx-cache"
