@@ -19,6 +19,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     python3 ./fslinstaller.py \
         -d /usr/local/fsl \
         -V ${APP_VERSION} \
+        --skip_registration \
     && \
     rm -rf /usr/local/fsl/src && \
     rm fslinstaller.py && \
