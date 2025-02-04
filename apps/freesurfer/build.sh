@@ -22,7 +22,7 @@ if [ "$OUTPUT" = "type=registry" ]; then
     CACHE_FROM="\
         --cache-from=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:${VERSION} \
         --cache-from=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:latest"
-
+    #todo: does not work with mode=max
     CACHE_TO="\
         --cache-to=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:${VERSION},mode=min,image-manifest=true \
         --cache-to=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:latest,mode=min,image-manifest=true"
