@@ -24,9 +24,10 @@ if [ "$OUTPUT" = "type=registry" ]; then
     CACHE_FROM="\
         --cache-from=type=registry,ref=${TAG}:${VERSION} \
         --cache-from=type=registry,ref=${TAG}:latest"
+    #todo: does not work with mode=max
     CACHE_TO="\
-        --cache-to=type=registry,ref=${TAG}:${VERSION},mode=max,image-manifest=true \
-        --cache-to=type=registry,ref=${TAG}:latest,mode=max,image-manifest=true"
+        --cache-to=type=registry,ref=${TAG}:${VERSION},mode=min,image-manifest=true \
+        --cache-to=type=registry,ref=${TAG}:latest,mode=min,image-manifest=true"
 else
     mkdir -p /tmp/.buildx-cache  # Ensure cache directory exists
     CACHE_FROM="--cache-from=type=local,src=/tmp/.buildx-cache"
