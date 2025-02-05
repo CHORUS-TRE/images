@@ -26,6 +26,7 @@ OUTPUT="type=${OUTPUT:-docker}"
 
 TAG=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}
 
+# if registry use registry cache otherwise local cache
 if [ "$OUTPUT" = "type=registry" ]; then
     CACHE_FROM="\
         --cache-from=type=registry,ref=${TAG}:${VERSION} \

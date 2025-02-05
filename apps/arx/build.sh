@@ -18,6 +18,7 @@ BUILDER_NAME="docker-container"
 # Use `registry` to build and push
 OUTPUT="type=${OUTPUT:-docker}"
 
+# if registry use registry cache otherwise local cache
 TAG=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}
 
 if [ "$OUTPUT" = "type=registry" ]; then
