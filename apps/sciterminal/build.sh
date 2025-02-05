@@ -27,14 +27,15 @@ BUILDER_NAME="docker-container"
 # Use `registry` to build and push
 OUTPUT="type=${OUTPUT:-docker}"
 
+TAG=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}
+
 if [ "$OUTPUT" = "type=registry" ]; then
     CACHE_FROM="\
-        --cache-from=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:${VERSION} \
-        --cache-from=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:latest"
-
+        --cache-from=type=registry,ref=${TAG}:${VERSION} \
+        --cache-from=type=registry,ref=${TAG}:latest"
     CACHE_TO="\
-        --cache-to=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:${VERSION},mode=max,image-manifest=true \
-        --cache-to=type=registry,ref=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}:latest,mode=max,image-manifest=true"
+        --cache-to=type=registry,ref=${TAG}:${VERSION},mode=max,image-manifest=true \
+        --cache-to=type=registry,ref=${TAG}:latest,mode=max,image-manifest=true"
 else
     mkdir -p /tmp/.buildx-cache  # Ensure cache directory exists
     CACHE_FROM="--cache-from=type=local,src=/tmp/.buildx-cache"
