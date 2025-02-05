@@ -13,6 +13,7 @@ VERSION="${APP_VERSION}-${PKG_REL}"
 REGISTRY="${REGISTRY:=harbor.build.chorus-tre.local}"
 REPOSITORY="${REPOSITORY:=apps}"
 CACHE="${CACHE:=cache}"
+BUILDER_NAME="docker-container"
 
 # Use `registry` to build and push
 OUTPUT="type=${OUTPUT:-docker}"
