@@ -45,7 +45,7 @@ fi
 cp -r ../../core ./core
 trap "rm -rf ./core" EXIT
 
-docker-buildx build \
+docker buildx build \
     --pull \
     --builder ${BUILDER_NAME} \
     -t ${REGISTRY}/${REPOSITORY}/${APP_NAME}:${VERSION} \
