@@ -14,7 +14,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get install --no-install-recommends -qy \
         apt-transport-https \
         ca-certificates \
-        wget \
+        curl \
         gpg \
         binutils \
         libglib2.0-0 \
@@ -37,12 +37,12 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         libatomic1 \
         xvfb && \
     # Download and install NW.js
-    wget https://dl.nwjs.io/v0.94.0/nwjs-v0.94.0-linux-x64.tar.gz && \
-    tar -xzf nwjs-v0.94.0-linux-x64.tar.gz && \
-    mv nwjs-v0.94.0-linux-x64 /opt/nwjs && \
+    curl -sSOL https://dl.nwjs.io/v${APP_VERSION}/nwjs-v${APP_VERSION}-linux-x64.tar.gz && \
+    tar -xzf nwjs-v${APP_VERSION}-linux-x64.tar.gz && \
+    mv nwjs-v${APP_VERSION}-linux-x64 /opt/nwjs && \
     ln -s /opt/nwjs/nw /usr/local/bin/nw && \
-    rm nwjs-v0.94.0-linux-x64.tar.gz && \
-    apt-get remove -y --purge wget gpg && \
+    rm nwjs-v${APP_VERSION}-linux-x64.tar.gz && \
+    apt-get remove -y --purge curl gpg && \
     apt-get autoremove -y --purge
 
 ENV APP_SPECIAL="no"
