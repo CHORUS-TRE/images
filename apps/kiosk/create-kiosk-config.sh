@@ -20,7 +20,7 @@ cat > /apps/${APP_NAME}/index.html << EOF
 EOF
 
 # Create package.json
-echo "Creating package.json"
+echo "Creating package.json..."
 cat > /apps/${APP_NAME}/package.json << EOF
 {
     "name": "kiosk",
