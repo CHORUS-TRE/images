@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Create index.html
-echo "Starting to create configuration files for the Kiosk"
-echo "Creating index.html"
+echo "Creating configuration files for the Kiosk..."
+echo "Creating index.html..."
 cat > /apps/${APP_NAME}/index.html << EOF
 <!DOCTYPE html>
 <html>
