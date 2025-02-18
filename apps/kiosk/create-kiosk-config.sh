@@ -35,3 +35,5 @@ cat > /apps/${APP_NAME}/package.json << EOF
     }
 }
 EOF
+
+echo "Done."
