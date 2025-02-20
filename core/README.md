@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends openssh-client
 RUN mkdir -p -m 0700 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
 ```
 
-At the same time you need to add the flag ```--ssh default``` to the ```docker-buildx``` command in the build.sh of your app
+At the same time you need to add the flag ```--ssh default``` to the ```docker buildx``` command in the build.sh of your app
 
 **3. Add the core scripts from the CHORUS-TRE repo : we only want the core folder to limit the size of the image.**
 
