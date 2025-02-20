@@ -4,7 +4,7 @@ set -e
 
 APP_NAME="brainstorm"
 # See: curl -s -I -L "http://neuroimage.usc.edu/bst/getupdate.php?c=UbsM09&src=0&bin=1" | grep -i "content-disposition" | awk -F 'filename=' '{print $2}' | tr -d '\r\n"'
-APP_VERSION="250203"
+APP_VERSION="250220"
 PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
@@ -36,8 +36,8 @@ else
 fi
 
 # Check if the builder exists
-if ! docker buildx inspect "${BUILDER_NAME}" >/dev/null 2>&1; then
-    docker buildx create --name "${BUILDER_NAME}" --driver docker-container
+if ! docker-buildx inspect "${BUILDER_NAME}" >/dev/null 2>&1; then
+    docker-buildx create --name "${BUILDER_NAME}" --driver docker-container
 fi
 
 # Tip: use `BUILDKIT_PROGRESS=plain` to see more.
@@ -45,7 +45,7 @@ fi
 cp -r ../../core ./core
 trap "rm -rf ./core" EXIT
 
-docker buildx build \
+docker-buildx build \
     --pull \
     --builder ${BUILDER_NAME} \
     -t ${REGISTRY}/${REPOSITORY}/${APP_NAME}:${VERSION} \
