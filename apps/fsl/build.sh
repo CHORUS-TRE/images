@@ -4,7 +4,7 @@ set -e
 
 APP_NAME="fsl"
 APP_VERSION="6.0.7.16"
-PKG_REL="1"
+PKG_REL="2"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.
@@ -14,6 +14,7 @@ REGISTRY="${REGISTRY:=harbor.build.chorus-tre.local}"
 REPOSITORY="${REPOSITORY:=apps}"
 CACHE="${CACHE:=cache}"
 BUILDER_NAME="docker-container"
+TARGET_ARCH="${TARGET_ARCH:-linux/amd64}"
 
 # Use `registry` to build and push
 OUTPUT="type=${OUTPUT:-docker}"
@@ -48,6 +49,7 @@ trap "rm -rf ./core" EXIT
 docker buildx build \
     --pull \
     --builder ${BUILDER_NAME} \
+    --platform=${TARGET_ARCH} \
     -t ${REGISTRY}/${REPOSITORY}/${APP_NAME}:${VERSION} \
     --label "APP_NAME=${APP_NAME}" \
     --label "APP_VERSION=${APP_VERSION}" \
