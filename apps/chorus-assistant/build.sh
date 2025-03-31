@@ -4,7 +4,7 @@ set -e
 
 APP_NAME="chorus-assistant"
 APP_VERSION="0.0.1"
-NW_VERSION="0.94.0"
+CHORUS_ASSISTANT_URL="http://localhost:8080"
 MODEL="qwen2.5:0.5b"
 
 PKG_REL="1"
@@ -58,7 +58,7 @@ docker buildx build \
     --label "APP_VERSION=${APP_VERSION}" \
     --build-arg "APP_NAME=${APP_NAME}" \
     --build-arg "APP_VERSION=${APP_VERSION}" \
-    --build-arg "NW_VERSION=${NW_VERSION}" \
+    --build-arg "CHORUS_ASSISTANT_URL=${CHORUS_ASSISTANT_URL}" \
     --build-arg "MODEL=${MODEL}" \
     ${CACHE_FROM} \
     ${CACHE_TO} \
