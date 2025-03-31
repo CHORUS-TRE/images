@@ -44,7 +44,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get install --no-install-recommends -qy firefox-esr
 
 ENV APP_SPECIAL="no"
-ENV APP_CMD="firefox-esr --kiosk ${CHORUS_ASSISTANT_URL}"
+ENV APP_CMD="firefox-esr ${CHORUS_ASSISTANT_URL}"
 ENV PROCESS_NAME="chorus-assistant"
 ENV APP_DATA_DIR_ARRAY=""
 ENV DATA_DIR_ARRAY=""
