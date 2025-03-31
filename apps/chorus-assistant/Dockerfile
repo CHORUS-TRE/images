@@ -31,9 +31,9 @@ RUN curl -L https://ollama.com/download/ollama-linux-amd64.tgz -o ollama-linux-a
     tar -C /usr -xzf ollama-linux-amd64.tgz && \
     rm ollama-linux-amd64.tgz
 
-# RUN ollama serve & \
-#     sleep 10 && \
-#     ollama pull ${MODEL}
+RUN ollama serve & \
+    sleep 15 && \
+    ollama pull ${MODEL}
 
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
