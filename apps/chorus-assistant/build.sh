@@ -5,7 +5,7 @@ set -e
 APP_NAME="chorus-assistant"
 APP_VERSION="0.0.1"
 CHORUS_ASSISTANT_URL="http://localhost:8080"
-MODEL="qwen2.5:0.5b"
+# MODEL="qwen2.5:0.5b"
 
 PKG_REL="1"
 
