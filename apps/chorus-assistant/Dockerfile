@@ -31,9 +31,11 @@ RUN curl -L https://ollama.com/download/ollama-linux-amd64.tgz -o ollama-linux-a
     tar -C /usr -xzf ollama-linux-amd64.tgz && \
     rm ollama-linux-amd64.tgz
 
-RUN ollama serve & \
+RUN if [ -n "${MODEL}" ]; then \
+    ollama serve & \
     sleep 15 && \
-    ollama pull ${MODEL}
+    ollama pull ${MODEL}; \
+fi
 
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
@@ -48,7 +50,6 @@ ENV APP_CMD="firefox-esr ${CHORUS_ASSISTANT_URL}"
 ENV PROCESS_NAME="chorus-assistant"
 ENV APP_DATA_DIR_ARRAY=""
 ENV DATA_DIR_ARRAY=""
-ENV GRADIO_SERVER_NAME="0.0.0.0"
 
 # Install vgl + whatever is necessary for chorus use
 RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=false \

@@ -5,7 +5,7 @@ set -e
 APP_NAME="chorus-assistant"
 APP_VERSION="0.0.1"
 CHORUS_ASSISTANT_URL="http://localhost:8080"
-MODEL="qwen2.5:0.5b"
+# MODEL="qwen2.5:0.5b"
 
 PKG_REL="1"
 
@@ -31,8 +31,8 @@ if [ "$OUTPUT" = "type=registry" ]; then
         --cache-from=type=registry,ref=${TAG}:latest"
     #todo: does not work with mode=max
     CACHE_TO="\
-        --cache-to=type=registry,ref=${TAG}:${VERSION},mode=min,image-manifest=true \
-        --cache-to=type=registry,ref=${TAG}:latest,mode=min,image-manifest=true"
+        --cache-to=type=registry,ref=${TAG}:${VERSION},mode=max,image-manifest=true \
+        --cache-to=type=registry,ref=${TAG}:latest,mode=max,image-manifest=true"
 else
     mkdir -p /tmp/.buildx-cache  # Ensure cache directory exists
     CACHE_FROM="--cache-from=type=local,src=/tmp/.buildx-cache"
