@@ -2,9 +2,10 @@
 
 set -e
 
-APP_NAME="vscode"
-APP_VERSION=1.93.1
-PKG_REL="4"
+APP_NAME="meditron"
+APP_VERSION="0.0.1"
+PKG_REL="1"
+WEBUI_URL="https://jointhemoove.org/login"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.
@@ -16,7 +17,8 @@ CACHE="${CACHE:=cache}"
 BUILDER_NAME="docker-container"
 TARGET_ARCH="${TARGET_ARCH:-linux/amd64}"
 
-# Use `registry` to build and push
+
+# Tip: use `BUILDKIT_PROGRESS=plain` to see more.
 OUTPUT="type=${OUTPUT:-docker}"
 
 TAG=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}
@@ -26,9 +28,10 @@ if [ "$OUTPUT" = "type=registry" ]; then
     CACHE_FROM="\
         --cache-from=type=registry,ref=${TAG}:${VERSION} \
         --cache-from=type=registry,ref=${TAG}:latest"
+    #todo: does not work with mode=max
     CACHE_TO="\
-        --cache-to=type=registry,ref=${TAG}:${VERSION},mode=max,image-manifest=true \
-        --cache-to=type=registry,ref=${TAG}:latest,mode=max,image-manifest=true"
+        --cache-to=type=registry,ref=${TAG}:${VERSION},mode=min,compression=zstd,image-manifest=true \
+        --cache-to=type=registry,ref=${TAG}:latest,mode=min,compression=zstd,image-manifest=true"
 else
     mkdir -p /tmp/.buildx-cache  # Ensure cache directory exists
     CACHE_FROM="--cache-from=type=local,src=/tmp/.buildx-cache"
@@ -54,6 +57,8 @@ docker buildx build \
     --label "APP_VERSION=${APP_VERSION}" \
     --build-arg "APP_NAME=${APP_NAME}" \
     --build-arg "APP_VERSION=${APP_VERSION}" \
+    --build-arg "WEBUI_URL=${WEBUI_URL}" \
+    --build-arg "MODEL=${MODEL}" \
     ${CACHE_FROM} \
     ${CACHE_TO} \
     --output=$OUTPUT \
