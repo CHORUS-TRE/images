@@ -63,8 +63,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 
 ENV APP_CMD_PREFIX="export PATH=/apps/${APP_NAME}/plink2:/apps/${APP_NAME}/bcftools/bin:/apps/${APP_NAME}/shapeit5:/apps/${APP_NAME}/impute5:${PATH}"
 ENV APP_SPECIAL="no"
-ENV APP_CMD="wezterm"
-ENV PROCESS_NAME="wezterm"
+ENV APP_CMD="/usr/bin/kitty/kitty.app/bin/kitty"
+ENV PROCESS_NAME="kitty"
 ENV APP_DATA_DIR_ARRAY=""
 ENV DATA_DIR_ARRAY=""
 

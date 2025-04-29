@@ -15,7 +15,7 @@ while getopts ":a:" opt; do
 	  for app in "${ADDR[@]}"; do
 		case $app in
 		  terminal)
-			"$script_dir"/install-terminal.sh
+			"$script_dir"/install-terminal.sh "0.41.1"
 			;;
 		  *)
 			echo "===> Unknown application: $app"
