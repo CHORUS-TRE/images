@@ -17,10 +17,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     curl -sSL https://fsl.fmrib.ox.ac.uk/fsldownloads/fslconda/releases/fslinstaller.py -o fslinstaller.py && \
     sed -i -E "s/(printmsg\(([^,]+, )?end='(\\\\r)?')/# SILENCE \\1/g" ./fslinstaller.py && \
     python3 ./fslinstaller.py \
+        --conda \
         -d /usr/local/fsl \
         -V ${APP_VERSION} \
-        --skip_registration \
-    && \
+        --skip_registration && \
     rm -rf /usr/local/fsl/src && \
     rm fslinstaller.py && \
     apt-get remove -y --purge curl && \

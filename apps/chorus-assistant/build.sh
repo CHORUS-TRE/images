@@ -2,22 +2,16 @@
 
 set -e
 
-APP_NAME="sciterminal"
-APP_VERSION="20250429"
+APP_NAME="chorus-assistant"
+APP_VERSION="0.0.1"
+CHORUS_ASSISTANT_URL="http://localhost:8080"
+# MODEL="qwen2.5:0.5b"
+
 PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.
 VERSION="${APP_VERSION}-${PKG_REL}"
-
-# Trust me bro
-PLINK_VERSION="latest"
-# See: https://github.com/samtools/bcftools/releases/
-BCFTOOLS_VERSION="1.21"
-# See: https://github.com/odelaneau/shapeit5/releases
-SHAPEIT_VERSION="5.1.1"
-# See: https://jmarchini.org/software/#impute-5
-IMPUTE_VERSION="1.2.0"
 
 REGISTRY="${REGISTRY:=harbor.build.chorus-tre.local}"
 REPOSITORY="${REPOSITORY:=apps}"
@@ -35,9 +29,10 @@ if [ "$OUTPUT" = "type=registry" ]; then
     CACHE_FROM="\
         --cache-from=type=registry,ref=${TAG}:${VERSION} \
         --cache-from=type=registry,ref=${TAG}:latest"
+    #todo: does not work with mode=max
     CACHE_TO="\
-        --cache-to=type=registry,ref=${TAG}:${VERSION},mode=max,image-manifest=true \
-        --cache-to=type=registry,ref=${TAG}:latest,mode=max,image-manifest=true"
+        --cache-to=type=registry,ref=${TAG}:${VERSION},mode=min,compression=zstd,image-manifest=true \
+        --cache-to=type=registry,ref=${TAG}:latest,mode=min,compression=zstd,image-manifest=true"
 else
     mkdir -p /tmp/.buildx-cache  # Ensure cache directory exists
     CACHE_FROM="--cache-from=type=local,src=/tmp/.buildx-cache"
@@ -54,7 +49,7 @@ fi
 cp -r ../../core ./core
 trap "rm -rf ./core" EXIT
 
-BUILDKIT_PROGRESS=plain docker buildx build \
+docker buildx build \
     --pull \
     --builder ${BUILDER_NAME} \
     --platform=${TARGET_ARCH} \
@@ -62,10 +57,9 @@ BUILDKIT_PROGRESS=plain docker buildx build \
     --label "APP_NAME=${APP_NAME}" \
     --label "APP_VERSION=${APP_VERSION}" \
     --build-arg "APP_NAME=${APP_NAME}" \
-    --build-arg "PLINK_VERSION=${PLINK_VERSION}" \
-    --build-arg "BCFTOOLS_VERSION=${BCFTOOLS_VERSION}" \
-    --build-arg "SHAPEIT_VERSION=${SHAPEIT_VERSION}" \
-    --build-arg "IMPUTE_VERSION=${IMPUTE_VERSION}" \
+    --build-arg "APP_VERSION=${APP_VERSION}" \
+    --build-arg "CHORUS_ASSISTANT_URL=${CHORUS_ASSISTANT_URL}" \
+    --build-arg "MODEL=${MODEL}" \
     ${CACHE_FROM} \
     ${CACHE_TO} \
     --output=$OUTPUT \

@@ -4,7 +4,7 @@ set -e
 
 APP_NAME="brainstorm"
 # See: curl -s -I -L "http://neuroimage.usc.edu/bst/getupdate.php?c=UbsM09&src=0&bin=1" | grep -i "content-disposition" | awk -F 'filename=' '{print $2}' | tr -d '\r\n"'
-APP_VERSION="250220"
+APP_VERSION="250303"
 PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
@@ -15,6 +15,7 @@ REGISTRY="${REGISTRY:=harbor.build.chorus-tre.local}"
 REPOSITORY="${REPOSITORY:=apps}"
 CACHE="${CACHE:=cache}"
 BUILDER_NAME="docker-container"
+TARGET_ARCH="${TARGET_ARCH:-linux/amd64}"
 
 # Use `registry` to build and push
 OUTPUT="type=${OUTPUT:-docker}"
@@ -48,6 +49,7 @@ trap "rm -rf ./core" EXIT
 docker buildx build \
     --pull \
     --builder ${BUILDER_NAME} \
+    --platform=${TARGET_ARCH} \
     -t ${REGISTRY}/${REPOSITORY}/${APP_NAME}:${VERSION} \
     --label "APP_NAME=${APP_NAME}" \
     --label "APP_VERSION=${APP_VERSION}" \
