@@ -3,7 +3,7 @@
 set -e
 
 APP_NAME="sciterminal"
-APP_VERSION="20250220"
+APP_VERSION="20250429"
 PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
@@ -53,7 +53,7 @@ fi
 cp -r ../../core ./core
 trap "rm -rf ./core" EXIT
 
-docker buildx build \
+BUILDKIT_PROGRESS=plain docker buildx build \
     --pull \
     --builder ${BUILDER_NAME} \
     -t ${REGISTRY}/${REPOSITORY}/${APP_NAME}:${VERSION} \
