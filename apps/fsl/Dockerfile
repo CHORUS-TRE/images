@@ -28,8 +28,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 
 ENV APP_NAME=${APP_NAME}
 ENV APP_SPECIAL="no"
-ENV APP_CMD="/usr/bin/wezterm"
-ENV PROCESS_NAME="/usr/bin/wezterm"
+ENV APP_CMD="/usr/bin/kitty/kitty.app/bin/kitty"
+ENV PROCESS_NAME="kitty"
 ENV APP_DATA_DIR_ARRAY=""
 ENV DATA_DIR_ARRAY=""
 ENV CONFIG_ARRAY=".bash_profile"

@@ -4,7 +4,7 @@ set -e
 
 APP_NAME="fsl"
 APP_VERSION="6.0.7.17"
-PKG_REL="1"
+PKG_REL="2"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.
@@ -28,8 +28,8 @@ if [ "$OUTPUT" = "type=registry" ]; then
         --cache-from=type=registry,ref=${TAG}:latest"
     #todo: does not work with mode=max
     CACHE_TO="\
-        --cache-to=type=registry,ref=${TAG}:${VERSION},mode=min,image-manifest=true,oci-mediatypes=true \
-        --cache-to=type=registry,ref=${TAG}:latest,mode=min,image-manifest=true,oci-mediatypes=true"
+        --cache-to=type=registry,ref=${TAG}:${VERSION},mode=min,image-manifest=true \
+        --cache-to=type=registry,ref=${TAG}:latest,mode=min,image-manifest=true"
 else
     mkdir -p /tmp/.buildx-cache  # Ensure cache directory exists
     CACHE_FROM="--cache-from=type=local,src=/tmp/.buildx-cache"
