@@ -68,5 +68,6 @@ RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=false \
 ENV APP_NAME=${APP_NAME}
 ENV CHORUS_ASSISTANT_URL=${CHORUS_ASSISTANT_URL}
 COPY ./start.sh /docker-entrypoint.d
+COPY ./docs /home/chorus/docs
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
