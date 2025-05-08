@@ -74,4 +74,4 @@ case "$CARD" in
     ;;
 esac
 
-exec runuser -l "$CHORUS_USER" -c "$CMD"
+exec runuser -l "$CHORUS_USER" -w APP_NAME,KIOSK_URL,DISPLAY -c "$CMD"
