@@ -12,42 +12,23 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update -qy && \
     apt-get install --no-install-recommends -qy \
-        apt-transport-https \
-        ca-certificates \
-        curl \
-        gpg \
-        binutils \
-        libglib2.0-0 \
-        libnss3 \
-        libatk1.0-0 \
-        libatk-bridge2.0-0 \
-        libcups2 \
-        libdrm2 \
-        libgtk-3-0 \
-        libgbm1 \
-        libasound2t64 \
-        libx11-6 \
-        libxcomposite1 \
-        libxdamage1 \
-        libxext6 \
-        libxfixes3 \
-        libxrandr2 \
-        libxrender1 \
-        libxtst6 \
-        libatomic1 \
-        xvfb && \
-    # Download and install NW.js
-    curl -sSOL https://dl.nwjs.io/v${APP_VERSION}/nwjs-v${APP_VERSION}-linux-x64.tar.gz && \
-    tar -xzf nwjs-v${APP_VERSION}-linux-x64.tar.gz && \
-    mv nwjs-v${APP_VERSION}-linux-x64 /opt/nwjs && \
-    ln -s /opt/nwjs/nw /usr/local/bin/nw && \
-    rm nwjs-v${APP_VERSION}-linux-x64.tar.gz && \
-    apt-get remove -y --purge curl gpg && \
+        curl dbus-x11 wget unzip libnss3 libatk1.0-0t64 libcups2t64 \
+        libxkbcommon0 libxcomposite1 libxdamage1 \
+        libpango-1.0-0 libcairo2 libasound2t64 libatk-bridge2.0-0t64 \
+        wmctrl ca-certificates && \
+    # Check latest version at
+    # https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2FLAST_CHANGE?alt=media
+    # Download and install Chromium
+    curl -ssOL "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F${APP_VERSION}%2Fchrome-linux.zip?alt=media" && \
+    unzip -q Linux_x64%2F${APP_VERSION}%2Fchrome-linux.zip && \
+    mv chrome-linux /usr/local/bin && \
+    rm Linux_x64%2F${APP_VERSION}%2Fchrome-linux.zip && \
+    apt-get remove -y --purge curl unzip && \
     apt-get autoremove -y --purge
 
 ENV APP_SPECIAL="no"
-ENV APP_CMD="nw /apps/${APP_NAME}"
-ENV PROCESS_NAME="nw"
+ENV APP_CMD="/apps/${APP_NAME}/start-kiosk.sh"
+ENV PROCESS_NAME="chrome"
 ENV APP_DATA_DIR_ARRAY=""
 ENV DATA_DIR_ARRAY=""
 
@@ -59,13 +40,8 @@ RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=false \
     mv entrypoint/1-create-user.sh /docker-entrypoint.d && \
     popd 
     
-# Since docker entrypoint scripts typically follow a lexicographical (alphabetical) 
-# sorting order when executing scripts in the entrypoint directory, numbers at the
-# start of filenames are commonly used to control the execution order. So in our 
-# case we just copy the create-kiosk-config.sh script to the entrypoint directory 
-# without number and it will be executed after all other scripts.
 ENV APP_NAME=${APP_NAME}
 ENV KIOSK_URL="https://www.chorus-tre.ch"
-COPY create-kiosk-config.sh /docker-entrypoint.d
+COPY start-kiosk.sh /apps/${APP_NAME}
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
