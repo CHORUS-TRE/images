@@ -12,7 +12,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update -qy && \
     apt-get install --no-install-recommends -qy \
-        curl dbus-x11 wget unzip libnss3 libatk1.0-0t64 libcups2t64 \
+        curl unzip dbus-x11 libnss3 libatk1.0-0t64 libcups2t64 \
         libxkbcommon0 libxcomposite1 libxdamage1 \
         libpango-1.0-0 libcairo2 libasound2t64 libatk-bridge2.0-0t64 \
         wmctrl ca-certificates && \
