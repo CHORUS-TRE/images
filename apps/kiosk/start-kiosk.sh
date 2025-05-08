@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -xe
+set -e
 
 export GOOGLE_API_KEY="no"
 export GOOGLE_DEFAULT_CLIENT_ID="no"
