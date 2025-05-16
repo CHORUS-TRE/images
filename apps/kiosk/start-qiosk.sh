@@ -4,7 +4,7 @@ set -e
 
 # env vars below needed as long as we don't have a GPU
 
-# using this makes it prettier
+# using this makes it prettier but slower
 # export QT_QUICK_BACKEND=software
 
 # using this makes it slower
