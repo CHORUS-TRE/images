@@ -21,9 +21,9 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/cran-archive-keyring.gpg] https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/" > /etc/apt/sources.list.d/cran.list && \
     apt-get update -qy && \
     apt-get install --no-install-recommends -y r-base r-cran-rstan r-cran-tidyverse && \
-    curl -sSO https://download1.rstudio.org/electron/jammy/amd64/rstudio-${APP_VERSION}-375-amd64.deb && \
-    dpkg -i rstudio-${APP_VERSION}-375-amd64.deb && \
-    rm -rf rstudio-${APP_VERSION}-375-amd64.deb && \
+    curl -sSO https://download1.rstudio.org/electron/jammy/amd64/rstudio-${APP_VERSION}-496-amd64.deb && \
+    dpkg -i rstudio-${APP_VERSION}-496-amd64.deb && \
+    rm -rf rstudio-${APP_VERSION}-496-amd64.deb && \
     R -e "install.packages('devtools', repos='http://cloud.r-project.org')" && \
     R -e "devtools::install_github('Mikata-Project/ggthemr')" && \
     apt-get remove -y --purge curl gpg && \

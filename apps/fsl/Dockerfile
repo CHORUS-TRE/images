@@ -12,18 +12,17 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update -qy && \
     apt-get install --no-install-recommends -qy \
-    ca-certificates curl dc file libgomp1 libquadmath0 locales python3 && \
+    ca-certificates curl dc file libgomp1 libquadmath0 locales python3 tar bzip2 && \
     locale-gen en_US.UTF-8 en_GB.UTF-8 && \
     curl -sSL https://fsl.fmrib.ox.ac.uk/fsldownloads/fslconda/releases/fslinstaller.py -o fslinstaller.py && \
     sed -i -E "s/(printmsg\(([^,]+, )?end='(\\\\r)?')/# SILENCE \\1/g" ./fslinstaller.py && \
     python3 ./fslinstaller.py \
-        --conda \
         -d /usr/local/fsl \
         -V ${APP_VERSION} \
         --skip_registration && \
     rm -rf /usr/local/fsl/src && \
     rm fslinstaller.py && \
-    apt-get remove -y --purge curl && \
+    apt-get remove -y --purge curl tar bzip2 && \
     apt-get autoremove -y --purge
 
 ENV APP_NAME=${APP_NAME}
