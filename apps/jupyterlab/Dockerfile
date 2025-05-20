@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 # Electron is not yet ready for 24.04
 # https://github.com/cypress-io/cypress/issues/29521
-FROM ubuntu:24.04
+FROM harbor.build.chorus-tre.ch/docker_proxy/library/ubuntu:24.04
 SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 
 ARG APP_NAME

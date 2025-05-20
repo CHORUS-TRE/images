@@ -7,7 +7,7 @@ This guide provides a step-by-step process for building a Docker image to run yo
 Start by selecting the base image for your Docker container. For this guide, we’re using Ubuntu 24.04. You can choose a different base image if required by your application.
 ```dockerfile
 # syntax=docker/dockerfile:1
-FROM ubuntu:24.04
+FROM harbor.build.chorus-tre.ch/docker_proxy/library/ubuntu:24.04
 SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 ```
 
