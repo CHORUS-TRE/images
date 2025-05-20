@@ -22,7 +22,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         --skip_registration && \
     rm -rf /usr/local/fsl/src && \
     rm fslinstaller.py && \
-    apt-get remove -y --purge curl tar bzip2 && \
+    apt-get remove -y --purge curl bzip2 && \
     apt-get autoremove -y --purge
 
 ENV APP_NAME=${APP_NAME}
