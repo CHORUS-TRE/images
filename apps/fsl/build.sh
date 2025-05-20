@@ -4,7 +4,7 @@ set -e
 
 APP_NAME="fsl"
 APP_VERSION="6.0.7.17"
-PKG_REL="2"
+PKG_REL="3"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.
