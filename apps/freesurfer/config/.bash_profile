@@ -2,10 +2,11 @@ APP_VERSION=$(ls /usr/local/freesurfer/)
 
 export FREESURFER_HOME=/usr/local/freesurfer/${APP_VERSION}
 export FS_LICENSE=$HOME/license.txt
+export SUBJECTS_DIR=/apps/freesurfer/subjects
 
 # Create a license file
-if [ -s "$HOME/config/.env" ]; then
-    . "$HOME/config/.env"
+if [ -s "/apps/freesurfer/config/.env" ]; then
+    . "/apps/freesurfer/config/.env"
 fi
 
 echo -e "$FREESURFER_LICENSE" > "$HOME/license.txt"

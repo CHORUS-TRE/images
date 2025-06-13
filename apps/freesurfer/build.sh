@@ -3,8 +3,8 @@
 set -e
 
 APP_NAME="freesurfer"
-APP_VERSION=7.3.2
-PKG_REL="4"
+APP_VERSION=8.0.0
+PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.
