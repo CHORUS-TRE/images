@@ -18,7 +18,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     echo -e "Types: deb\nURIs: https://www.collaboraoffice.com/downloads/Collabora-Office-24-Snapshot/Linux/apt\nSuites: ./\nSigned-By: /usr/share/keyrings/collaboraonline-snapshot-keyring.gpg" \
         > /etc/apt/sources.list.d/collaboraoffice.sources && \
     apt-get update && \
-    apt-get install --no-install-recommends -qy collaboraoffice-desktop
+    apt-get install --no-install-recommends -qy collaboraoffice-desktop && \
     apt-get remove -y --purge curl && \
     apt-get autoremove -y --purge
 
