@@ -23,7 +23,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get autoremove -y --purge
 
 ENV APP_SPECIAL="no"
-ENV APP_CMD="onlyoffice-desktopeditors --system-title-bar"
+ENV APP_CMD="onlyoffice-desktopeditors --system-title-bar --disable-gpu"
 ENV PROCESS_NAME="/opt/onlyoffice/desktopeditors/DesktopEditors"
 ENV APP_DATA_DIR_ARRAY=""
 ENV DATA_DIR_ARRAY=""
