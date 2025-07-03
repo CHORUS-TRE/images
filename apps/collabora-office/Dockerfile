@@ -11,12 +11,14 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update -qy && \
-    apt-get install --no-install-recommends -qy ca-certificates curl gnupg \
+    apt-get install --no-install-recommends -qy ca-certificates curl \
+      gnupg libxinerama1 libnss3 libcairo2 libcups2t64 default-jre \
+      libgdk-pixbuf2.0-0 libgdk-pixbuf2.0-bin librsvg2-common && \
     mkdir -p /usr/share/keyrings && \
     curl -fsSL https://collaboraoffice.com/downloads/gpg/collaboraonline-snapshot-keyring.gpg \
-        -o /usr/share/keyrings/collaboraonline-snapshot-keyring.gpg && \
+      -o /usr/share/keyrings/collaboraonline-snapshot-keyring.gpg && \
     echo -e "Types: deb\nURIs: https://www.collaboraoffice.com/downloads/Collabora-Office-24-Snapshot/Linux/apt\nSuites: ./\nSigned-By: /usr/share/keyrings/collaboraonline-snapshot-keyring.gpg" \
-        > /etc/apt/sources.list.d/collaboraoffice.sources && \
+      > /etc/apt/sources.list.d/collaboraoffice.sources && \
     apt-get update && \
     apt-get install --no-install-recommends -qy collaboraoffice-desktop && \
     apt-get remove -y --purge curl && \
