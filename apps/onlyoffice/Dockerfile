@@ -11,7 +11,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update -qy && \
-    apt-get install --no-install-recommends -qy ca-certificates curl \
+    apt-get install -qy ca-certificates curl \
     x11-common libasound2t64 desktop-file-utils gstreamer1.0-libav \
     gstreamer1.0-plugins-ugly libxss1 libatk1.0-0 libgtk-3-0 libcairo2 \
     libxkbcommon-x11-0 fonts-dejavu fonts-liberation fonts-crosextra-carlito \
