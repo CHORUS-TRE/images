@@ -7,12 +7,10 @@ if grep -E "^$CHORUS_USER" /etc/passwd >/dev/null; then
   exit 0
 else
   if [ -d "/home/$CHORUS_USER" ]; then
-    echo "home directory already exists, updating permissions"
-    chown 1001:1001 /home/$CHORUS_USER
     if useradd --no-create-home --shell /bin/bash "$CHORUS_USER" --uid 1001; then
-      echo "copying skeleton files..."
       cp -r /etc/skel/. "/home/$CHORUS_USER/"
-      echo "done."
+      find "/home/$CHORUS_USER" -not -path "/home/$CHORUS_USER/workspace-data/*" -exec chown $CHORUS_USER:$CHORUS_USER {} \;
+      echo "done and updated permissions."
     else
       echo "failed."
       exit 1
