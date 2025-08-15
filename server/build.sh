@@ -3,8 +3,8 @@
 set -e
 
 APP_NAME="xpra-server"
-APP_VERSION="6.3"
-PKG_REL="2"
+APP_VERSION="6.3.2"
+PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.
@@ -14,7 +14,7 @@ VERSION="${APP_VERSION}-${PKG_REL}"
 VIRTUALGL_VERSION=3.1.3
 # See: https://xpra.org/dists/noble/main/binary-amd64/
 XPRA_VERSION="${APP_VERSION}-r0"
-XPRA_HTML5_VERSION="17-r2"
+XPRA_HTML5_VERSION="16.2-r0"
 
 REGISTRY="${REGISTRY:=harbor.build.chorus-tre.local}"
 REPOSITORY="${REPOSITORY:=apps}"
