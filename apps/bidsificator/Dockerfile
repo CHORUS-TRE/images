@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM harbor.build.chorus-tre.ch/docker_proxy/library/ubuntu:22.04
+FROM harbor.build.chorus-tre.ch/docker_proxy/library/ubuntu:24.04
 SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 
 ARG APP_NAME
@@ -17,9 +17,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     libxcb-icccm4 libxcb-randr0 libxcb-render-util0 \
     libxcb-shape0 libxcursor1 libxkbcommon-x11-0 \
     libxcb-keysyms1 libglib2.0-0 libdbus-1-3 fontconfig \
-    libfontconfig1 libxcb-image0 libxcb-util1 && \
-    # install using pip and git \
-    pip install --no-cache git+https://github.com/HIP-infrastructure/Bidsificator/@v${APP_VERSION}#egg=Bidsificator && \
+    libfontconfig1 libxcb-image0 libxcb-util1 libxcb-cursor0 \
+    libxcb-xinerama0 && \
+    # install using pip and git - use --break-system-packages for Python 3.12 compatibility \
+    pip install --no-cache --break-system-packages git+https://github.com/HIP-infrastructure/Bidsificator/@v${APP_VERSION}#egg=Bidsificator && \
     apt-get remove -y --purge git && \
     apt-get autoremove -y --purge
 
