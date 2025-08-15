@@ -3,7 +3,7 @@
 set -e
 
 APP_NAME="rstudio"
-APP_VERSION=2025.05.0
+APP_VERSION=2025.05.1
 PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
