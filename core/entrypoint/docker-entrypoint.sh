@@ -9,13 +9,6 @@ if [ -z "$CHORUS_USER" ]; then
     export CHORUS_USER="chorus"
 fi
 
-#Check if /home/$CHORUS_USER/workspace-data exists and if not create it
-if [ ! -d "/home/$CHORUS_USER/workspace-data" ]; then
-    echo "Creating /home/$CHORUS_USER/workspace-data"
-    mkdir -p "/home/$CHORUS_USER/workspace-data"
-    chown -R "$CHORUS_USER":"$CHORUS_USER" "/home/$CHORUS_USER/workspace-data"
-fi
-
 if [ -z "$CARD" ]; then
     echo "CARD is not set. Defaulting to 'none'"
     CARD="none"
