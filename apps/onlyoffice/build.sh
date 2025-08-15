@@ -3,8 +3,8 @@
 set -e
 
 APP_NAME="onlyoffice"
-APP_VERSION="9.0.4"
-PKG_REL="1"
+APP_VERSION="8.3.3"
+PKG_REL="7"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.
