@@ -9,7 +9,7 @@ else
 
 if [ -d "/home/$CHORUS_USER" ]; then
   echo "home directory already exists, updating permissions"
-  chown "1001:1001" "/home/$CHORUS_USER"
+  chown 1001:1001 "/home/$CHORUS_USER"
 fi
 
 if useradd --create-home --shell /bin/bash "$CHORUS_USER" --uid 1001 ; then
