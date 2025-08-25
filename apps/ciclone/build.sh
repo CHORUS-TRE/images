@@ -3,7 +3,7 @@
 set -e
 
 APP_NAME="ciclone"
-APP_VERSION="2.0.0-alpha4"
+APP_VERSION="2.0.0-alpha6"
 PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
