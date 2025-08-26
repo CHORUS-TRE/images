@@ -7,7 +7,7 @@ APP_VERSION="0.0.1"
 CHORUS_ASSISTANT_URL="http://localhost:8080"
 # MODEL="qwen2.5:0.5b"
 
-PKG_REL="4"
+PKG_REL="5"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.
