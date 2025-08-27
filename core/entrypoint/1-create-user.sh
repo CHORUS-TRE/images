@@ -16,7 +16,7 @@ if [ -d "/home/$CHORUS_USER" ]; then
   if useradd --no-create-home --shell /bin/bash "$CHORUS_USER" --uid "$CHORUS_UID" --gid "$CHORUS_GID"; then
    cp -a /etc/skel/. "/home/$CHORUS_USER/"
     find "/home/$CHORUS_USER" -path "/home/$CHORUS_USER/workspace-data" -prune -o -exec chown "$CHORUS_USER:$CHORUS_GID" {} +
-    chown "$CHORUS_USER:$CHORUS_GID" "$HOME_DIR/workspace-data"
+    chown "$CHORUS_USER:$CHORUS_GID" "/home/$CHORUS_USER/workspace-data"
     echo "done and updated permissions."
   else
     echo "failed: could not add user (without homedir)."
