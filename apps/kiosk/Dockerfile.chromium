@@ -15,7 +15,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         curl unzip dbus-x11 libnss3 libatk1.0-0t64 libcups2t64 \
         libxkbcommon0 libxcomposite1 libxdamage1 \
         libpango-1.0-0 libcairo2 libasound2t64 libatk-bridge2.0-0t64 \
-        wmctrl ca-certificates && \
+        wmctrl ca-certificates libxfixes3 && \
     # Check latest version at
     # https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2FLAST_CHANGE?alt=media
     # Download and install Chromium
