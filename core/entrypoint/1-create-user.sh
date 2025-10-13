@@ -17,8 +17,8 @@ if [ -d "/home/$CHORUS_USER" ]; then
    cp -a /etc/skel/. "/home/$CHORUS_USER/"
     find "/home/$CHORUS_USER" -path "/home/$CHORUS_USER/workspace-scratch" -prune -o -exec chown "$CHORUS_USER:$CHORUS_GID" {} +
     find "/home/$CHORUS_USER" -path "/home/$CHORUS_USER/workspace-archive" -prune -o -exec chown "$CHORUS_USER:$CHORUS_GID" {} +
-    chown "$CHORUS_USER:$CHORUS_GID" "/home/$CHORUS_USER/workspace-scratch"
-    chown "$CHORUS_USER:$CHORUS_GID" "/home/$CHORUS_USER/workspace-archive"
+    chown -h "$CHORUS_USER:$CHORUS_GID" "/home/$CHORUS_USER/workspace-scratch"
+    chown -h "$CHORUS_USER:$CHORUS_GID" "/home/$CHORUS_USER/workspace-archive"
     echo "done and updated permissions."
   else
     echo "failed: could not add user (without homedir)."

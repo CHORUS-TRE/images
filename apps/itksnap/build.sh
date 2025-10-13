@@ -6,7 +6,7 @@ APP_NAME="itksnap"
 # See: https://sourceforge.net/projects/itk-snap/files/itk-snap/
 APP_VERSION="4.2.0"
 APP_VERSION_FULL="${APP_VERSION}-20240422"
-PKG_REL="7"
+PKG_REL="8"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.
