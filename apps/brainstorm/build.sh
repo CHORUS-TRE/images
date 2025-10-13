@@ -4,8 +4,8 @@ set -e
 
 APP_NAME="brainstorm"
 # See: curl -s -I -L "http://neuroimage.usc.edu/bst/getupdate.php?c=UbsM09&src=0&bin=1" | grep -i "content-disposition" | awk -F 'filename=' '{print $2}' | tr -d '\r\n"'
-APP_VERSION="250815"
-PKG_REL="2"
+APP_VERSION="251008"
+PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.

@@ -9,6 +9,21 @@ if [ -z "$CHORUS_USER" ]; then
     export CHORUS_USER="chorus"
 fi
 
+if [ -z "$CHORUS_UID" ]; then
+    echo "CHORUS_UID is not set. Defaulting to '1001'"
+    export CHORUS_UID="1001"
+fi
+
+if [ -z "$CHORUS_GROUP" ]; then
+    echo "CHORUS_GROUP is not set. Defaulting to 'chorus'"
+    export CHORUS_GROUP="chorus"
+fi
+
+if [ -z "$CHORUS_GID" ]; then
+    echo "CHORUS_GID is not set. Defaulting to '1001'"
+    export CHORUS_GID="1001"
+fi
+
 if [ -z "$CARD" ]; then
     echo "CARD is not set. Defaulting to 'none'"
     CARD="none"

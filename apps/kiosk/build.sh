@@ -3,8 +3,8 @@
 set -e
 
 APP_NAME="kiosk"
-APP_VERSION="20250815"
-PKG_REL="1"
+APP_VERSION="1506976"
+PKG_REL="3"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.

@@ -2,9 +2,9 @@
 
 set -e
 
-APP_NAME="didata"
-APP_VERSION="0.94.0"
-PKG_REL="4"
+APP_NAME="filemanager"
+APP_VERSION="20251008"
+PKG_REL="3"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.
@@ -54,7 +54,8 @@ docker buildx build \
     --label "APP_VERSION=${APP_VERSION}" \
     --build-arg "APP_NAME=${APP_NAME}" \
     --build-arg "APP_VERSION=${APP_VERSION}" \
+    --output=$OUTPUT \
+    --no-cache \
     ${CACHE_FROM} \
     ${CACHE_TO} \
-    --output=$OUTPUT \
     .

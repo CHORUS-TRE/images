@@ -6,7 +6,7 @@ APP_NAME="jupyterlab"
 # https://github.com/jupyterlab/jupyterlab-desktop/releases
 APP_VERSION="4.2.5"
 APP_VERSION_FULL="${APP_VERSION}-1"
-PKG_REL="4"
+PKG_REL="7"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.

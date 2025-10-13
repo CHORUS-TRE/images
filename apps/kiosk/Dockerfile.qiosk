@@ -12,22 +12,16 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update -qy && \
     apt-get install --no-install-recommends -qy \
-        curl unzip dbus-x11 libnss3 libatk1.0-0t64 libcups2t64 \
-        libxkbcommon0 libxcomposite1 libxdamage1 \
-        libpango-1.0-0 libcairo2 libasound2t64 libatk-bridge2.0-0t64 \
-        wmctrl ca-certificates libxfixes3 && \
-    # Check latest version at
-    # https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2FLAST_CHANGE?alt=media
-    # Download and install Chromium
-    curl -ssOL "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F${APP_VERSION}%2Fchrome-linux.zip?alt=media" && \
-    unzip -q Linux_x64%2F${APP_VERSION}%2Fchrome-linux.zip && \
-    mv chrome-linux /usr/local/bin && \
-    rm Linux_x64%2F${APP_VERSION}%2Fchrome-linux.zip && \
-    apt-get remove -y --purge curl unzip && \
+        curl ca-certificates && \
+    curl -fsSL https://repository.salamek.cz/deb/salamek.gpg | tee /usr/share/keyrings/salamek-archive-keyring.gpg > /dev/null && \
+    echo "deb     [signed-by=/usr/share/keyrings/salamek-archive-keyring.gpg] https://repository.salamek.cz/deb/pub all main" | tee /etc/apt/sources.list.d/salamek.cz.list && \
+    apt-get update -qy && \
+    apt-get install --no-install-recommends -qy qiosk && \
+    apt-get remove -y --purge curl && \
     apt-get autoremove -y --purge
 
 ENV APP_SPECIAL="no"
-ENV APP_CMD="/apps/${APP_NAME}/start-kiosk.sh"
+ENV APP_CMD="/apps/${APP_NAME}/start-qiosk.sh"
 ENV PROCESS_NAME="chrome"
 ENV APP_DATA_DIR_ARRAY=""
 ENV DATA_DIR_ARRAY=""
@@ -42,6 +36,6 @@ RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=false \
     
 ENV APP_NAME=${APP_NAME}
 ENV KIOSK_URL="https://www.chorus-tre.ch"
-COPY start-kiosk.sh /apps/${APP_NAME}
+COPY start-qiosk.sh /apps/${APP_NAME}
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
