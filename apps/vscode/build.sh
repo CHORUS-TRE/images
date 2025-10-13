@@ -3,7 +3,7 @@
 set -e
 
 APP_NAME="vscode"
-APP_VERSION=1.105
+APP_VERSION=1.105.0
 PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
