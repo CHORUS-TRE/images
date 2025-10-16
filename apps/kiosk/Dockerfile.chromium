@@ -15,7 +15,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         curl unzip dbus-x11 libnss3 libatk1.0-0t64 libcups2t64 \
         libxkbcommon0 libxcomposite1 libxdamage1 \
         libpango-1.0-0 libcairo2 libasound2t64 libatk-bridge2.0-0t64 \
-        wmctrl ca-certificates libxfixes3 \
+        wmctrl xdotool ca-certificates libxfixes3 \
         libgtk-3-0 xdg-desktop-portal xdg-desktop-portal-gtk \
         xdg-desktop-portal-gnome adwaita-icon-theme \
         gtk-update-icon-cache hicolor-icon-theme shared-mime-info \
