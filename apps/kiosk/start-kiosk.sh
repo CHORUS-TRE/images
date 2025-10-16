@@ -8,7 +8,7 @@ export GOOGLE_DEFAULT_CLIENT_SECRET="no"
 
 mkdir -p "$HOME/.chrome-data"
 
-/usr/local/bin/chrome-linux/chrome --noerrdialogs --disable-infobars --disable-session-crashed-bubble --app=${KIOSK_URL} --window-size=1200,700 --user-data-dir="$HOME/.chrome-data" &
+/usr/local/bin/chrome-linux/chrome --noerrdialogs --disable-infobars --disable-session-crashed-bubble --enable-features=NetworkService,NetworkServiceInProcess --app=${KIOSK_URL} --window-size=1200,700 --user-data-dir="$HOME/.chrome-data" &
 
 CHROMIUM_PID=$!
 
