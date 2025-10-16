@@ -36,12 +36,12 @@ CHROMIUM_PID=$!
 echo "Waiting for ${KIOSK_URL} Chromium window to appear..."
 WIN_ID=""
 while [ -z "$WIN_ID" ]; do
-    WIN_ID=$(wmctrl -lx | grep 'Chromium-browser' | awk '{print $1}' | head -n1)
+    WIN_ID=$(xdotool search --pid "$CHROMIUM_PID" --onlyvisible | head -n1 || true)
     sleep 1
 done
 
 echo "Updating window title..."
-while wmctrl -lx | grep -q "$WIN_ID"; do
+while xdotool getwindowpid "$WIN_ID" &>/dev/null; do
     wmctrl -i -r "$WIN_ID" -T "$APP_NAME" || echo "wmctrl failed"
     sleep 1
 done
