@@ -4,7 +4,7 @@ set -e
 
 APP_NAME="kiosk"
 APP_VERSION="1506976"
-PKG_REL="8"
+PKG_REL="9"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.
