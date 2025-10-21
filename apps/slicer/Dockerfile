@@ -21,7 +21,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     libxcb-icccm4 libxdamage1 libnss3 libqt5gui5 libxcomposite1 \
     libxrandr2 libxcursor1 libxi6 libasound2t64 libgssapi-krb5-2 libgomp1 && \
     curl -sSJOL "http://download.slicer.org/download?os=linux&stability=release&version=${APP_VERSION}" && \
-    tar xzf Slicer-*-linux-amd64.tar.gz --no-same-owner && \
+    tar xzf Slicer-*-linux-amd64.tar.gz && \
     mv Slicer-*-linux-amd64 Slicer && \
     rm Slicer-*-linux-amd64.tar.gz && \
     apt-get remove -y --purge curl && \
