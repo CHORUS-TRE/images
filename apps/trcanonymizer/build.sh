@@ -4,7 +4,7 @@ set -e
 
 APP_NAME="trcanonymizer"
 APP_VERSION="1.1.0"
-PKG_REL="15"
+PKG_REL="17"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.
