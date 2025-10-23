@@ -4,7 +4,7 @@ set -e
 
 APP_NAME="dcm2niix"
 APP_VERSION="1.0.20250506"
-PKG_REL="1"
+PKG_REL="2"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.
