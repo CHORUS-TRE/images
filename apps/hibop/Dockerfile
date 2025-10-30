@@ -37,3 +37,4 @@ RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=false \
     popd 
     
 ENTRYPOINT ["/docker-entrypoint.sh"]
+
