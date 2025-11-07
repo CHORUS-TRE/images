@@ -55,7 +55,6 @@ docker buildx build \
     --build-arg "APP_NAME=${APP_NAME}" \
     --build-arg "APP_VERSION=${APP_VERSION}" \
     --output=$OUTPUT \
-    --no-cache \
     ${CACHE_FROM} \
     ${CACHE_TO} \
     .

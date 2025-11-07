@@ -39,6 +39,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         unzip && \
     apt-get autoremove -y --purge
 
+ENV APP_NAME=${APP_NAME}
 ENV APP_SPECIAL="no"
 ENV APP_CMD="/apps/${APP_NAME}/install/brainstorm3/bin/R2023a/brainstorm3.command /usr/local/MATLAB/MATLAB_Runtime/R2023a"
 ENV PROCESS_NAME="brainstorm3.jar"
@@ -50,7 +51,11 @@ RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=false \
     pushd /tmp/core_scripts && \
     ./utilities/chorus-utils.sh && \
     mv entrypoint/docker-entrypoint.sh / && \
+    mv entrypoint/docker-entrypoint-main.sh / && \
     mv entrypoint/1-create-user.sh /docker-entrypoint.d && \
+    mv entrypoint/3-symlink-appdata.sh /docker-entrypoint.d && \
+    chmod +x /docker-entrypoint.sh /docker-entrypoint-main.sh && \
     popd
-    
-ENTRYPOINT ["/docker-entrypoint.sh"]
+
+# Main entrypoint for application (runs as non-root user set by Kubernetes)
+ENTRYPOINT ["/docker-entrypoint-main.sh"]

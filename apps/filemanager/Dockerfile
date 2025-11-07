@@ -34,12 +34,16 @@ RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=false \
     pushd /tmp/core_scripts && \
     ./utilities/chorus-utils.sh && \
     mv entrypoint/docker-entrypoint.sh / && \
+    mv entrypoint/docker-entrypoint-main.sh / && \
     mv entrypoint/1-create-user.sh /docker-entrypoint.d && \
     mv entrypoint/2-copy-config.sh /docker-entrypoint.d && \
+    mv entrypoint/3-symlink-appdata.sh /docker-entrypoint.d && \
+    chmod +x /docker-entrypoint.sh /docker-entrypoint-main.sh && \
     popd
 
 # Copy config files
 COPY ./config/settings.conf /apps/${APP_NAME}/config/
 COPY ./config/init-filemanager.sh /docker-entrypoint.d/
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
+# Main entrypoint for application (runs as non-root user set by Kubernetes)
+ENTRYPOINT ["/docker-entrypoint-main.sh"]

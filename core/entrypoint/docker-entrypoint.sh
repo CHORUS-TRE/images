@@ -3,6 +3,10 @@
 set -e
 trap 'echo "docker-entrypoint.sh : Error occurred on line $LINENO, exiting."; exit 1;' ERR
 
+# Security: Set umask for file creation
+#umask 027 # Files: 640 (rw-r-----) - Use for read-only collaboration
+umask 007  # Files: 660 (rw-rw----) - Use for full read/write collaboration
+
 # Ensure that variables are set
 if [ -z "$CHORUS_USER" ]; then
     echo "CHORUS_USER is not set. Defaulting to 'chorus'"

@@ -21,7 +21,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     libxcb-icccm4 libxdamage1 libnss3 libqt5gui5 libxcomposite1 \
     libxrandr2 libxcursor1 libxi6 libasound2t64 libgssapi-krb5-2 libgomp1 && \
     curl -sSJOL "http://download.slicer.org/download?os=linux&stability=release&version=${APP_VERSION}" && \
-    tar xzf Slicer-*-linux-amd64.tar.gz && \
+    tar xzf Slicer-*-linux-amd64.tar.gz --no-same-owner && \
     mv Slicer-*-linux-amd64 Slicer && \
     rm Slicer-*-linux-amd64.tar.gz && \
     apt-get remove -y --purge curl && \
@@ -31,7 +31,7 @@ ENV APP_NAME=${APP_NAME}
 ENV APP_SPECIAL="no"
 ENV APP_CMD="/apps/${APP_NAME}/Slicer/Slicer"
 ENV PROCESS_NAME="Slicer"
-ENV APP_DATA_DIR_ARRAY=""
+ENV APP_DATA_DIR_ARRAY="/apps/${APP_NAME}/Slicer/slicer.org"
 ENV DATA_DIR_ARRAY=""
 
 # Install vgl + whatever is necessary for chorus use
@@ -40,6 +40,7 @@ RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=true \
     ./utilities/chorus-utils.sh -a terminal && \
     cp entrypoint/docker-entrypoint.sh / && \
     cp entrypoint/1-create-user.sh /docker-entrypoint.d && \
+    cp entrypoint/3-symlink-appdata.sh /docker-entrypoint.d && \
     popd
 
 ENTRYPOINT ["/docker-entrypoint.sh"]

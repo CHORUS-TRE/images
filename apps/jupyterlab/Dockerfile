@@ -100,6 +100,7 @@ RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=true \
     pushd /tmp/core_scripts && \
     ./utilities/chorus-utils.sh && \
     cp entrypoint/docker-entrypoint.sh / && \
-    cp entrypoint/1-create-user.sh /docker-entrypoint.d
+    cp entrypoint/1-create-user.sh /docker-entrypoint.d && \
+    cp entrypoint/3-symlink-appdata.sh /docker-entrypoint.d
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
