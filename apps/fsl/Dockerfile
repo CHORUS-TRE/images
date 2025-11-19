@@ -36,12 +36,9 @@ ENV CONFIG_ARRAY=".bash_profile"
 COPY ./config/ /apps/${APP_NAME}/config/
 
 # Install vgl + whatever is necessary for chorus use
-RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=false \
-    pushd /tmp/core_scripts && \
-    ./utilities/chorus-utils.sh -a terminal && \
-    mv entrypoint/docker-entrypoint.sh / && \
-    mv entrypoint/1-create-user.sh /docker-entrypoint.d && \
-    mv entrypoint/2-copy-config.sh /docker-entrypoint.d && \
-    popd
+RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=true \
+    /tmp/core_scripts/shared/chorus-utils.sh -a terminal && \
+    cp /tmp/core_scripts/app/docker-entrypoint.sh / && \
+    cp /tmp/core_scripts/app/1-copy-config.sh /docker-entrypoint.d/
 
 ENTRYPOINT ["/docker-entrypoint.sh"]

@@ -47,15 +47,10 @@ ENV APP_DATA_DIR_ARRAY="brainstorm_db .brainstorm"
 ENV DATA_DIR_ARRAY=""
 
 # Install vgl + whatever is necessary for chorus use
-RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=false \
-    pushd /tmp/core_scripts && \
-    ./utilities/chorus-utils.sh && \
-    mv entrypoint/docker-entrypoint.sh / && \
-    mv entrypoint/docker-entrypoint-main.sh / && \
-    mv entrypoint/1-create-user.sh /docker-entrypoint.d && \
-    mv entrypoint/3-symlink-appdata.sh /docker-entrypoint.d && \
-    chmod +x /docker-entrypoint.sh /docker-entrypoint-main.sh && \
-    popd
+RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=true \
+    /tmp/core_scripts/shared/chorus-utils.sh && \
+    cp /tmp/core_scripts/app/docker-entrypoint.sh / && \
+    cp /tmp/core_scripts/app/2-symlink-appdata.sh /docker-entrypoint.d/
 
 # Main entrypoint for application (runs as non-root user set by Kubernetes)
-ENTRYPOINT ["/docker-entrypoint-main.sh"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
