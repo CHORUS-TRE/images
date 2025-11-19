@@ -1,7 +1,9 @@
 #!/bin/bash
+# Init container entrypoint - runs as root during pod initialization only
+# Creates users, sets up directories, and prepares the environment for the main container
 
 set -e
-trap 'echo "docker-entrypoint.sh : Error occurred on line $LINENO, exiting."; exit 1;' ERR
+trap 'echo "docker-entrypoint-init.sh : Error occurred on line $LINENO, exiting."; exit 1;' ERR
 
 # Security: Set umask for file creation
 #umask 027 # Files: 640 (rw-r-----) - Use for read-only collaboration

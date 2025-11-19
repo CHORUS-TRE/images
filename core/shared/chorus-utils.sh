@@ -15,7 +15,8 @@ script_dir=$(dirname "$0")
 echo "===> Creating directory /docker-entrypoint.d"
 mkdir /docker-entrypoint.d
 
-# Verify libnss_wrapper is installed and locate the library
+# libnss_wrapper is installed from the app's Ubuntu version
+# This ensures binary compatibility with the app's libc version
 echo "===> Verifying libnss_wrapper installation"
 if [ -f "/usr/lib/x86_64-linux-gnu/libnss_wrapper.so" ]; then
     echo "     libnss_wrapper.so found at /usr/lib/x86_64-linux-gnu/libnss_wrapper.so"

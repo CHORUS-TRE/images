@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-trap 'echo "3-symlink-appdata.sh : Error occurred on line $LINENO, exiting."; exit 1;' ERR
+trap 'echo "4-symlink-appdata.sh : Error occurred on line $LINENO, exiting."; exit 1;' ERR
 
 # Exit if APP_DATA_DIR_ARRAY is not set or empty
 if [ -z "$APP_DATA_DIR_ARRAY" ]; then
@@ -11,78 +11,12 @@ fi
 
 # Ensure required variables are set
 : "${CHORUS_USER:?CHORUS_USER is not set}"
+: "${CHORUS_UID:?CHORUS_UID is not set}"
 : "${CHORUS_GID:?CHORUS_GID is not set}"
 : "${APP_NAME:?APP_NAME is not set}"
 
 # Convert APP_DATA_DIR_ARRAY to array (space-separated)
 IFS=' ' read -ra DIR_ARRAY <<< "$APP_DATA_DIR_ARRAY"
-
-# ============================================================================
-# Create workspace-* symlinks in home directory pointing to data directories
-# Users access data directly: ~/workspace-local/ shows data files immediately
-# ============================================================================
-
-echo "Creating workspace storage symlinks in home directory..."
-
-# Check each storage type and create symlink to its data directory
-if [ -d "/mnt/workspace-local/data" ]; then
-  HOME_LINK="/home/$CHORUS_USER/workspace-local"
-  DATA_PATH="/mnt/workspace-local/data"
-
-  # Remove old mount point if it exists
-  if [ -e "$HOME_LINK" ] && [ ! -L "$HOME_LINK" ]; then
-    echo "  WARNING: $HOME_LINK exists but is not a symlink, removing..."
-    rm -rf "$HOME_LINK"
-  fi
-
-  # Create symlink to data directory
-  if [ ! -L "$HOME_LINK" ] || [ "$(readlink "$HOME_LINK")" != "$DATA_PATH" ]; then
-    ln -sf "$DATA_PATH" "$HOME_LINK"
-    chown -h "$CHORUS_USER:$CHORUS_GID" "$HOME_LINK"
-    echo "  Created: workspace-local -> /mnt/workspace-local/data"
-  else
-    echo "  Symlink already exists: workspace-local"
-  fi
-fi
-
-if [ -d "/mnt/workspace-archive/data" ]; then
-  HOME_LINK="/home/$CHORUS_USER/workspace-archive"
-  DATA_PATH="/mnt/workspace-archive/data"
-
-  if [ -e "$HOME_LINK" ] && [ ! -L "$HOME_LINK" ]; then
-    echo "  WARNING: $HOME_LINK exists but is not a symlink, removing..."
-    rm -rf "$HOME_LINK"
-  fi
-
-  if [ ! -L "$HOME_LINK" ] || [ "$(readlink "$HOME_LINK")" != "$DATA_PATH" ]; then
-    ln -sf "$DATA_PATH" "$HOME_LINK"
-    chown -h "$CHORUS_USER:$CHORUS_GID" "$HOME_LINK"
-    echo "  Created: workspace-archive -> /mnt/workspace-archive/data"
-  else
-    echo "  Symlink already exists: workspace-archive"
-  fi
-fi
-
-if [ -d "/mnt/workspace-scratch" ]; then
-  HOME_LINK="/home/$CHORUS_USER/workspace-scratch"
-  SCRATCH_PATH="/mnt/workspace-scratch"
-
-  if [ -e "$HOME_LINK" ] && [ ! -L "$HOME_LINK" ]; then
-    echo "  WARNING: $HOME_LINK exists but is not a symlink, removing..."
-    rm -rf "$HOME_LINK"
-  fi
-
-  # NFS doesn't have data/ subdirectory - point to root
-  if [ ! -L "$HOME_LINK" ] || [ "$(readlink "$HOME_LINK")" != "$SCRATCH_PATH" ]; then
-    ln -sf "$SCRATCH_PATH" "$HOME_LINK"
-    chown -h "$CHORUS_USER:$CHORUS_GID" "$HOME_LINK"
-    echo "  Created: workspace-scratch -> /mnt/workspace-scratch"
-  else
-    echo "  Symlink already exists: workspace-scratch"
-  fi
-fi
-
-echo ""
 
 # ============================================================================
 # Detect available storage for app config persistence (priority: local > archive)
@@ -145,18 +79,11 @@ for DIR in "${DIR_ARRAY[@]}"; do
     echo "    Set permissions: 700 (owner-only access)"
   fi
 
-  # Handle existing local directory
-  restore=1
+  # Remove existing local directory if it exists and is not a symlink
   if [ -d "$LOCAL_PATH" ] && [ ! -L "$LOCAL_PATH" ]; then
-    echo "  Local directory already exists and is not a symlink, backing up..."
-    mv "$LOCAL_PATH" /tmp/
-    retVal=$?
-    if [ $retVal -ne 0 ]; then
-      echo "  ERROR: Failed to backup $LOCAL_PATH"
-      exit $retVal
-    fi
-    restore=0
-    echo "  Backup successful"
+    echo "  Local directory exists and is not a symlink, removing..."
+    rm -rf "$LOCAL_PATH"
+    echo "  Removed successfully"
   fi
 
   # Create parent directory if needed (for nested paths like .config/Code)
@@ -182,14 +109,6 @@ for DIR in "${DIR_ARRAY[@]}"; do
 
   # Fix ownership of the symlink itself
   chown -h "$CHORUS_USER:$CHORUS_GID" "$LOCAL_PATH"
-
-  # Restore backed up content if needed
-  if [ $restore -eq 0 ]; then
-    echo "  Restoring backed up content from /tmp/$DIR_NAME to $REMOTE_PATH"
-    (shopt -s dotglob; mv /tmp/"$DIR_NAME"/* "$REMOTE_PATH"/ 2>/dev/null || true)
-    rm -rf /tmp/"$DIR_NAME"
-    echo "  Restore complete"
-  fi
 
   # Ensure proper ownership on remote directory
   chown -R "$CHORUS_USER:$CHORUS_GID" "$REMOTE_PATH"

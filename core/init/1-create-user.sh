@@ -42,7 +42,7 @@ echo -n "Exporting user/group information for main container... "
 # Create secure directory for auth files on shared /home volume
 AUTH_DIR="/home/.chorus-auth"
 mkdir -p "$AUTH_DIR"
-chmod 700 "$AUTH_DIR"
+chmod 500 "$AUTH_DIR"
 chown "$CHORUS_UID:$CHORUS_GID" "$AUTH_DIR"
 
 # Create passwd file with base system entries + dynamic user
@@ -72,9 +72,9 @@ nogroup:x:65534:
 $CHORUS_GROUP:x:$CHORUS_GID:$CHORUS_USER
 EOF
 
-# Set secure permissions (readable only by the user who will use them)
-chmod 600 "$PASSWD_FILE"
-chmod 600 "$GROUP_FILE"
+# Set secure permissions (read-only for the user, preventing any modification)
+chmod 400 "$PASSWD_FILE"
+chmod 400 "$GROUP_FILE"
 chown "$CHORUS_UID:$CHORUS_GID" "$PASSWD_FILE"
 chown "$CHORUS_UID:$CHORUS_GID" "$GROUP_FILE"
 

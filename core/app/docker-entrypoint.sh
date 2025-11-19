@@ -1,7 +1,10 @@
 #!/bin/bash
+# Main container entrypoint - runs as non-root user with zero capabilities
+# User creation and setup completed by init container
+# Relies on libnss_wrapper for user context
 
 set -e
-trap 'echo "docker-entrypoint-main.sh : Error occurred on line $LINENO, exiting."; exit 1;' ERR
+trap 'echo "docker-entrypoint.sh : Error occurred on line $LINENO, exiting."; exit 1;' ERR
 
 # This entrypoint runs as non-root user (setup completed by init container)
 # No user creation or privileged operations needed
@@ -21,14 +24,19 @@ umask 007  # Files: 660 (rw-rw----) - Use for full read/write collaboration
 
 echo "Configuring libnss_wrapper for user context..."
 
-# Locate libnss_wrapper library
+# Locate libnss_wrapper library - must be installed in app image for libc compatibility
 NSS_WRAPPER_LIB=""
 if [ -f "/usr/lib/x86_64-linux-gnu/libnss_wrapper.so" ]; then
     NSS_WRAPPER_LIB="/usr/lib/x86_64-linux-gnu/libnss_wrapper.so"
+    echo "  Using libnss_wrapper from app image"
 elif [ -f "/usr/lib/libnss_wrapper.so" ]; then
     NSS_WRAPPER_LIB="/usr/lib/libnss_wrapper.so"
+    echo "  Using libnss_wrapper from app image"
 else
     echo "ERROR: libnss_wrapper.so not found!"
+    echo "  Please install libnss-wrapper package in your app Dockerfile"
+    echo "  Example: RUN apt-get install -y libnss-wrapper"
+    echo "  Or use chorus-utils.sh which installs it automatically"
     exit 1
 fi
 
@@ -77,6 +85,45 @@ echo "  Home: $HOME"
 # Create XDG_RUNTIME_DIR for applications that need it
 mkdir -p "$XDG_RUNTIME_DIR"
 chmod 700 "$XDG_RUNTIME_DIR" 2>/dev/null || true
+
+# ============================================================================
+# Execute scripts from /docker-entrypoint.d/
+# This allows apps to run custom setup scripts before the main application starts
+# ============================================================================
+
+# Source any envsh, run any sh scripts in /docker-entrypoint.d/
+if /usr/bin/find "/docker-entrypoint.d/" -mindepth 1 -maxdepth 1 -type f -print -quit 2>/dev/null | read v; then
+    echo "$0: /docker-entrypoint.d/ is not empty, will attempt to perform configuration"
+
+    echo "$0: Looking for shell scripts in /docker-entrypoint.d/"
+    find "/docker-entrypoint.d/" -follow -type f -print | sort -V | while read -r f; do
+        case "$f" in
+            *.envsh)
+                if [ -x "$f" ]; then
+                    echo "$0: Sourcing $f";
+                    . "$f"
+                else
+                    # warn on shell scripts without exec bit
+                    echo "$0: Ignoring $f, not executable";
+                fi
+                ;;
+            *.sh)
+                if [ -x "$f" ]; then
+                    echo "$0: Launching $f";
+                    "$f"
+                else
+                    # warn on shell scripts without exec bit
+                    echo "$0: Ignoring $f, not executable";
+                fi
+                ;;
+            *) echo "$0: Ignoring $f";;
+        esac
+    done
+
+    echo "$0: Configuration complete; ready for start up"
+else
+    echo "$0: No files found in /docker-entrypoint.d/, skipping configuration"
+fi
 
 # Default CARD to none if not set
 if [ -z "$CARD" ]; then

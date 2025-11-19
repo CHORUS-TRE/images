@@ -2,16 +2,11 @@
 
 set -e
 
-APP_NAME="filemanager"
-APP_VERSION="20251119"
-PKG_REL="1"
-
-# If the APP_VERSION is bumped, reset the PKG_REL
-# otherwhise, please bump the PKG_REL on any changes.
-VERSION="${APP_VERSION}-${PKG_REL}"
+IMAGE_NAME="init-container"
+VERSION="${VERSION:=latest}"
 
 REGISTRY="${REGISTRY:=harbor.build.chorus-tre.local}"
-REPOSITORY="${REPOSITORY:=apps}"
+REPOSITORY="${REPOSITORY:=chorus}"
 CACHE="${CACHE:=cache}"
 BUILDER_NAME="docker-container"
 TARGET_ARCH="${TARGET_ARCH:-linux/amd64}"
@@ -19,7 +14,7 @@ TARGET_ARCH="${TARGET_ARCH:-linux/amd64}"
 # Use `registry` to build and push
 OUTPUT="type=${OUTPUT:-docker}"
 
-TAG=${REGISTRY}/${CACHE}/${APP_NAME}-${CACHE}
+TAG=${REGISTRY}/${CACHE}/${IMAGE_NAME}-${CACHE}
 
 # if registry use registry cache otherwise local cache
 if [ "$OUTPUT" = "type=registry" ]; then
@@ -42,18 +37,17 @@ fi
 
 # Tip: use `BUILDKIT_PROGRESS=plain` to see more.
 
-cp -r ../../core ./core
+# Copy core scripts needed for init container
+cp -r ../core ./core
 trap "rm -rf ./core" EXIT
 
 docker buildx build \
     --pull \
     --builder ${BUILDER_NAME} \
     --platform=${TARGET_ARCH} \
-    -t ${REGISTRY}/${REPOSITORY}/${APP_NAME}:${VERSION} \
-    --label "APP_NAME=${APP_NAME}" \
-    --label "APP_VERSION=${APP_VERSION}" \
-    --build-arg "APP_NAME=${APP_NAME}" \
-    --build-arg "APP_VERSION=${APP_VERSION}" \
+    -t ${REGISTRY}/${REPOSITORY}/${IMAGE_NAME}:${VERSION} \
+    --label "IMAGE_NAME=${IMAGE_NAME}" \
+    --label "VERSION=${VERSION}" \
     --output=$OUTPUT \
     ${CACHE_FROM} \
     ${CACHE_TO} \
