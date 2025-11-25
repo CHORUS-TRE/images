@@ -21,6 +21,8 @@ done
 # Run benchmarks in workspace storages
 for ws in "$HOME"/workspace-*; do
   if [ -d "$ws" ]; then
+    echo 
+    echo
     echo "=== Running benchmark(s) in $ws storage ==="
     for script in "$ws"/benchmark*; do
       echo "--- Running: $script ---"
