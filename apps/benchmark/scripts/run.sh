@@ -13,20 +13,22 @@ done
 
 # Run benchmarks in node storage
 echo "=== Running benchmark(s) in node storage ==="
-for script in "$HOME"/benchmark*; do
+for script in benchmark*; do
   echo "--- Running: $script ---"
-  bash "$script"
+  bash "./$script"
 done
 
 # Run benchmarks in workspace storages
 for ws in "$HOME"/workspace-*; do
   if [ -d "$ws" ]; then
-    echo 
+    echo
     echo
     echo "=== Running benchmark(s) in $ws storage ==="
-    for script in "$ws"/benchmark*; do
+    pushd "$ws" > /dev/null
+    for script in benchmark*; do
       echo "--- Running: $script ---"
-      bash "$script"
+      bash "./$script"
     done
+    popd > /dev/null
   fi
 done
