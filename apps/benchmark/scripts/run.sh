@@ -14,7 +14,8 @@ done
 # Run benchmarks in node storage
 echo "=== Running benchmark(s) in node storage ==="
 for script in benchmark*; do
-  echo "--- Running: $script ---"
+  echo
+  echo "--- Running: $(realpath "$script") ---"
   bash "./$script"
 done
 
@@ -26,7 +27,8 @@ for ws in "$HOME"/workspace-*; do
     echo "=== Running benchmark(s) in $ws storage ==="
     pushd "$ws" > /dev/null
     for script in benchmark*; do
-      echo "--- Running: $script ---"
+      echo
+      echo "--- Running: $(realpath "$script") ---"
       bash "./$script"
     done
     popd > /dev/null
