@@ -17,7 +17,13 @@ if [ -d "/home/$CHORUS_USER" ]; then
    cp -a /etc/skel/. "/home/$CHORUS_USER/"
     # Set ownership on home directory contents, but skip workspace symlinks (they're created later)
     # The actual storage mounts are at /mnt/workspace-* and don't need chown
-    find "/home/$CHORUS_USER" -path "/home/$CHORUS_USER/workspace-scratch" -prune -o -path "/home/$CHORUS_USER/workspace-archive" -prune -o -path "/home/$CHORUS_USER/workspace-local" -prune -o -exec chown "$CHORUS_USER:$CHORUS_GID" {} +
+    # Build find command dynamically, only pruning workspace paths that exist
+    FIND_CMD="find \"/home/$CHORUS_USER\""
+    [ -e "/home/$CHORUS_USER/workspace-scratch" ] && FIND_CMD="$FIND_CMD -path \"/home/$CHORUS_USER/workspace-scratch\" -prune -o"
+    [ -e "/home/$CHORUS_USER/workspace-archive" ] && FIND_CMD="$FIND_CMD -path \"/home/$CHORUS_USER/workspace-archive\" -prune -o"
+    [ -e "/home/$CHORUS_USER/workspace-local" ] && FIND_CMD="$FIND_CMD -path \"/home/$CHORUS_USER/workspace-local\" -prune -o"
+    FIND_CMD="$FIND_CMD -exec chown \"$CHORUS_USER:$CHORUS_GID\" {} +"
+    eval "$FIND_CMD"
     echo "done and updated permissions."
   else
     echo "failed: could not add user (without homedir)."
