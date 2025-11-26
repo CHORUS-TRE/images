@@ -41,33 +41,33 @@ fi
 echo ""
 
 # ============================================================================
-# Create base config directories for app data persistence
-# Apps will create their own config/{UID}/ subdirectories
+# Create base app_data directories for app data persistence
+# Apps will create their own app_data/{UID}/ subdirectories
 # ============================================================================
 
-echo "Creating base config directories for app data persistence..."
+echo "Creating base app_data directories for app data persistence..."
 
 if [ -d "/mnt/workspace-local" ]; then
-  CONFIG_DIR="/mnt/workspace-local/config"
-  if [ ! -d "$CONFIG_DIR" ]; then
-    mkdir -p "$CONFIG_DIR"
-    chown root:$CHORUS_GID "$CONFIG_DIR"
-    chmod 775 "$CONFIG_DIR"  # drwxrwxr-x - group can write
-    echo "  Created: /mnt/workspace-local/config (775, root:chorus)"
+  APP_DATA_DIR="/mnt/workspace-local/app_data"
+  if [ ! -d "$APP_DATA_DIR" ]; then
+    mkdir -p "$APP_DATA_DIR"
+    chown root:$CHORUS_GID "$APP_DATA_DIR"
+    chmod 775 "$APP_DATA_DIR"  # drwxrwxr-x - group can write
+    echo "  Created: /mnt/workspace-local/app_data (775, root:chorus)"
   else
-    echo "  Already exists: /mnt/workspace-local/config"
+    echo "  Already exists: /mnt/workspace-local/app_data"
   fi
 fi
 
 if [ -d "/mnt/workspace-archive" ]; then
-  CONFIG_DIR="/mnt/workspace-archive/config"
-  if [ ! -d "$CONFIG_DIR" ]; then
-    mkdir -p "$CONFIG_DIR"
-    chown root:$CHORUS_GID "$CONFIG_DIR"
-    chmod 775 "$CONFIG_DIR"  # drwxrwxr-x - group can write
-    echo "  Created: /mnt/workspace-archive/config (775, root:chorus)"
+  APP_DATA_DIR="/mnt/workspace-archive/app_data"
+  if [ ! -d "$APP_DATA_DIR" ]; then
+    mkdir -p "$APP_DATA_DIR"
+    chown root:$CHORUS_GID "$APP_DATA_DIR"
+    chmod 775 "$APP_DATA_DIR"  # drwxrwxr-x - group can write
+    echo "  Created: /mnt/workspace-archive/app_data (775, root:chorus)"
   else
-    echo "  Already exists: /mnt/workspace-archive/config"
+    echo "  Already exists: /mnt/workspace-archive/app_data"
   fi
 fi
 

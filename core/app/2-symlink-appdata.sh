@@ -39,11 +39,11 @@ else
   exit 0
 fi
 
-# Create base config directory on persistent storage (per-user)
-# This mirrors the home directory structure at config/{uid}/
-TARGET_BASE="$STORAGE_BASE/config/$CHORUS_UID"
+# Create base app_data directory on persistent storage (per-user)
+# This mirrors the home directory structure at app_data/{uid}/
+TARGET_BASE="$STORAGE_BASE/app_data/$CHORUS_UID"
 if [ ! -d "$TARGET_BASE" ]; then
-  echo "Creating user config base directory on $STORAGE_TYPE storage: $TARGET_BASE"
+  echo "Creating user app_data base directory on $STORAGE_TYPE storage: $TARGET_BASE"
   mkdir -p -m 700 "$TARGET_BASE"  # SECURITY: Create with 700 (owner-only access)
   chown "$CHORUS_USER:$CHORUS_GID" "$TARGET_BASE"
   echo "  Set permissions: 700 (owner-only access)"
@@ -61,14 +61,14 @@ for DIR in "${DIR_ARRAY[@]}"; do
     # Use basename for remote storage to keep it organized
     DIR_NAME=$(basename "$DIR")
     REMOTE_PATH="$TARGET_BASE/$DIR_NAME"
-    echo "Processing config directory (absolute): $DIR -> storage:$REMOTE_PATH"
+    echo "Processing app_data directory (absolute): $DIR -> storage:$REMOTE_PATH"
   else
     # Relative path - relative to user's home directory
-    # This preserves the directory structure (e.g., .config/Code -> config/{uid}/.config/Code)
+    # This preserves the directory structure (e.g., .config/Code -> app_data/{uid}/.config/Code)
     LOCAL_PATH="/home/$CHORUS_USER/$DIR"
     REMOTE_PATH="$TARGET_BASE/$DIR"
     DIR_NAME=$(basename "$DIR")
-    echo "Processing config directory (relative): $DIR -> storage:config/$CHORUS_UID/$DIR"
+    echo "Processing app_data directory (relative): $DIR -> storage:app_data/$CHORUS_UID/$DIR"
   fi
 
   # Create remote directory if it doesn't exist
@@ -116,4 +116,4 @@ for DIR in "${DIR_ARRAY[@]}"; do
   echo "  Successfully configured: $DIR -> $STORAGE_TYPE storage"
 done
 
-echo "Config symlinking complete for user $CHORUS_UID. Using $STORAGE_TYPE storage at: $TARGET_BASE"
+echo "App data symlinking complete for user $CHORUS_UID. Using $STORAGE_TYPE storage at: $TARGET_BASE"

@@ -339,7 +339,7 @@ ENV APP_DATA_DIR_ARRAY=".config/myapp .local/share/myapp .myapp"
 
 **What happens:**
 1. Init container creates symlinks:
-   - `/home/alice/.config/myapp` → `/mnt/workspace-local/config/1234/.config/myapp`
+   - `/home/alice/.config/myapp` → `/mnt/workspace-local/app_data/1234/.config/myapp`
 2. App writes to `~/.config/myapp`
 3. Data persists to storage backend (local/S3)
 4. Restored on next pod start
