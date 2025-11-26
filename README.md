@@ -20,7 +20,7 @@ images/
 │   ├── init/          # Init container scripts (privileged setup)
 │   ├── app/           # Application container scripts (non-root)
 │   └── shared/        # Build-time utilities
-├── init-container/    # Trusted init container for user setup
+├── app-init/          # Trusted init container for user setup
 ├── apps/              # Application image definitions
 │   ├── filemanager/
 │   ├── fsl/
@@ -51,7 +51,7 @@ This guide covers:
 
 - **Building your first app:** See [Quick Start](./core/README.md#quick-start) in core/README.md
 - **Example applications:** Browse `apps/` directory for real-world examples
-- **Init container:** See `init-container/` for user setup container
+- **Init container:** See `app-init/` for user setup container
 
 ---
 
@@ -129,7 +129,7 @@ This creates symlinks from `~/.config/myapp` to persistent storage on `workspace
 When updating:
 1. Test with multiple applications
 2. Update documentation
-3. Update init-container if init/ scripts change
+3. Update app-init if init/ scripts change
 4. Consider backward compatibility
 
 ---
@@ -231,7 +231,7 @@ This will:
 - **Documentation:** [core/README.md](./core/README.md)
 - **Examples:** Browse `apps/` directory
 - **Issues:** https://github.com/chorus-tre/chorus/issues
-- **Init Container:** See `init-container/README.md`
+- **Init Container:** See `app-init/README.md`
 
 ---
 

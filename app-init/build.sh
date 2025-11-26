@@ -2,7 +2,7 @@
 
 set -e
 
-IMAGE_NAME="init-container"
+IMAGE_NAME="app-init"
 APP_VERSION="0.0.1"
 PKG_REL="1"
 

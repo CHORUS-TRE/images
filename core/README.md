@@ -8,7 +8,7 @@ This directory contains the core scripts and utilities for building Chorus-compa
 2. [Core Directory Structure](#core-directory-structure)
 3. [Building an Application Image](#building-an-application-image)
 4. [Development Guidelines](#development-guidelines)
-5. [Init Container](#init-container)
+5. [App Init Container](#app-init-container)
 6. [Example Applications](#example-applications)
 7. [Testing Your App](#testing-your-app)
 8. [Getting Help](#getting-help)
@@ -435,9 +435,9 @@ EXPOSE 8080
 
 ---
 
-## Init Container
+## App Init Container
 
-The init container (`../init-container/`) is a **trusted, minimal init container** used exclusively for workbench user setup.
+The app init container (`../app-init/`) is a **trusted, minimal init container** used exclusively for workbench user setup.
 
 ### Purpose
 
@@ -469,9 +469,9 @@ The init container includes these scripts from `core/init/`:
 ### Build
 
 ```bash
-cd images/init-container
-docker build -t ghcr.io/chorus-tre/init-container:v1.0.0 .
-docker push ghcr.io/chorus-tre/init-container:v1.0.0
+cd images/app-init
+docker build -t ghcr.io/chorus-tre/app-init:v1.0.0 .
+docker push ghcr.io/chorus-tre/app-init:v1.0.0
 ```
 
 ### Compatibility
@@ -592,7 +592,7 @@ docker run --rm myapp:test cat /etc/passwd | awk -F: '{print $3}' | sort -n
 
 For questions or issues:
 - Check existing app Dockerfiles in `../apps/` for examples
-- Review the init container setup in `../init-container/`
+- Review the init container setup in `../app-init/`
 - File bugs at https://github.com/chorus-tre/chorus/issues
 - Consult the Chorus-TRE documentation
 

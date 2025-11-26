@@ -32,9 +32,9 @@ The init container includes these scripts from `core/init/`:
 ## Build
 
 ```bash
-cd images/init-container
-docker build -t ghcr.io/chorus-tre/init-container:v1.0.0 .
-docker push ghcr.io/chorus-tre/init-container:v1.0.0
+cd images/app-init
+docker build -t ghcr.io/chorus-tre/app-init:v1.0.0 .
+docker push ghcr.io/chorus-tre/app-init:v1.0.0
 ```
 
 ## Dependencies
