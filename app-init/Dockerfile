@@ -18,9 +18,9 @@ RUN apt-get update && \
 RUN mkdir -p /docker-entrypoint.d
 
 # Copy entrypoint scripts from core (permissions preserved from source)
-COPY core/init/docker-entrypoint-init.sh /docker-entrypoint-init.sh
+COPY core/init/docker-entrypoint.sh /docker-entrypoint.sh
 COPY core/init/1-create-user.sh /docker-entrypoint.d/1-create-user.sh
 COPY core/init/2-symlink-workspace.sh /docker-entrypoint.d/2-symlink-workspace.sh
 
 # This entrypoint runs ONLY during init container phase
-ENTRYPOINT ["/docker-entrypoint-init.sh"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
