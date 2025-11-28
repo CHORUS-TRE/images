@@ -21,7 +21,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/cran-archive-keyring.gpg] https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/" > /etc/apt/sources.list.d/cran.list && \
     apt-get update -qy && \
     apt-get install --no-install-recommends -y r-base r-cran-rstan r-cran-tidyverse && \
-    curl -sSO https://download1.rstudio.org/electron/jammy/amd64/rstudio-${APP_VERSION}-513-amd64.deb && \
+    curl -sSO https://download1.rstudio.org/electron/jammy/amd64/rstudio-${APP_VERSION}-418-amd64.deb && \
     dpkg -i rstudio-${APP_VERSION}-513-amd64.deb && \
     rm -rf rstudio-${APP_VERSION}-513-amd64.deb && \
     R -e "install.packages('devtools', repos='http://cloud.r-project.org')" && \
@@ -36,11 +36,9 @@ ENV APP_DATA_DIR_ARRAY=".r R .config/rstudio .config/R .local/share/rstudio"
 ENV DATA_DIR_ARRAY=""
 
 # Install vgl + whatever is necessary for chorus use
-RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=false \
-    pushd /tmp/core_scripts && \
-    ./utilities/chorus-utils.sh && \
-    mv entrypoint/docker-entrypoint.sh / && \
-    mv entrypoint/1-create-user.sh /docker-entrypoint.d && \
-    popd 
+RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=true \
+    /tmp/core_scripts/shared/chorus-utils.sh && \
+    cp /tmp/core_scripts/app/docker-entrypoint.sh / && \
+    cp /tmp/core_scripts/app/2-symlink-appdata.sh /docker-entrypoint.d/
     
 ENTRYPOINT ["/docker-entrypoint.sh"]

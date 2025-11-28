@@ -41,10 +41,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=true \
-    pushd /tmp/core_scripts && \
-    ./utilities/chorus-utils.sh && \
-    cp entrypoint/docker-entrypoint.sh / && \
-    cp entrypoint/1-create-user.sh /docker-entrypoint.d
+    /tmp/core_scripts/shared/chorus-utils.sh && \
+    cp /tmp/core_scripts/app/docker-entrypoint.sh /
 
 ENV PATH="${PATH}:/apps/${APP_NAME}/bin"
 ENV APP_CMD="itksnap"

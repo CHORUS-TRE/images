@@ -3,7 +3,7 @@
 set -e
 
 APP_NAME="filemanager"
-APP_VERSION="20251014"
+APP_VERSION="20251128"
 PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
@@ -55,7 +55,6 @@ docker buildx build \
     --build-arg "APP_NAME=${APP_NAME}" \
     --build-arg "APP_VERSION=${APP_VERSION}" \
     --output=$OUTPUT \
-    --no-cache \
     ${CACHE_FROM} \
     ${CACHE_TO} \
     .
