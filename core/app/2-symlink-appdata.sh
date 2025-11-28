@@ -31,8 +31,6 @@ fi
 
 echo "Detected app_data storage at /mnt/app_data"
 
-# The operator already mounts with per-user subpath (workspaces/{namespace}/app_data/{user})
-# So /mnt/app_data IS the user's app_data directory - no need to create {uid} subdirectory
 TARGET_BASE="/mnt/app_data"
 
 # Ensure proper ownership on the mount point

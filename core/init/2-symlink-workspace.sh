@@ -22,13 +22,6 @@ if [ -d "/mnt/app_data" ]; then
   echo "  Set ownership: $CHORUS_UID:$CHORUS_GID, permissions: 700"
 fi
 
-# ============================================================================
-# Create workspace-* symlinks in home directory pointing to mount points
-# The operator mounts with SubPath workspaces/{namespace}/data so the mount
-# point IS the data directory - no need to create subdirectories
-# Users access data directly: ~/workspace-local/ shows data files immediately
-# ============================================================================
-
 echo "Creating workspace storage symlinks in home directory..."
 
 # Check each storage type and create symlink directly to mount point
@@ -42,7 +35,7 @@ if [ -d "/mnt/workspace-local" ]; then
     rm -rf "$HOME_LINK"
   fi
 
-  # Create symlink to mount point (which IS the data directory via SubPath)
+  # Create symlink to mount point (which is the data directory via SubPath)
   if [ ! -L "$HOME_LINK" ] || [ "$(readlink "$HOME_LINK")" != "$DATA_PATH" ]; then
     ln -sf "$DATA_PATH" "$HOME_LINK"
     chown -h "$CHORUS_USER:$CHORUS_GID" "$HOME_LINK"
