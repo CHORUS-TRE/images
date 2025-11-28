@@ -3,7 +3,7 @@
 set -e
 
 APP_NAME="filemanager"
-APP_VERSION="20251119"
+APP_VERSION="20251128"
 PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
