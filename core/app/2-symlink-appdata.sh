@@ -19,35 +19,25 @@ fi
 IFS=' ' read -ra DIR_ARRAY <<< "$APP_DATA_DIR_ARRAY"
 
 # ============================================================================
-# Detect available storage for app config persistence (priority: local > archive)
+# Detect available storage for app config persistence
+# The operator mounts /mnt/app_data with per-user subpath for providers that support it
 # ============================================================================
 
-STORAGE_BASE=""
-STORAGE_TYPE=""
-
-if [ -d "/mnt/workspace-local" ]; then
-  STORAGE_BASE="/mnt/workspace-local"
-  STORAGE_TYPE="local"
-  echo "Detected workspace-local storage for app data persistence"
-elif [ -d "/mnt/workspace-archive" ]; then
-  STORAGE_BASE="/mnt/workspace-archive"
-  STORAGE_TYPE="archive"
-  echo "Detected workspace-archive storage for app data persistence"
-else
-  echo "WARNING: No persistent storage found (workspace-local or workspace-archive)"
+if [ ! -d "/mnt/app_data" ]; then
+  echo "WARNING: No app_data storage found (/mnt/app_data not mounted)"
   echo "App data directories will not persist between runs: ${DIR_ARRAY[*]}"
   exit 0
 fi
 
-# Create base app_data directory on persistent storage (per-user)
-# This mirrors the home directory structure at app_data/{uid}/
-TARGET_BASE="$STORAGE_BASE/app_data/$CHORUS_UID"
-if [ ! -d "$TARGET_BASE" ]; then
-  echo "Creating user app_data base directory on $STORAGE_TYPE storage: $TARGET_BASE"
-  mkdir -p -m 700 "$TARGET_BASE"  # SECURITY: Create with 700 (owner-only access)
-  chown "$CHORUS_USER:$CHORUS_GID" "$TARGET_BASE"
-  echo "  Set permissions: 700 (owner-only access)"
-fi
+echo "Detected app_data storage at /mnt/app_data"
+
+# The operator already mounts with per-user subpath (workspaces/{namespace}/app_data/{user})
+# So /mnt/app_data IS the user's app_data directory - no need to create {uid} subdirectory
+TARGET_BASE="/mnt/app_data"
+
+# Ensure proper ownership on the mount point
+chown "$CHORUS_USER:$CHORUS_GID" "$TARGET_BASE" 2>/dev/null || true
+chmod 700 "$TARGET_BASE" 2>/dev/null || true
 
 # Process each directory in the array
 for DIR in "${DIR_ARRAY[@]}"; do
@@ -68,12 +58,12 @@ for DIR in "${DIR_ARRAY[@]}"; do
     LOCAL_PATH="/home/$CHORUS_USER/$DIR"
     REMOTE_PATH="$TARGET_BASE/$DIR"
     DIR_NAME=$(basename "$DIR")
-    echo "Processing app_data directory (relative): $DIR -> storage:app_data/$CHORUS_UID/$DIR"
+    echo "Processing app_data directory (relative): $DIR -> storage:$REMOTE_PATH"
   fi
 
   # Create remote directory if it doesn't exist
   if [ ! -d "$REMOTE_PATH" ]; then
-    echo "  Creating directory on $STORAGE_TYPE storage: $REMOTE_PATH"
+    echo "  Creating directory: $REMOTE_PATH"
     mkdir -p -m 700 "$REMOTE_PATH"  # SECURITY: Create with 700 (owner-only access)
     chown -R "$CHORUS_USER:$CHORUS_GID" "$REMOTE_PATH"
     echo "    Set permissions: 700 (owner-only access)"
@@ -113,7 +103,7 @@ for DIR in "${DIR_ARRAY[@]}"; do
   # Ensure proper ownership on remote directory
   chown -R "$CHORUS_USER:$CHORUS_GID" "$REMOTE_PATH"
 
-  echo "  Successfully configured: $DIR -> $STORAGE_TYPE storage"
+  echo "  Successfully configured: $DIR -> $REMOTE_PATH"
 done
 
-echo "App data symlinking complete for user $CHORUS_UID. Using $STORAGE_TYPE storage at: $TARGET_BASE"
+echo "App data symlinking complete for user $CHORUS_UID at: $TARGET_BASE"
