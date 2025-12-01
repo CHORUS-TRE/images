@@ -2,6 +2,7 @@
 
 set -e
 
+# app-init
 IMAGE_NAME="app-init"
 APP_VERSION="0.0.1"
 PKG_REL="1"
