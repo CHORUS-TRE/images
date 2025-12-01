@@ -12,7 +12,7 @@ PKG_REL="1"
 VERSION="${APP_VERSION}-${PKG_REL}"
 
 REGISTRY="${REGISTRY:=harbor.build.chorus-tre.local}"
-REPOSITORY="${REPOSITORY:=chorus}"
+REPOSITORY="${REPOSITORY:=apps}"
 CACHE="${CACHE:=cache}"
 BUILDER_NAME="docker-container"
 TARGET_ARCH="${TARGET_ARCH:-linux/amd64}"
