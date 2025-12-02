@@ -25,7 +25,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get autoremove -y --purge
 
 ENV APP_SPECIAL="no"
-ENV APP_CMD="/usr/share/code/code"
+ENV APP_CMD="/usr/share/code/code --no-sandbox"
 ENV PROCESS_NAME="/usr/share/code/code"
 ENV APP_DATA_DIR_ARRAY=".config/Code"
 ENV DATA_DIR_ARRAY=""
