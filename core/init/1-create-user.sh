@@ -135,4 +135,4 @@ chown "$CHORUS_UID:$CHORUS_GID" "$GROUP_FILE"
 
 echo "done."
 echo "  Created: $PASSWD_FILE"
-echo "  Created: $GROUP_FILE" 
+echo "  Created: $GROUP_FILE"
