@@ -90,7 +90,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 
 ENV APP_CMD_PREFIX="export PATH=${CONDA_DIR}/bin:${PATH}"
 ENV APP_SPECIAL="no"
-ENV APP_CMD="jlab"
+ENV APP_CMD="jlab --no-sandbox"
 ENV PROCESS_NAME="jlab"
 ENV APP_DATA_DIR_ARRAY=".jupyter"
 ENV DATA_DIR_ARRAY=""
