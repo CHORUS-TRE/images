@@ -4,7 +4,7 @@ set -e
 
 # app-init
 IMAGE_NAME="app-init"
-APP_VERSION="0.0.1"
+APP_VERSION="0.0.2"
 PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
