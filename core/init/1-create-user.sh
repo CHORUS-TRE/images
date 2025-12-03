@@ -39,6 +39,55 @@ else
 fi
 
 # ============================================================================
+# Create .bashrc for proper shell initialization
+# This ensures NSS wrapper variables are set for all interactive shells
+# (including kitty terminal and kubectl exec sessions)
+# ============================================================================
+
+echo -n "Creating .bashrc for user $CHORUS_USER... "
+cat > "/home/$CHORUS_USER/.bashrc" << 'EOF'
+# Chorus environment configuration for NSS wrapper
+
+# Ensure NSS wrapper is loaded for user identity resolution
+if [ -f /usr/lib/x86_64-linux-gnu/libnss_wrapper.so ]; then
+    export LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libnss_wrapper.so"
+elif [ -f /usr/lib/libnss_wrapper.so ]; then
+    export LD_PRELOAD="/usr/lib/libnss_wrapper.so"
+fi
+export NSS_WRAPPER_PASSWD="/home/.chorus-auth/passwd"
+export NSS_WRAPPER_GROUP="/home/.chorus-auth/group"
+
+# Source system bashrc if it exists
+if [ -f /etc/bash.bashrc ]; then
+    . /etc/bash.bashrc
+fi
+
+# Fix for bash username caching issue with NSS wrapper
+# Bash caches the username at startup before NSS wrapper is fully active,
+# so \u in PS1 shows "I have no name!". We use PROMPT_COMMAND to fix PS1
+# on the first prompt display, after all shell initialization is complete.
+_chorus_fix_prompt() {
+    if [[ -z "$_CHORUS_PROMPT_FIXED" ]]; then
+        export _CHORUS_PROMPT_FIXED=1
+        local user
+        user=$(whoami 2>/dev/null) || user="$USER"
+        PS1="${PS1//\\u/$user}"
+    fi
+}
+
+# Append to PROMPT_COMMAND - this will run when the first prompt is displayed
+if [[ -z "$PROMPT_COMMAND" ]]; then
+    PROMPT_COMMAND="_chorus_fix_prompt"
+elif [[ "$PROMPT_COMMAND" != *"_chorus_fix_prompt"* ]]; then
+    PROMPT_COMMAND="${PROMPT_COMMAND}; _chorus_fix_prompt"
+fi
+EOF
+
+chown "$CHORUS_UID:$CHORUS_GID" "/home/$CHORUS_USER/.bashrc"
+chmod 644 "/home/$CHORUS_USER/.bashrc"
+echo "done."
+
+# ============================================================================
 # Export user/group information for libnss_wrapper in main container
 # This allows the main container to have proper NSS entries without running as root
 # ============================================================================

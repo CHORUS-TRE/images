@@ -2,8 +2,9 @@
 
 set -e
 
+# app-init
 IMAGE_NAME="app-init"
-APP_VERSION="0.0.1"
+APP_VERSION="0.0.2"
 PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
@@ -11,7 +12,7 @@ PKG_REL="1"
 VERSION="${APP_VERSION}-${PKG_REL}"
 
 REGISTRY="${REGISTRY:=harbor.build.chorus-tre.local}"
-REPOSITORY="${REPOSITORY:=chorus}"
+REPOSITORY="${REPOSITORY:=apps}"
 CACHE="${CACHE:=cache}"
 BUILDER_NAME="docker-container"
 TARGET_ARCH="${TARGET_ARCH:-linux/amd64}"
