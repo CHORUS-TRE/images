@@ -85,6 +85,15 @@ if [[ -z "$PROMPT_COMMAND" ]]; then
 elif [[ "$PROMPT_COMMAND" != *"_chorus_fix_prompt"* ]]; then
     PROMPT_COMMAND="${PROMPT_COMMAND}; _chorus_fix_prompt"
 fi
+
+# Source .bash_profile if it exists (for apps like FSL that use .bash_profile)
+# This ensures app-specific environment is available in non-login interactive shells
+# (e.g., kitty terminal sessions)
+# Guard against infinite loop: .bashrc -> .bash_profile -> .profile -> .bashrc
+if [ -f "$HOME/.bash_profile" ] && [ -z "$_CHORUS_BASHRC_SOURCED" ]; then
+    export _CHORUS_BASHRC_SOURCED=1
+    . "$HOME/.bash_profile"
+fi
 EOF
 
 chown "$CHORUS_UID:$CHORUS_GID" "/home/$CHORUS_USER/.bashrc"
