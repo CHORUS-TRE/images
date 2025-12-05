@@ -28,7 +28,10 @@ echo "Configuring libnss_wrapper for user context..."
 NSS_WRAPPER_LIB=""
 if [ -f "/usr/lib/x86_64-linux-gnu/libnss_wrapper.so" ]; then
     NSS_WRAPPER_LIB="/usr/lib/x86_64-linux-gnu/libnss_wrapper.so"
-    echo "  Using libnss_wrapper from app image"
+    echo "  Using libnss_wrapper from app image (x86_64)"
+elif [ -f "/usr/lib/aarch64-linux-gnu/libnss_wrapper.so" ]; then
+    NSS_WRAPPER_LIB="/usr/lib/aarch64-linux-gnu/libnss_wrapper.so"
+    echo "  Using libnss_wrapper from app image (aarch64)"
 elif [ -f "/usr/lib/libnss_wrapper.so" ]; then
     NSS_WRAPPER_LIB="/usr/lib/libnss_wrapper.so"
     echo "  Using libnss_wrapper from app image"
@@ -154,8 +157,8 @@ cd "$HOME"
 if [ "$(id -u)" = "0" ]; then
     # Running as root (debug mode) - use runuser to switch to user
     # -l: login shell (sources ~/.bash_profile)
-    # -w: preserve environment variables needed for X11 and NSS wrapper
-    exec runuser -l "$CHORUS_USER" -w DISPLAY,LD_PRELOAD,NSS_WRAPPER_PASSWD,NSS_WRAPPER_GROUP -c "$CMD"
+    # -w: preserve environment variables needed for X11, NSS wrapper, and app-specific configs
+    exec runuser -l "$CHORUS_USER" -w DISPLAY,LD_PRELOAD,NSS_WRAPPER_PASSWD,NSS_WRAPPER_GROUP,KIOSK_URL,APP_NAME,CARD -c "$CMD"
 else
     # Running as non-root user - use login shell directly
     # --login sources ~/.bash_profile for app-specific environment setup

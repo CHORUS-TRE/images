@@ -20,6 +20,8 @@ mkdir /docker-entrypoint.d
 echo "===> Verifying libnss_wrapper installation"
 if [ -f "/usr/lib/x86_64-linux-gnu/libnss_wrapper.so" ]; then
     echo "     libnss_wrapper.so found at /usr/lib/x86_64-linux-gnu/libnss_wrapper.so"
+elif [ -f "/usr/lib/aarch64-linux-gnu/libnss_wrapper.so" ]; then
+    echo "     libnss_wrapper.so found at /usr/lib/aarch64-linux-gnu/libnss_wrapper.so"
 elif [ -f "/usr/lib/libnss_wrapper.so" ]; then
     echo "     libnss_wrapper.so found at /usr/lib/libnss_wrapper.so"
 else
@@ -36,6 +38,8 @@ cat > /etc/profile.d/chorus-nss.sh << 'PROFILE_EOF'
 if [ -z "$LD_PRELOAD" ] && [ -f /home/.chorus-auth/passwd ]; then
     if [ -f /usr/lib/x86_64-linux-gnu/libnss_wrapper.so ]; then
         export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libnss_wrapper.so
+    elif [ -f /usr/lib/aarch64-linux-gnu/libnss_wrapper.so ]; then
+        export LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libnss_wrapper.so
     elif [ -f /usr/lib/libnss_wrapper.so ]; then
         export LD_PRELOAD=/usr/lib/libnss_wrapper.so
     fi
@@ -63,6 +67,8 @@ CMD="${@:-bash --norc -c 'exec bash'}"
 if [ -z "$LD_PRELOAD" ] && [ -f /home/.chorus-auth/passwd ]; then
     if [ -f /usr/lib/x86_64-linux-gnu/libnss_wrapper.so ]; then
         export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libnss_wrapper.so
+    elif [ -f /usr/lib/aarch64-linux-gnu/libnss_wrapper.so ]; then
+        export LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libnss_wrapper.so
     elif [ -f /usr/lib/libnss_wrapper.so ]; then
         export LD_PRELOAD=/usr/lib/libnss_wrapper.so
     fi
