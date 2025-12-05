@@ -19,12 +19,8 @@ mkdir -p "$PROFILE_DIR"
 
 WARMUP_PID=$!
 sleep 2
-
-# Kill warmup process if it's still running
-if kill -0 $WARMUP_PID 2>/dev/null; then
-    kill $WARMUP_PID 2>/dev/null || true
-    wait $WARMUP_PID 2>/dev/null || true
-fi
+kill $WARMUP_PID
+wait $WARMUP_PID 2>/dev/null || true
 
 # Main Chromium app launch
 # Note : --test-type suppresses Chrome's warning about unsupported command-line flags like--no-sandbox.

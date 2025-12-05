@@ -46,4 +46,4 @@ ENV APP_NAME=${APP_NAME}
 ENV KIOSK_URL="https://www.chorus-tre.ch"
 COPY start-kiosk.sh /apps/${APP_NAME}
 
-ENTRYPOINT ["/docker-entrypoint.sh"] 
+ENTRYPOINT ["/docker-entrypoint.sh"]
