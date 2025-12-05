@@ -158,7 +158,7 @@ if [ "$(id -u)" = "0" ]; then
     # Running as root (debug mode) - use runuser to switch to user
     # -l: login shell (sources ~/.bash_profile)
     # -w: preserve environment variables needed for X11, NSS wrapper, and app-specific configs
-    exec runuser -l "$CHORUS_USER" -w DISPLAY,LD_PRELOAD,NSS_WRAPPER_PASSWD,NSS_WRAPPER_GROUP,KIOSK_URL,APP_NAME,CARD -c "$CMD"
+    exec runuser -l "$CHORUS_USER" -w DISPLAY,LD_PRELOAD,NSS_WRAPPER_PASSWD,NSS_WRAPPER_GROUP,KIOSK_URL,KIOSK_JWT_URL,KIOSK_JWT_TOKEN,APP_NAME,CARD -c "$CMD"
 else
     # Running as non-root user - use login shell directly
     # --login sources ~/.bash_profile for app-specific environment setup
