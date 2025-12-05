@@ -65,21 +65,34 @@ fi
 # Fix for bash username caching issue with NSS wrapper
 # Bash caches the username at startup before NSS wrapper is fully active,
 # so \u in PS1 shows "I have no name!". We use PROMPT_COMMAND to fix PS1
-# on the first prompt display, after all shell initialization is complete.
+# on every prompt display, in case profile scripts reset PS1.
 _chorus_fix_prompt() {
-    if [[ -z "$_CHORUS_PROMPT_FIXED" ]]; then
-        export _CHORUS_PROMPT_FIXED=1
+    # Check if PS1 contains \u (backslash-u) and fix it
+    # Match both literal \u and the expanded "I have no name!" text
+    if [[ "$PS1" == *'\u'* ]] || [[ "$PS1" == *'I have no name'* ]]; then
         local user
         user=$(whoami 2>/dev/null) || user="$USER"
+        # Replace \u with actual username
         PS1="${PS1//\\u/$user}"
+        # Also replace "I have no name!" if present
+        PS1="${PS1//I have no name!/$user}"
     fi
 }
 
-# Append to PROMPT_COMMAND - this will run when the first prompt is displayed
+# Append to PROMPT_COMMAND - this will run on every prompt display
 if [[ -z "$PROMPT_COMMAND" ]]; then
     PROMPT_COMMAND="_chorus_fix_prompt"
 elif [[ "$PROMPT_COMMAND" != *"_chorus_fix_prompt"* ]]; then
     PROMPT_COMMAND="${PROMPT_COMMAND}; _chorus_fix_prompt"
+fi
+
+# Source .bash_profile if it exists (for apps like FSL that use .bash_profile)
+# This ensures app-specific environment is available in non-login interactive shells
+# (e.g., kitty terminal sessions)
+# Guard against infinite loop: .bashrc -> .bash_profile -> .profile -> .bashrc
+if [ -f "$HOME/.bash_profile" ] && [ -z "$_CHORUS_BASHRC_SOURCED" ]; then
+    export _CHORUS_BASHRC_SOURCED=1
+    . "$HOME/.bash_profile"
 fi
 EOF
 

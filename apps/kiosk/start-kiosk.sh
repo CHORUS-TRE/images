@@ -18,6 +18,7 @@ if [ -n "$KIOSK_JWT_TOKEN" ] && [ -n "$KIOSK_JWT_URL" ] ; then
       --user-data-dir="$PROFILE_DIR" \
       --headless=new \
       --disable-gpu \
+      --no-sandbox \
       --virtual-time-budget=10000 \
       "${KIOSK_JWT_URL}#jwt=${KIOSK_JWT_TOKEN}" > /dev/null 2>&1 &
     
@@ -38,6 +39,7 @@ else
       --user-data-dir="$PROFILE_DIR" \
       --headless=new \
       --disable-gpu \
+      --no-sandbox \
       "${KIOSK_URL}" > /dev/null 2>&1 &
 
     WARMUP_PID=$!
@@ -47,7 +49,10 @@ else
 fi
 
 # Main Chromium app launch
+# Note : --test-type suppresses Chrome's warning about unsupported command-line flags like--no-sandbox.
 /usr/local/bin/chrome-linux/chrome \
+  --no-sandbox \
+  --test-type \
   --noerrdialogs \
   --disable-infobars \
   --disable-session-crashed-bubble \

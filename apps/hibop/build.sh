@@ -3,8 +3,8 @@
 set -e
 
 APP_NAME="hibop"
-APP_VERSION="5.0.0"
-PKG_REL="3"
+APP_VERSION="5.0.4"
+PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.

@@ -39,7 +39,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         unzip && \
     apt-get autoremove -y --purge
 
-ENV APP_NAME=${APP_NAME}
 ENV APP_SPECIAL="no"
 ENV APP_CMD="/apps/${APP_NAME}/install/brainstorm3/bin/R2023a/brainstorm3.command /usr/local/MATLAB/MATLAB_Runtime/R2023a"
 ENV PROCESS_NAME="brainstorm3.jar"

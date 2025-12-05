@@ -64,7 +64,6 @@ RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=false \
 # start of filenames are commonly used to control the execution order. So in our 
 # case we just copy the create-kiosk-config.sh script to the entrypoint directory 
 # without number and it will be executed after all other scripts.
-ENV APP_NAME=${APP_NAME}
 ENV KIOSK_URL="https://www.chorus-tre.ch"
 COPY create-kiosk-config.sh /docker-entrypoint.d
 
