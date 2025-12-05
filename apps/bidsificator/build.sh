@@ -3,8 +3,8 @@
 set -e
 
 APP_NAME="bidsificator"
-APP_VERSION="1.10.0"
-PKG_REL="7"
+APP_VERSION="1.11.0"
+PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.
