@@ -3,7 +3,7 @@
 set -e
 
 APP_NAME="sciterminal"
-APP_VERSION="251202"
+APP_VERSION="251205"
 PKG_REL="1"
 
 # If the APP_VERSION is bumped, reset the PKG_REL

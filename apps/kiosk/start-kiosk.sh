@@ -14,6 +14,7 @@ mkdir -p "$PROFILE_DIR"
   --user-data-dir="$PROFILE_DIR" \
   --headless=new \
   --disable-gpu \
+  --no-sandbox \
   "${KIOSK_URL}" > /dev/null 2>&1 &
 
 WARMUP_PID=$!
@@ -22,7 +23,10 @@ kill $WARMUP_PID
 wait $WARMUP_PID 2>/dev/null || true
 
 # Main Chromium app launch
+# Note : --test-type suppresses Chrome's warning about unsupported command-line flags like--no-sandbox.
 /usr/local/bin/chrome-linux/chrome \
+  --no-sandbox \
+  --test-type \
   --noerrdialogs \
   --disable-infobars \
   --disable-session-crashed-bubble \

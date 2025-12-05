@@ -22,7 +22,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get remove -y --purge && \
     apt-get autoremove -y --purge
 
-ENV APP_NAME=${APP_NAME}
 ENV APP_SPECIAL="no"
 ENV APP_CMD="pcmanfm-qt"
 ENV PROCESS_NAME="pcmanfm-qt"

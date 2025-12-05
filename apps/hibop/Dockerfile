@@ -21,7 +21,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get remove -y --purge curl unzip && \
     apt-get autoremove -y --purge
 
-ENV APP_NAME=${APP_NAME}
 ENV APP_SPECIAL="no"
 ENV APP_CMD="/apps/${APP_NAME}/HiBoP.${APP_VERSION}.linux64/HiBoP.x86_64"
 ENV PROCESS_NAME="/apps/${APP_NAME}/HiBoP.${APP_VERSION}.linux64/HiBoP.x86_64"

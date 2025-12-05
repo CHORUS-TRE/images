@@ -28,7 +28,10 @@ echo "Configuring libnss_wrapper for user context..."
 NSS_WRAPPER_LIB=""
 if [ -f "/usr/lib/x86_64-linux-gnu/libnss_wrapper.so" ]; then
     NSS_WRAPPER_LIB="/usr/lib/x86_64-linux-gnu/libnss_wrapper.so"
-    echo "  Using libnss_wrapper from app image"
+    echo "  Using libnss_wrapper from app image (x86_64)"
+elif [ -f "/usr/lib/aarch64-linux-gnu/libnss_wrapper.so" ]; then
+    NSS_WRAPPER_LIB="/usr/lib/aarch64-linux-gnu/libnss_wrapper.so"
+    echo "  Using libnss_wrapper from app image (aarch64)"
 elif [ -f "/usr/lib/libnss_wrapper.so" ]; then
     NSS_WRAPPER_LIB="/usr/lib/libnss_wrapper.so"
     echo "  Using libnss_wrapper from app image"
@@ -148,6 +151,16 @@ if [ -n "$APP_CMD_PREFIX" ]; then
 fi
 
 # Change to home directory and execute the command
-# Now we can use a login shell since the user properly exists via NSS
 cd "$HOME"
-exec /bin/bash -c "$CMD"
+
+# Execute the command with appropriate shell based on user context
+if [ "$(id -u)" = "0" ]; then
+    # Running as root (debug mode) - use runuser to switch to user
+    # -l: login shell (sources ~/.bash_profile)
+    # -w: preserve environment variables needed for X11, NSS wrapper, and app-specific configs
+    exec runuser -l "$CHORUS_USER" -w DISPLAY,LD_PRELOAD,NSS_WRAPPER_PASSWD,NSS_WRAPPER_GROUP,KIOSK_URL,APP_NAME,CARD -c "$CMD"
+else
+    # Running as non-root user - use login shell directly
+    # --login sources ~/.bash_profile for app-specific environment setup
+    exec /bin/bash --login -c "$CMD"
+fi
