@@ -14,7 +14,7 @@ The init container runs as **root with limited capabilities** to:
 ## Scripts Included
 
 The init container includes these scripts from `core/init/`:
-- `docker-entrypoint-init.sh` - Main entrypoint
+- `docker-entrypoint.sh` - Main entrypoint
 - `1-create-user.sh` - Creates user/group, exports NSS files
 - `2-symlink-workspace.sh` - Creates workspace symlinks and config directories
 
