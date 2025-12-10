@@ -25,6 +25,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     mv Slicer-*-linux-amd64 Slicer && \
     rm Slicer-*-linux-amd64.tar.gz && \
     ./Slicer/bin/PythonSlicer -m pip install nibabel && \
+    chmod 757 ./Slicer && \
     mkdir -p ./extensions && \
     curl -sSL "https://slicer-packages.kitware.com/api/v1/item/67c547bd29825655577d157c/download" -o ./extensions/SlicerFreeSurfer.tar.gz && \
     apt-get remove -y --purge curl && \
