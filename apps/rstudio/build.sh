@@ -4,7 +4,8 @@ set -e
 
 APP_NAME="rstudio"
 APP_VERSION=2025.09.2
-PKG_REL="2"
+APP_PKG_REL=418
+PKG_REL="3"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.
@@ -52,8 +53,10 @@ docker buildx build \
     -t ${REGISTRY}/${REPOSITORY}/${APP_NAME}:${VERSION} \
     --label "APP_NAME=${APP_NAME}" \
     --label "APP_VERSION=${APP_VERSION}" \
+    --label "APP_PKG_REL=${APP_PKG_REL}" \
     --build-arg "APP_NAME=${APP_NAME}" \
     --build-arg "APP_VERSION=${APP_VERSION}" \
+    --build-arg "APP_PKG_REL=${APP_PKG_REL}" \
     ${CACHE_FROM} \
     ${CACHE_TO} \
     --output=$OUTPUT \
