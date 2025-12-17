@@ -15,3 +15,6 @@ keyboard = false
 sound = false
 # swap keys swaps also on windows and creates trouble, so we can't use it
 #swap_keys = true
+
+# position the toolbar at the top-right corner
+toolbar_position = top-right
