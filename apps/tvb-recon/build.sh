@@ -10,9 +10,6 @@ PKG_REL="1"
 # otherwise, please bump the PKG_REL on any changes.
 VERSION="${APP_VERSION}-${PKG_REL}"
 
-# Version of Miniforge3 to use
-MINIFORGE3_VERSION="24.9.0-0"
-
 # --- Docker Configuration ---
 REGISTRY="${REGISTRY:=harbor.build.chorus-tre.ch}"
 REPOSITORY="${REPOSITORY:=chorus}"
@@ -60,7 +57,6 @@ docker buildx build \
     --label "APP_VERSION=${APP_VERSION}" \
     --build-arg "APP_NAME=${APP_NAME}" \
     --build-arg "APP_VERSION=${APP_VERSION}" \
-    --build-arg "MINIFORGE3_VERSION=${MINIFORGE3_VERSION}" \
     --output=$OUTPUT \
     ${CACHE_FROM} \
     ${CACHE_TO} \
