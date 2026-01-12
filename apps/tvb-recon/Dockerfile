@@ -6,6 +6,7 @@ FROM harbor.build.chorus-tre.ch/docker_proxy/library/ubuntu:24.04 AS builder
 SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 
 ARG MINIFORGE3_VERSION=24.9.0-0
+ARG FREESURFER_VERSION=7.2.0
 ENV CONDA_DIR=/opt/conda
 ENV PATH=${CONDA_DIR}/bin:${PATH}
 
@@ -51,7 +52,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 # Install FreeSurfer
 RUN --mount=type=cache,target=/var/cache/curl,sharing=locked \
     pushd /tmp && \
-    curl -sSL -C - -o freesurfer.tar.gz "https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/7.2.0/freesurfer-linux-centos7_x86_64-7.2.0.tar.gz" && \
+    curl -sSL -C - -o freesurfer.tar.gz "https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/${FREESURFER_VERSION}/freesurfer-linux-centos7_x86_64-${FREESURFER_VERSION}.tar.gz" && \
     tar -xzf freesurfer.tar.gz -C /opt && \
     rm freesurfer.tar.gz && \
     # Create a dummy license file
@@ -67,10 +68,10 @@ RUN . "${CONDA_DIR}/etc/profile.d/conda.sh" && \
 # Download TVB-recon source code
 RUN git clone --depth 1 https://github.com/the-virtual-brain/tvb-recon.git /opt/tvb-recon
 
-# Install TVB-recon python dependencies
+# Install TVB-recon and its python dependencies from setup.py
 RUN . "${CONDA_DIR}/etc/profile.d/conda.sh" && \
     conda activate tvb_recon_env && \
-    pip install --no-cache-dir -r /opt/tvb-recon/requirements.txt
+    pip install --no-cache-dir /opt/tvb-recon/
 
 
 # FINAL STAGE
