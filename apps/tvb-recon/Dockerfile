@@ -54,10 +54,7 @@ RUN --mount=type=cache,target=/var/cache/curl,sharing=locked \
     pushd /tmp && \
     curl -sSL -C - -o freesurfer.tar.gz "https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/${FREESURFER_VERSION}/freesurfer-linux-centos7_x86_64-${FREESURFER_VERSION}.tar.gz" && \
     tar -xzf freesurfer.tar.gz -C /opt && \
-    rm freesurfer.tar.gz && \
-    # Create a dummy license file
-    echo "user@example.com" > /opt/freesurfer/license.txt && \
-    echo "12345" >> /opt/freesurfer/license.txt
+    rm freesurfer.tar.gz
 
 # Install MRtrix3
 RUN . "${CONDA_DIR}/etc/profile.d/conda.sh" && \
@@ -100,10 +97,11 @@ COPY --from=builder /opt/tvb-recon /opt/tvb-recon
 
 # Set up environment for TVB-recon
 ENV APP_SPECIAL="no"
-ENV APP_CMD="/opt/tvb-recon/run.sh" # Assuming a run script, adjust if necessary
+ENV APP_CMD=""
 ENV PROCESS_NAME="tvb-recon"
-ENV APP_DATA_DIR_ARRAY=".config/tvb-recon"
+ENV APP_DATA_DIR_ARRAY=""
 ENV DATA_DIR_ARRAY=""
+ENV CONFIG_ARRAY=".bash_profile"
 
 # Install runtime dependencies and Chorus scripts
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
@@ -117,11 +115,11 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+COPY ./config/ /apps/${APP_NAME}/config/
+
 RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=true \
     /tmp/core_scripts/shared/chorus-utils.sh && \
     cp /tmp/core_scripts/app/docker-entrypoint.sh / && \
-    cp /tmp/core_scripts/app/2-symlink-appdata.sh /docker-entrypoint.d/
-
-USER tvb
+    cp /tmp/core_scripts/app/1-copy-config.sh /docker-entrypoint.d
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["/bin/bash"]
