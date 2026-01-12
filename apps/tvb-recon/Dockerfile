@@ -5,7 +5,7 @@
 FROM harbor.build.chorus-tre.ch/docker_proxy/library/ubuntu:24.04 AS builder
 SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 
-ARG MINIFORGE3_VERSION=24.3.0-0
+ARG MINIFORGE3_VERSION=24.9.0-0
 ENV CONDA_DIR=/opt/conda
 ENV PATH=${CONDA_DIR}/bin:${PATH}
 

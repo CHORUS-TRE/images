@@ -11,7 +11,7 @@ PKG_REL="1"
 VERSION="${APP_VERSION}-${PKG_REL}"
 
 # Version of Miniforge3 to use
-MINIFORGE3_VERSION="24.3.0-0"
+MINIFORGE3_VERSION="24.9.0-0"
 
 # --- Docker Configuration ---
 REGISTRY="${REGISTRY:=harbor.build.chorus-tre.ch}"
