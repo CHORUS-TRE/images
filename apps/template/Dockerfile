@@ -66,6 +66,7 @@ ENV APP_CMD="echo 'Application not configured. Please set APP_CMD.'"
 ENV PROCESS_NAME="template-app"
 ENV APP_DATA_DIR_ARRAY=".config/template-app .local/share/template-app"
 ENV DATA_DIR_ARRAY=""
+ENV CONFIG_ARRAY=".bash_profile"
 
 # Install runtime dependencies and Chorus utilities.
 # `chorus-utils.sh` installs `libnss-wrapper` and other essentials.
@@ -79,11 +80,14 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     rm -rf /var/lib/apt/lists/*
 
 # The `core` directory is copied into the build context by build.sh
+COPY ./config/ /apps/${APP_NAME}/config/
 RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=true \
     # This script installs libnss-wrapper and other utilities
     /tmp/core_scripts/shared/chorus-utils.sh && \
     # Copy the standard application entrypoint
     cp /tmp/core_scripts/app/docker-entrypoint.sh / && \
+    # This script handles copying config files like .bash_profile
+    cp /tmp/core_scripts/app/1-copy-config.sh /docker-entrypoint.d/ && \
     # This script handles symlinking the persistent directories defined in APP_DATA_DIR_ARRAY
     cp /tmp/core_scripts/app/2-symlink-appdata.sh /docker-entrypoint.d/
 
