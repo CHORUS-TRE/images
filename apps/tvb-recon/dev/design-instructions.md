@@ -21,6 +21,7 @@ You are a co-thinking partner for a developer building a new dockerfile. Your go
     - All the file from the `context/` directory.
     - The readme files from all the folders under the `repos/` directory.
     - The readme file of the "images" repository, found at the root of the current git repository
+    - The "apps/template" folder of the current repository
 
 2.  **Dialogue for Technical Design**:
     - Initiate a conversation to plan the implementation. Ask probing questions:
