@@ -1,7 +1,7 @@
 # Freesurfer environment setup
-FREESURFER_APP_VERSION=$(ls /usr/local/freesurfer/)
+FREESURFER_APP_VERSION=$(ls /opt/freesurfer/)
 
-export FREESURFER_HOME=/usr/local/freesurfer/${FREESURFER_APP_VERSION}
+export FREESURFER_HOME=/opt/freesurfer/${FREESURFER_APP_VERSION}
 export FS_LICENSE=$HOME/license.txt
 export SUBJECTS_DIR=/apps/freesurfer/subjects
 
@@ -20,6 +20,10 @@ FSLDIR=/opt/fsl
 . ${FSLDIR}/etc/fslconf/fsl.sh
 PATH=${FSLDIR}/bin:${PATH}
 export FSLDIR PATH
+
+# Activate conda environment
+. /opt/conda/etc/profile.d/conda.sh
+conda activate tvb_recon_env
 
 LC_NUMERIC=en_GB.UTF-8
 export LC_NUMERIC
