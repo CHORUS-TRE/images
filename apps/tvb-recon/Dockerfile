@@ -83,7 +83,7 @@ WORKDIR /apps/${APP_NAME}
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Create a non-root user
-RUN useradd --create-home --shell /bin/bash tvb
+RUN useradd --create-home --shell /bin/bash tvb-recon
 
 # Copy environment from builder
 ENV CONDA_DIR=/opt/conda
