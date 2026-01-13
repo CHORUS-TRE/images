@@ -12,7 +12,7 @@ VERSION="${APP_VERSION}-${PKG_REL}"
 
 # --- Docker Configuration ---
 REGISTRY="${REGISTRY:=harbor.build.chorus-tre.ch}"
-REPOSITORY="${REPOSITORY:=chorus}"
+REPOSITORY="${REPOSITORY:=apps}"
 CACHE="${CACHE:=cache}"
 BUILDER_NAME="docker-container"
 TARGET_ARCH="${TARGET_ARCH:-linux/amd64}"
