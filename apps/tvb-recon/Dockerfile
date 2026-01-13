@@ -97,7 +97,7 @@ COPY --from=builder /opt/tvb-recon /opt/tvb-recon
 
 # Set up environment for TVB-recon
 ENV APP_SPECIAL="no"
-ENV APP_CMD=""
+ENV APP_CMD="/usr/bin/kitty/kitty.app/bin/kitty"
 ENV PROCESS_NAME="tvb-recon"
 ENV APP_DATA_DIR_ARRAY=""
 ENV DATA_DIR_ARRAY=""
@@ -118,8 +118,9 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 COPY ./config/ /apps/${APP_NAME}/config/
 
 RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=true \
-    /tmp/core_scripts/shared/chorus-utils.sh && \
+    /tmp/core_scripts/shared/chorus-utils.sh -a terminal && \
     cp /tmp/core_scripts/app/docker-entrypoint.sh / && \
     cp /tmp/core_scripts/app/1-copy-config.sh /docker-entrypoint.d
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["/bin/bash"]
