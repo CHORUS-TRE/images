@@ -82,9 +82,6 @@ ARG APP_VERSION
 WORKDIR /apps/${APP_NAME}
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Create a non-root user
-RUN useradd tvb-recon
-
 # Copy environment from builder
 ENV CONDA_DIR=/opt/conda
 ENV PATH=${CONDA_DIR}/bin:${PATH}
