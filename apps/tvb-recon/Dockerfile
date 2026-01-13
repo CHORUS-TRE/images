@@ -83,7 +83,7 @@ WORKDIR /apps/${APP_NAME}
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Create a non-root user
-RUN useradd --create-home --shell /bin/bash tvb-recon
+RUN useradd tvb-recon
 
 # Copy environment from builder
 ENV CONDA_DIR=/opt/conda
@@ -123,4 +123,3 @@ RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=true \
     cp /tmp/core_scripts/app/1-copy-config.sh /docker-entrypoint.d
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["/bin/bash"]
