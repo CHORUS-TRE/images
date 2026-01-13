@@ -1,2 +1,0 @@
-This directory contains volume and surface data taken from freesurfer_fsaverage directory and modified in different ways.
-The main modifications are made using Freesurfer commands, like mri_convert/mris_convert.
