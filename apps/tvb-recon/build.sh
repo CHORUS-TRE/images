@@ -4,7 +4,7 @@ set -e
 # --- Configuration ---
 APP_NAME="tvb-recon"
 APP_VERSION="1.0.0"
-PKG_REL="1"
+PKG_REL="2"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwise, please bump the PKG_REL on any changes.

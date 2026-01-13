@@ -21,12 +21,12 @@ FSLDIR=/opt/fsl
 PATH=${FSLDIR}/bin:${PATH}
 export FSLDIR PATH
 
+LC_NUMERIC=en_GB.UTF-8
+export LC_NUMERIC
+
 # Activate conda environment
 . /opt/conda/etc/profile.d/conda.sh
 conda activate tvb_recon_env
-
-LC_NUMERIC=en_GB.UTF-8
-export LC_NUMERIC
 
 # Load the default .profile
 if [ -s "$HOME/.profile" ]; then
