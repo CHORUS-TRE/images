@@ -38,7 +38,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 
 RUN . "${CONDA_DIR}/etc/profile.d/conda.sh" && \
     conda activate base && \
-    mamba create -y --override-channels --channel=conda-forge --name=tvb_recon_env \
+    mamba create -y --override-channels --channel=conda-forge --channel=mrtrix3 --name=tvb_recon_env \
         python=3.10 \
         pegasus-wms \
         htcondor && \
@@ -63,7 +63,7 @@ RUN --mount=type=cache,target=/var/cache/curl,sharing=locked \
 # Install MRtrix3
 RUN . "${CONDA_DIR}/etc/profile.d/conda.sh" && \
     conda activate tvb_recon_env && \
-    mamba install -y --channel=conda-forge mrtrix3 && \
+    mamba install -y --channel=mrtrix3 mrtrix3 && \
     conda clean --all --yes
 
 # Download TVB-recon source code
