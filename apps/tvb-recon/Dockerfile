@@ -35,12 +35,11 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     # Clean conda cache
     conda clean --all --yes
 
-# Create tvb-recon environment and install dependencies
 RUN . "${CONDA_DIR}/etc/profile.d/conda.sh" && \
     conda activate base && \
     mamba create -y --override-channels --channel=conda-forge --name=tvb_recon_env \
         python=3.10 \
-        pegasus-wms.condor \
+        pegasus-wms \
         htcondor && \
     conda clean --all --yes
 
