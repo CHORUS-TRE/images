@@ -7,6 +7,7 @@ SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 
 ARG MINIFORGE3_VERSION=24.9.0-0
 ARG FREESURFER_VERSION=7.2.0
+ARG FSL_VERSION=6.0.7.17
 ENV CONDA_DIR=/opt/conda
 ENV PATH=${CONDA_DIR}/bin:${PATH}
 
@@ -44,10 +45,13 @@ RUN . "${CONDA_DIR}/etc/profile.d/conda.sh" && \
     conda clean --all --yes
 
 # Install FSL
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get update -qy && \
-    apt-get install -qy --no-install-recommends fsl-core
+RUN --mount=type=cache,target=/var/cache/curl,sharing=locked \
+    curl -sSL https://fsl.fmrib.ox.ac.uk/fsldownloads/fslconda/releases/fslinstaller.py -o fslinstaller.py && \
+    sed -i -E "s/(printmsg\(([^,]+, )?end='(\\\\r)?')/# SILENCE \\1/g" ./fslinstaller.py && \
+    python3 ./fslinstaller.py \
+        -d /opt/fsl \
+        -V ${FSL_VERSION} \
+        --skip_registration
 
 # Install FreeSurfer
 RUN --mount=type=cache,target=/var/cache/curl,sharing=locked \
@@ -88,7 +92,7 @@ ENV PATH=${CONDA_DIR}/bin:${PATH}
 COPY --from=builder ${CONDA_DIR} ${CONDA_DIR}
 
 # Copy FSL, FreeSurfer, MRtrix3 and tvb-recon from builder
-COPY --from=builder /usr/share/fsl /usr/share/fsl
+COPY --from=builder /opt/fsl /opt/fsl
 COPY --from=builder /opt/freesurfer /opt/freesurfer
 COPY --from=builder /opt/tvb-recon /opt/tvb-recon
 
