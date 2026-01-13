@@ -21,7 +21,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         ca-certificates \
         curl \
         git \
-        libgl1-mesa-glx \
+        libgl1 \
+        libglx0 \
         libsm6 \
         libxext6 \
         libxrender1 && \
@@ -105,7 +106,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update -qy && \
     apt-get install --no-install-recommends -qy \
-    libgl1-mesa-glx \
+    libgl1 \
+    libglx0 \
     libsm6 \
     libxext6 \
     libxrender1 && \
