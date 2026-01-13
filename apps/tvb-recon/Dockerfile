@@ -85,10 +85,7 @@ ENV CONDA_DIR=/opt/conda
 ENV PATH=${CONDA_DIR}/bin:${PATH}
 COPY --from=builder ${CONDA_DIR}/envs/tvb_recon_env ${CONDA_DIR}/envs/tvb_recon_env
 
-# Create a symlink to the python executable to simplify paths
-RUN ln -s ${CONDA_DIR}/envs/tvb_recon_env/bin/python /usr/local/bin/python
-
-# Copy FSL, FreeSurfer, and tvb-recon from builder
+# Copy FSL, FreeSurfer, and TVB-recon from the builder
 COPY --from=builder /opt/fsl /opt/fsl
 COPY --from=builder /opt/freesurfer /opt/freesurfer
 COPY --from=builder /opt/tvb-recon /opt/tvb-recon
