@@ -11,10 +11,11 @@ ARG FSL_VERSION=6.0.7.17
 ENV CONDA_DIR=/opt/conda
 ENV PATH=${CONDA_DIR}/bin:${PATH}
 
-# Install build dependencies and Miniforge
+# Install build dependencies, Miniforge, FSL, FreeSurfer, and MRtrix3
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     --mount=type=cache,target=/var/cache/curl,sharing=locked \
+    # Install build dependencies
     apt-get update -qy && \
     apt-get install --no-install-recommends -qy \
         build-essential \
@@ -32,39 +33,31 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     curl -sSL -C - -O "https://github.com/conda-forge/miniforge/releases/download/${MINIFORGE3_VERSION}/Miniforge3-${MINIFORGE3_VERSION}-Linux-x86_64.sh" && \
     /bin/bash Miniforge3-${MINIFORGE3_VERSION}-Linux-x86_64.sh -b -p "${CONDA_DIR}" && \
     popd && \
-    rm -rf /tmp/Miniforge3* && \
-    # Clean conda cache
-    conda clean --all --yes
-
-RUN . "${CONDA_DIR}/etc/profile.d/conda.sh" && \
+    # Activate conda and create the runtime environment
+    . "${CONDA_DIR}/etc/profile.d/conda.sh" && \
     conda activate base && \
     mamba create -y --override-channels --channel=conda-forge --channel=mrtrix3 --name=tvb_recon_env \
-        python=3.10 \
+        python=3.12 \
         pegasus-wms \
-        htcondor && \
-    conda clean --all --yes
-
-# Install FSL
-RUN --mount=type=cache,target=/var/cache/curl,sharing=locked \
-    curl -sSL https://fsl.fmrib.ox.ac.uk/fsldownloads/fslconda/releases/fslinstaller.py -o fslinstaller.py && \
-    sed -i -E "s/(printmsg\(([^,]+, )?end='(\\\\r)?')/# SILENCE \\1/g" ./fslinstaller.py && \
-    python3 ./fslinstaller.py \
+        htcondor \
+        mrtrix3 && \
+    # Install FSL
+    curl -sSL https://fsl.fmrib.ox.ac.uk/fsldownloads/fslconda/releases/fslinstaller.py -o /tmp/fslinstaller.py && \
+    sed -i -E "s/(printmsg\(([^,]+, )?end='(\\\\r)?')/# SILENCE \\1/g" /tmp/fslinstaller.py && \
+    python3 /tmp/fslinstaller.py \
         -d /opt/fsl \
         -V ${FSL_VERSION} \
-        --skip_registration
-
-# Install FreeSurfer
-RUN --mount=type=cache,target=/var/cache/curl,sharing=locked \
+        --skip_registration && \
+    # Install FreeSurfer
     pushd /tmp && \
     curl -sSL -C - -o freesurfer.tar.gz "https://surfer.nmr.mgh.harvard.edu/pub/dist/freesurfer/${FREESURFER_VERSION}/freesurfer-linux-centos7_x86_64-${FREESURFER_VERSION}.tar.gz" && \
     tar -xzf freesurfer.tar.gz -C /opt && \
-    rm freesurfer.tar.gz
-
-# Install MRtrix3
-RUN . "${CONDA_DIR}/etc/profile.d/conda.sh" && \
-    conda activate tvb_recon_env && \
-    mamba install -y --channel=mrtrix3 mrtrix3 && \
-    conda clean --all --yes
+    popd && \
+    # Clean up temporary files and caches
+    rm -rf /tmp/* && \
+    conda clean --all --yes && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Download TVB-recon source code
 RUN git clone --depth 1 https://github.com/the-virtual-brain/tvb-recon.git /opt/tvb-recon
@@ -72,7 +65,8 @@ RUN git clone --depth 1 https://github.com/the-virtual-brain/tvb-recon.git /opt/
 # Install TVB-recon and its python dependencies from setup.py
 RUN . "${CONDA_DIR}/etc/profile.d/conda.sh" && \
     conda activate tvb_recon_env && \
-    pip install --no-cache-dir /opt/tvb-recon/
+    pip install --no-cache-dir /opt/tvb-recon/ && \
+    conda clean --all --yes
 
 
 # FINAL STAGE
@@ -86,12 +80,15 @@ ARG APP_VERSION
 WORKDIR /apps/${APP_NAME}
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Copy environment from builder
+# Copy only the required conda environment from the builder
 ENV CONDA_DIR=/opt/conda
 ENV PATH=${CONDA_DIR}/bin:${PATH}
-COPY --from=builder ${CONDA_DIR} ${CONDA_DIR}
+COPY --from=builder ${CONDA_DIR}/envs/tvb_recon_env ${CONDA_DIR}/envs/tvb_recon_env
 
-# Copy FSL, FreeSurfer, MRtrix3 and tvb-recon from builder
+# Create a symlink to the python executable to simplify paths
+RUN ln -s ${CONDA_DIR}/envs/tvb_recon_env/bin/python /usr/local/bin/python
+
+# Copy FSL, FreeSurfer, and tvb-recon from builder
 COPY --from=builder /opt/fsl /opt/fsl
 COPY --from=builder /opt/freesurfer /opt/freesurfer
 COPY --from=builder /opt/tvb-recon /opt/tvb-recon
