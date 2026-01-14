@@ -105,9 +105,9 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get install --no-install-recommends -qy \
     # Core GUI and X11 libraries from freesurfer example
     libx11-dev gettext xterm x11-apps perl make csh tcsh file bc \
-    xorg xorg-dev xserver-xorg-video-intel libncurses5 libbsd0 \
+    xorg xorg-dev xserver-xorg-video-intel libncurses6 libbsd0 \
     libegl1 libexpat1 libfontconfig1 libfreetype6 libgl1 libglib2.0-0 \
-    libglu1-mesa libglvnd0 libglx0 libgomp1 libice6 libicu70 libjpeg62 \
+    libglu1-mesa libglvnd0 libglx0 libgomp1 libice6 libicu74 libjpeg62 \
     libmd0 libopengl0 libpcre2-16-0 libpng16-16 libquadmath0 libsm6 \
     libx11-6 libx11-xcb1 libxau6 libxcb-icccm4 libxcb-image0 \
     libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-render0 \
