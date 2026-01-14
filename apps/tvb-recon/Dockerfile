@@ -66,7 +66,7 @@ RUN git clone --depth 1 https://github.com/the-virtual-brain/tvb-recon.git /opt/
 # Install TVB-recon and its python dependencies from setup.py
 RUN . "${CONDA_DIR}/etc/profile.d/conda.sh" && \
     conda activate tvb_recon_env && \
-    pip install --no-cache-dir /opt/tvb-recon/ && \
+    pip install --no-cache-dir --root-user-action=ignore /opt/tvb-recon/ && \
     conda clean --all --yes
 
 
@@ -81,10 +81,10 @@ ARG APP_VERSION
 WORKDIR /apps/${APP_NAME}
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Copy only the required conda environment from the builder
+# Copy the conda installation from the builder
 ENV CONDA_DIR=/opt/conda
 ENV PATH=${CONDA_DIR}/bin:${PATH}
-COPY --from=builder ${CONDA_DIR}/envs/tvb_recon_env ${CONDA_DIR}/envs/tvb_recon_env
+COPY --from=builder ${CONDA_DIR} ${CONDA_DIR}
 
 # Copy FSL, FreeSurfer, and TVB-recon from the builder
 COPY --from=builder /opt/fsl /opt/fsl
