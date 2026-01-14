@@ -8,6 +8,7 @@ SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 ARG MINIFORGE3_VERSION=24.9.0-0
 ARG FREESURFER_VERSION=7.2.0
 ARG FSL_VERSION=6.0.7.17
+ARG PYTHON_VERSION=3.6
 ENV CONDA_DIR=/opt/conda
 ENV PATH=${CONDA_DIR}/bin:${PATH}
 
@@ -37,7 +38,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     . "${CONDA_DIR}/etc/profile.d/conda.sh" && \
     conda activate base && \
     mamba create -y --override-channels --channel=conda-forge --channel=mrtrix3 --name=tvb_recon_env \
-        python=3.12 \
+        python=${PYTHON_VERSION} \
         pegasus-wms \
         htcondor \
         mrtrix3 && \
