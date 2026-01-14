@@ -17,7 +17,9 @@ APP_NAME="$(basename "${APP_DIR}")"
 
 # Parse labels file for build configuration
 get_label() {
-    grep "^${1}=" "${APP_DIR}/labels" 2>/dev/null | cut -d'=' -f2- || echo ""
+    value=$(grep "^${1}=" "${APP_DIR}/labels" 2>/dev/null | cut -d'=' -f2- || echo "")
+    # Remove surrounding quotes if present
+    echo "$value" | sed 's/^"\(.*\)"$/\1/' | sed "s/^'\(.*\)'$/\1/"
 }
 
 # Extract build configuration from labels
@@ -93,6 +95,8 @@ LABELS=""
 while IFS='=' read -r key value; do
     # Skip empty lines and comments
     [ -z "$key" ] && continue
+    # Remove surrounding quotes from value if present
+    value=$(echo "$value" | sed 's/^"\(.*\)"$/\1/' | sed "s/^'\(.*\)'$/\1/")
     case "$key" in
         ch.chorus-tre.build.arg.*)
             ARG_NAME="${key#ch.chorus-tre.build.arg.}"
