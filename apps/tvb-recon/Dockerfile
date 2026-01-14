@@ -66,7 +66,7 @@ RUN git clone --depth 1 https://github.com/the-virtual-brain/tvb-recon.git /opt/
 # Install TVB-recon and its python dependencies from setup.py
 RUN . "${CONDA_DIR}/etc/profile.d/conda.sh" && \
     conda activate tvb_recon_env && \
-    pip install --no-cache-dir --root-user-action=ignore /opt/tvb-recon/ && \
+    pip install --no-cache-dir /opt/tvb-recon/ && \
     conda clean --all --yes
 
 
