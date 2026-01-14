@@ -15,4 +15,4 @@ ch.chorus-tre.resources.max-cpu=750m
 ch.chorus-tre.resources.min-memory=
 ch.chorus-tre.resources.max-memory=768Mi
 ch.chorus-tre.build.app-version=1.1.0
-ch.chorus-tre.build.pkg-rel=18
+ch.chorus-tre.build.pkg-rel=19
