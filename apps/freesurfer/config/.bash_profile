@@ -4,8 +4,8 @@ export FREESURFER_HOME=/usr/local/freesurfer/${APP_VERSION}
 export FS_LICENSE=$HOME/license.txt
 export SUBJECTS_DIR=/apps/freesurfer/subjects
 
-# Create a license file
-if [ -s "/apps/freesurfer/config/.env" ]; then
+# Use runtime env var if set, otherwise source .env file (local dev)
+if [ -z "$FREESURFER_LICENSE" ] && [ -s "/apps/freesurfer/config/.env" ]; then
     . "/apps/freesurfer/config/.env"
 fi
 
