@@ -47,6 +47,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get install --no-install-recommends -qy \
         dbus-x11 \
         curl \
+        fonts-noto-color-emoji \
         libasound2t64 \
         libatspi2.0-0 \
         libdrm2 \
@@ -101,7 +102,6 @@ ENV APP_DATA_DIR_ARRAY=".jupyter"
 ENV DATA_DIR_ARRAY=""
 ENV CONFIG_ARRAY="00-Check.ipynb 01-Quickstart.ipynb"
 
-# Copy notebook files
 COPY ./config/ /apps/${APP_NAME}/config/
 
 # Install vgl + whatever is necessary for chorus use
