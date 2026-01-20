@@ -70,6 +70,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         nb_conda_kernels \
         pip && \
     mamba create -y --override-channels --channel=conda-forge --name=bioinformatics_env \
+        ipykernel \
         joblib \
         lifelines \
         matplotlib \
