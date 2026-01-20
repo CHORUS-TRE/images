@@ -6,7 +6,7 @@ APP_NAME="tune-insight"
 # https://github.com/jupyterlab/jupyterlab-desktop/releases
 APP_VERSION="4.2.5"
 APP_VERSION_FULL="${APP_VERSION}-1"
-PKG_REL="2"
+PKG_REL="3"
 
 # If the APP_VERSION is bumped, reset the PKG_REL
 # otherwhise, please bump the PKG_REL on any changes.
@@ -14,7 +14,8 @@ VERSION="${APP_VERSION}-${PKG_REL}"
 
 # https://conda-forge.org/miniforge/
 # https://github.com/conda-forge/miniforge/releases
-MINIFORGE3_VERSION="25.11.0-1"
+# MINIFORGE3_VERSION="25.11.0-1"
+MINIFORGE3_VERSION="24.9.0-0"
 
 REGISTRY="${REGISTRY:=harbor.build.chorus-tre.local}"
 REPOSITORY="${REPOSITORY:=apps}"

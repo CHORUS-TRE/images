@@ -72,7 +72,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         nb_conda_kernels \
         pip && \
     mamba create -y --override-channels --channel=conda-forge --name=bioinformatics_env \
-        ipykernel \
         joblib \
         lifelines \
         matplotlib \
@@ -99,16 +98,16 @@ ENV APP_CMD="jlab --no-sandbox"
 ENV PROCESS_NAME="jlab"
 ENV APP_DATA_DIR_ARRAY=".jupyter"
 ENV DATA_DIR_ARRAY=""
-ENV CONFIG_ARRAY="00-Check.ipynb 01-Quickstart.ipynb"
+#ENV CONFIG_ARRAY="00-Check.ipynb 01-Quickstart.ipynb"
 
 # Copy notebook files
-COPY ./config/ /apps/${APP_NAME}/config/
+#COPY ./config/ /apps/${APP_NAME}/config/
 
 # Install vgl + whatever is necessary for chorus use
 RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=true \
     /tmp/core_scripts/shared/chorus-utils.sh && \
     cp /tmp/core_scripts/app/docker-entrypoint.sh / && \
-    cp /tmp/core_scripts/app/1-copy-config.sh /docker-entrypoint.d/ && \
+#    cp /tmp/core_scripts/app/1-copy-config.sh /docker-entrypoint.d/ && \
     cp /tmp/core_scripts/app/2-symlink-appdata.sh /docker-entrypoint.d/
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
