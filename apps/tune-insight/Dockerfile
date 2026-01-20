@@ -80,14 +80,14 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         opencv \
         pandas \
         pillow \
-        pip \
+        # pip \
         scikit-survival \
         scipy \
         seaborn \
         spacy \
         streamlit \
         tqdm && \
-    conda run -n bioinformatics_env pip install --no-cache-dir tuneinsight && \
+    # conda run -n bioinformatics_env pip install --no-cache-dir tuneinsight && \
     apt-get remove -y --purge \
         curl && \
     apt-get autoremove -y --purge
