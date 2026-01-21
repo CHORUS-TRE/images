@@ -37,6 +37,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get autoremove -y --purge
 
 # JupyterLab Desktop
+# tuneinsight library is not available on conda-forge
+# so we need to install it via pip
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     --mount=type=cache,target=/var/cache/curl,sharing=locked \
@@ -45,6 +47,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get install --no-install-recommends -qy \
         dbus-x11 \
         curl \
+        fonts-noto-color-emoji \
         libasound2t64 \
         libatspi2.0-0 \
         libdrm2 \
@@ -69,7 +72,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         jupyterlab \
         nb_conda_kernels \
         pip && \
-    mamba create -y --override-channels --channel=conda-forge --name=bioinformatics_env \
+    mamba create -y --override-channels --channel=conda-forge --name=tuneinsight_env \
         ipykernel \
         joblib \
         lifelines \
@@ -79,12 +82,14 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         opencv \
         pandas \
         pillow \
+        pip \
         scikit-survival \
         scipy \
         seaborn \
         spacy \
         streamlit \
         tqdm && \
+    conda run -n tuneinsight_env pip install --no-cache-dir tuneinsight && \
     apt-get remove -y --purge \
         curl && \
     apt-get autoremove -y --purge
@@ -95,11 +100,15 @@ ENV APP_CMD="jlab --no-sandbox"
 ENV PROCESS_NAME="jlab"
 ENV APP_DATA_DIR_ARRAY=".jupyter"
 ENV DATA_DIR_ARRAY=""
+ENV CONFIG_ARRAY="00-Check.ipynb 01-Quickstart.ipynb"
+
+COPY ./config/ /apps/${APP_NAME}/config/
 
 # Install vgl + whatever is necessary for chorus use
 RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=true \
     /tmp/core_scripts/shared/chorus-utils.sh && \
     cp /tmp/core_scripts/app/docker-entrypoint.sh / && \
+    cp /tmp/core_scripts/app/1-copy-config.sh /docker-entrypoint.d/ && \
     cp /tmp/core_scripts/app/2-symlink-appdata.sh /docker-entrypoint.d/
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
