@@ -1,5 +1,5 @@
 ch.chorus-tre.app.kiosk-config-url.prettyname="HORUS Explorer"
-ch.chorus-tre.app.kiosk-config-url.url="https://i2b2.<INSTANCE>.chorus-tre.ch"
+ch.chorus-tre.app.kiosk-config-url.url="https://i2b2.local.chorus-tre.ch"
 ch.chorus-tre.app.kiosk-config-url.resources.shared-memory-size="1Gi"
 ch.chorus-tre.app.kiosk-config-url.resources.min-ephemeral-storage=""
 ch.chorus-tre.app.kiosk-config-url.resources.max-ephemeral-storage="10Gi"
