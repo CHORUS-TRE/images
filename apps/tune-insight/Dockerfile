@@ -67,12 +67,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     . "${CONDA_DIR}/etc/profile.d/conda.sh" && \
     . "${CONDA_DIR}/etc/profile.d/mamba.sh" && \
     conda activate base && \
-    mamba create -y --override-channels --channel=conda-forge --name=jlab_env \
-        ipykernel \
+    mamba create -y --override-channels --channel=conda-forge --name=tune_insight \
         jupyterlab \
         nb_conda_kernels \
-        pip && \
-    mamba create -y --override-channels --channel=conda-forge --name=tuneinsight_env \
+        pip \
         ipykernel \
         joblib \
         lifelines \
@@ -89,7 +87,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         spacy \
         streamlit \
         tqdm && \
-    conda run -n tuneinsight_env pip install --no-cache-dir tuneinsight && \
+    conda run -n tune_insight pip install --no-cache-dir tuneinsight && \
     apt-get remove -y --purge \
         curl && \
     apt-get autoremove -y --purge
@@ -100,15 +98,18 @@ ENV APP_CMD="jlab --no-sandbox"
 ENV PROCESS_NAME="jlab"
 ENV APP_DATA_DIR_ARRAY=".jupyter"
 ENV DATA_DIR_ARRAY=""
-ENV CONFIG_ARRAY="00-Check.ipynb 01-Quickstart.ipynb"
+ENV CONFIG_ARRAY=""
+ENV NOTEBOOK_ARRAY="00-Check.ipynb 01-Quickstart.ipynb"
+ENV PERSISTED_FOLDER="workspace-archive"
 
-COPY ./config/ /apps/${APP_NAME}/config/
+COPY ./notebook/ /apps/${APP_NAME}/notebook/
 
 # Install vgl + whatever is necessary for chorus use
 RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=true \
+    --mount=type=bind,source=./scripts,target=/tmp/ti_scripts,readonly=true \
     /tmp/core_scripts/shared/chorus-utils.sh && \
     cp /tmp/core_scripts/app/docker-entrypoint.sh / && \
-    cp /tmp/core_scripts/app/1-copy-config.sh /docker-entrypoint.d/ && \
-    cp /tmp/core_scripts/app/2-symlink-appdata.sh /docker-entrypoint.d/
+    cp /tmp/core_scripts/app/2-symlink-appdata.sh /docker-entrypoint.d/ && \
+    cp /tmp/ti_scripts/3-copy-notebook.sh /docker-entrypoint.d/
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
