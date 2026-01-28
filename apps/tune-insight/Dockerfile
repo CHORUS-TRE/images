@@ -67,12 +67,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     . "${CONDA_DIR}/etc/profile.d/conda.sh" && \
     . "${CONDA_DIR}/etc/profile.d/mamba.sh" && \
     conda activate base && \
-    mamba create -y --override-channels --channel=conda-forge --name=jlab_env \
-        ipykernel \
+    mamba create -y --override-channels --channel=conda-forge --name=tune_insight \
         jupyterlab \
         nb_conda_kernels \
-        pip && \
-    mamba create -y --override-channels --channel=conda-forge --name=tuneinsight_env \
+        pip \
         ipykernel \
         joblib \
         lifelines \
@@ -89,7 +87,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         spacy \
         streamlit \
         tqdm && \
-    conda run -n tuneinsight_env pip install --no-cache-dir tuneinsight && \
+    conda run -n tune_insight pip install --no-cache-dir tuneinsight && \
     apt-get remove -y --purge \
         curl && \
     apt-get autoremove -y --purge
