@@ -37,12 +37,14 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get autoremove -y --purge
 
 # JupyterLab Desktop
-# tuneinsight library is not available on conda-forge
-# so we need to install it via pip
+# tuneinsight library is not available on conda-forge (use pip instead)
+# we use local wheels as we're relying on a custom build
+# provided by tune insight
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     --mount=type=cache,target=/var/cache/curl,sharing=locked \
     --mount=type=cache,target=/mambaforge/pkgs,sharing=locked \
+    --mount=type=bind,source=./wheels,target=/wheels,readonly=true \
     apt-get update -q && \
     apt-get install --no-install-recommends -qy \
         dbus-x11 \
@@ -87,7 +89,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         spacy \
         streamlit \
         tqdm && \
-    conda run -n tune_insight pip install --no-cache-dir tuneinsight && \
+    conda run -n tune_insight pip install --find-links /wheels/ ti_models==0.4.0 tuneinsight==1.4.0 && \
     apt-get remove -y --purge \
         curl && \
     apt-get autoremove -y --purge
@@ -99,7 +101,7 @@ ENV PROCESS_NAME="jlab"
 ENV APP_DATA_DIR_ARRAY=".jupyter"
 ENV DATA_DIR_ARRAY=""
 ENV CONFIG_ARRAY=""
-ENV NOTEBOOK_ARRAY="00-Check.ipynb 01-Quickstart.ipynb"
+ENV NOTEBOOK_ARRAY="00_AMLD_TuneInsight_Chorus.ipynb 01_AMLD_TuneInsight_Chorus.ipynb 02_AMLD_TuneInsight_Chorus.ipynb 03_AMLD_TuneInsight_Chorus.ipynb amld_setup.py data"
 ENV PERSISTED_FOLDER="workspace-archive"
 
 COPY ./notebook/ /apps/${APP_NAME}/notebook/
