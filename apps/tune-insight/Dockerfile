@@ -101,7 +101,7 @@ ENV PROCESS_NAME="jlab"
 ENV APP_DATA_DIR_ARRAY=".jupyter"
 ENV DATA_DIR_ARRAY=""
 ENV CONFIG_ARRAY=""
-ENV NOTEBOOK_ARRAY="00_AMLD_TuneInsight_Chorus.ipynb 01_AMLD_TuneInsight_Chorus.ipynb 02_AMLD_TuneInsight_Chorus.ipynb 03_AMLD_TuneInsight_Chorus.ipynb amld_setup.py data"
+ENV NOTEBOOK_ARRAY="AMLD_Notebook_1.ipynb AMLD_Notebook_2.ipynb AMLD_Notebook_3.ipynb amld_setup.py data"
 ENV PERSISTED_FOLDER="workspace-archive"
 
 COPY ./notebook/ /apps/${APP_NAME}/notebook/
