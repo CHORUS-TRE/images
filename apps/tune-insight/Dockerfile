@@ -89,7 +89,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         spacy \
         streamlit \
         tqdm && \
-    conda run -n tune_insight pip install --find-links /wheels/ ti_models==0.4.0 tuneinsight==1.4.0 && \
+    conda run -n tune_insight pip install --find-links /wheels/ ti_models==0.4.0 tuneinsight==1.4.1 && \
     apt-get remove -y --purge \
         curl && \
     apt-get autoremove -y --purge
