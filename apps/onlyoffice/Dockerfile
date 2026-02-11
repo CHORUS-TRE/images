@@ -12,7 +12,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update -qy && \
     apt-get install --no-install-recommends -qy ca-certificates curl \
-      libgtk-3-0t64 libxkbcommon-x11-0 libnss3 libasound2t64 \
+      libgtk-3-0t64 libxkbcommon-x11-0 libnss3 libasound2t64 libnotify4 \
       gsettings-desktop-schemas && \
     curl -ssOL https://github.com/ONLYOFFICE/appimage-desktopeditors/releases/download/v${APP_VERSION}/DesktopEditors-x86_64.AppImage && \
     chmod +x DesktopEditors-x86_64.AppImage && \
