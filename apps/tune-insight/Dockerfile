@@ -89,7 +89,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         spacy \
         streamlit \
         tqdm && \
-    conda run -n tune_insight pip install --find-links /wheels/ ti_models==0.4.0 tuneinsight==1.4.1 && \
+    conda run -n tune_insight pip install --find-links /wheels/ ti_models==0.4.9 tuneinsight==1.4.1 && \
     apt-get remove -y --purge \
         curl && \
     apt-get autoremove -y --purge
@@ -101,7 +101,7 @@ ENV PROCESS_NAME="jlab"
 ENV APP_DATA_DIR_ARRAY=".jupyter"
 ENV DATA_DIR_ARRAY=""
 ENV CONFIG_ARRAY=""
-ENV NOTEBOOK_ARRAY="AMLD_Notebook_1.ipynb AMLD_Notebook_2.ipynb AMLD_Notebook_3.ipynb amld_setup.py"
+ENV NOTEBOOK_ARRAY="AMLD_Notebook_1.ipynb AMLD_Notebook_2.ipynb AMLD_Notebook_3.ipynb AMLD_Notebook_4.ipynb amld_setup.py data"
 ENV PERSISTED_FOLDER="workspace-archive"
 
 COPY ./notebook/ /apps/${APP_NAME}/notebook/
