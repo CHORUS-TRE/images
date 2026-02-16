@@ -31,26 +31,23 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         libxmu-headers \
         libtbb-dev \
         libeigen3-dev && \
-    curl -sSL -C - -O "https://github.com/ANTsX/ANTs/releases/download/v2.5.3/ants-2.5.3-ubuntu-24.04-X64-gcc.zip" && \
-    unzip ants-2.5.3-ubuntu-24.04-X64-gcc.zip && \
-    rm ants-2.5.3-ubuntu-24.04-X64-gcc.zip && \
+    curl -sSL -C - -O "https://github.com/ANTsX/ANTs/releases/download/v${APP_VERSION}/ants-${APP_VERSION}-ubuntu-24.04-X64-gcc.zip" && \
+    unzip ants-${APP_VERSION}-ubuntu-24.04-X64-gcc.zip && \
+    rm ants-${APP_VERSION}-ubuntu-24.04-X64-gcc.zip && \
     apt-get remove -y --purge \
         curl unzip && \
     apt-get autoremove -y --purge
 
-ENV APP_CMD_PREFIX="export PATH=/apps/${APP_NAME}/ants-2.5.3/bin:${PATH}"
+ENV APP_CMD_PREFIX="export PATH=/apps/${APP_NAME}/ants-${APP_VERSION}/bin:${PATH}"
 ENV APP_SPECIAL="no"
-ENV APP_CMD="/usr/bin/wezterm"
-ENV PROCESS_NAME="/usr/bin/wezterm"
+ENV APP_CMD="/usr/bin/kitty/kitty.app/bin/kitty"
+ENV PROCESS_NAME="kitty"
 ENV APP_DATA_DIR_ARRAY=""
 ENV DATA_DIR_ARRAY=""
 
 # Install vgl + whatever is necessary for chorus use
-RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=false \
-    pushd /tmp/core_scripts && \
-    ./utilities/chorus-utils.sh -a terminal && \
-    mv entrypoint/docker-entrypoint.sh / && \
-    mv entrypoint/1-create-user.sh /docker-entrypoint.d && \
-    popd 
-    
+RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=true \
+    /tmp/core_scripts/shared/chorus-utils.sh -a terminal && \
+    cp /tmp/core_scripts/app/docker-entrypoint.sh /
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
