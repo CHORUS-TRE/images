@@ -1,12 +1,104 @@
-ARG CI_REGISTRY_IMAGE
-ARG TAG
-ARG VIRTUALGL_VERSION
-FROM ${CI_REGISTRY_IMAGE}/virtualgl:${VIRTUALGL_VERSION}${TAG}
+# syntax=docker/dockerfile:1
+
+###############################################################################
+# Stage 1: Builder — compile xpra and xpra-html5 from source
+###############################################################################
+FROM harbor.build.chorus-tre.ch/docker_proxy/library/ubuntu:24.04 AS builder
+SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
+
+ARG XPRA_COMMIT=759fb0c
+ARG XPRA_HTML5_COMMIT=085e0df
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Install build dependencies
+RUN --mount=type=cache,target=/var/cache/apt,id=apt-builder \
+    apt-get update -q && \
+    apt-get upgrade -qy && \
+    apt-get install --no-install-recommends -y \
+        # Build toolchain
+        build-essential debhelper devscripts dh-python git lintian lsb-release \
+        # Python build deps
+        cython3 python3-all-dev python3-dev python3-cairo-dev python-gi-dev python3-numpy \
+        # X11 / graphics build deps
+        libx11-dev libxtst-dev libxcomposite-dev libxdamage-dev libxres-dev libxkbfile-dev \
+        # Codec / media build deps
+        libvpx-dev libx264-dev libwebp-dev libturbojpeg-dev \
+        libavcodec-dev libavformat-dev libavutil-dev libswscale-dev \
+        libavif-dev libyuv-dev libopenh264-dev libxxhash-dev \
+        # Other build deps
+        libdrm-dev libproc2-dev liblz4-dev libbrotli-dev libqrencode-dev \
+        libpam-dev libsystemd-dev libgtk-3-dev pkgconf pandoc \
+        # GStreamer build deps
+        libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev \
+        # X11 runtime needed by debuild dep check
+        xserver-xorg-video-dummy \
+        # For repo setup and xpra-html5 build
+        curl gnupg software-properties-common \
+        libjs-jquery libjs-jquery-ui
+
+# Install Node.js + uglify-js (needed for xpra-html5 minification)
+RUN curl -fsSL https://deb.nodesource.com/setup_current.x | bash - && \
+    apt-get install -y nodejs && \
+    npm i uglify-js -g
+
+# for nvenc
+RUN curl -sSO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb && \
+    dpkg -i cuda-keyring_1.1-1_all.deb && \
+    rm cuda-keyring_1.1-1_all.deb && \
+    apt-get update -q && \
+    apt-get -y install cuda
+
+# Build xpra from source
+#RUN git clone https://github.com/HIP-infrastructure/xpra.git
+#ADD "https://api.github.com/repos/HIP-infrastructure/xpra/commits?sha=feat/keycloak-auth-groups&per_page=1" xpra_latest_commit
+RUN git clone https://github.com/Xpra-org/xpra.git /build/xpra
+ADD "https://api.github.com/repos/Xpra-org/xpra/commits?sha=master&per_page=1" /build/xpra_latest_commit
+
+RUN cd /build/xpra && \
+    #git fetch && \
+    git pull && \
+    #git checkout feat/keycloak-auth-groups && \
+    git checkout ${XPRA_COMMIT} && \
+# building a deb package
+    debuild -d -us -uc -b
+# building from source
+#    python3 ./setup.py install --prefix=/usr \
+#    --with-bencode \
+#    --with-cython_bencode \
+#    --with-server \
+#    --with-x11 && \
+#    sh packaging/debian/xpra/xpra.postinst configure
+
+# Build xpra-html5 from source
+#RUN git clone https://github.com/HIP-infrastructure/xpra-html5
+#ADD "https://api.github.com/repos/HIP-infrastructure/xpra-html5/commits?sha=fix/type-mismatch&per_page=1" xpra_html5_latest_commit
+RUN git clone https://github.com/Xpra-org/xpra-html5 /build/xpra-html5
+ADD "https://api.github.com/repos/Xpra-org/xpra-html5/commits?sha=master&per_page=1" /build/xpra_html5_latest_commit
+
+RUN cd /build/xpra-html5 && \
+    git pull && \
+    #git checkout fix/type-mismatch && \
+    #git checkout v11.0 && \
+    #git checkout 7dce93f && \
+    git checkout ${XPRA_HTML5_COMMIT} && \
+    ./setup.py deb
+
+# Collect built .deb files
+RUN mkdir -p /build/debs && \
+    ls /build/xpra-*_amd64.deb /build/xpra_*_amd64.deb | grep -v nvidia | xargs -I{} cp {} /build/debs/ && \
+    cp /build/xpra-html5/dist/xpra-html5-*.deb /build/debs/
+
+###############################################################################
+# Stage 2: Runtime
+###############################################################################
+FROM harbor.build.chorus-tre.ch/docker_proxy/library/ubuntu:24.04
+SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
+
 LABEL maintainer="nathalie.casati@chuv.ch"
 
-ARG DEBIAN_FRONTEND=noninteractive
-ARG CARD
+ARG VIRTUALGL_VERSION
 ARG XPRA_VERSION
+ARG XPRA_HTML5_VERSION
 ARG XPRA_KEYCLOAK_AUTH
 ARG XPRA_KEYCLOAK_SERVER_URL
 ARG XPRA_KEYCLOAK_REALM_NAME
@@ -14,127 +106,88 @@ ARG XPRA_KEYCLOAK_CLIENT_ID
 ARG XPRA_KEYCLOAK_CLIENT_SECRET_KEY
 ARG XPRA_KEYCLOAK_REDIRECT_URI
 ARG XPRA_KEYCLOAK_SCOPE
-ARG XPRA_KEYCLOAK_GROUPS_CLAIM
+ARG XPRA_KEYCLOAK_CLAIM_FIELD
 ARG XPRA_KEYCLOAK_AUTH_GROUPS
 ARG XPRA_KEYCLOAK_AUTH_CONDITION
 ARG XPRA_KEYCLOAK_GRANT_TYPE
 
 LABEL server_version=$XPRA_VERSION
-LABEL server_tag=$TAG
 
-RUN apt-get update && \
-    apt-get upgrade -y && \
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Install runtime dependencies + virtualgl from apt
+RUN --mount=type=cache,target=/var/cache/apt,id=apt-runtime \
+    apt-get update -q && \
+    apt-get upgrade -qy && \
     apt-get install --no-install-recommends -y \
-    libx11-dev libxtst-dev libxcomposite-dev \
-    libxdamage-dev libxres-dev libxkbfile-dev \
-    python-all-dev pandoc libsystemd-dev \
-    libgtk-3-dev python3-dev python3-cairo-dev \
-    python-gi-dev xauth x11-xkb-utils \
-    xvfb python3-cairo python3-gi-cairo \
-    python3-opengl python3-lz4 python3-rencode python3-pil \
-    devscripts build-essential lintian debhelper git \
-    lsb-release libnvidia-fbc1-470 libvpx-dev libx264-dev \
-    libwebp-dev libturbojpeg-dev libavcodec-dev \
-    libavformat-dev libavutil-dev libswscale-dev \
-    libdrm-dev libprocps-dev liblz4-dev libbrotli-dev \
-    libqrencode-dev dh-python libpam-dev python3-numpy \
-    python3-brotli keyboard-configuration curl brotli \
-    libjs-jquery libjs-jquery-ui xserver-xorg-video-dummy \
-    software-properties-common gnupg \
-    x11-xserver-utils python3-pip \
-    python3-gst-1.0 python3-pycuda \
-    dbus-x11 python3-dbus pulseaudio \
-    python3-xdg menu-xdg curl \
-    pkgconf libavif-dev libyuv-dev libopenh264-dev libxxhash-dev \
-    libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio \
-    va-driver-all gstreamer1.0-vaapi && \
-    pip3 install requests==2.29.0 urllib3==1.26.15 && \
-    pip3 install pyinotify netifaces oauthlib python-keycloak cython
-#   pip3 install python-uinput
+        brotli curl dbus-x11 gnupg keyboard-configuration \
+        lsb-release menu-xdg pulseaudio \
+        python3-brotli python3-cairo python3-dbus python3-dev \
+        python3-gi-cairo python3-gst-1.0 python3-keycloak \
+        python3-lz4 python3-netifaces python3-numpy python3-oauthlib \
+        python3-opengl python3-pil python3-pip python3-pycuda \
+        python3-pyinotify python3-rencode python3-requests \
+        python3-urllib3 python3-xdg \
+        software-properties-common x11-xserver-utils \
+        xserver-xorg-video-dummy xvfb \
+        # GStreamer runtime
+        gstreamer1.0-plugins-base gstreamer1.0-plugins-good \
+        gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly \
+        gstreamer1.0-libav gstreamer1.0-tools gstreamer1.0-x \
+        gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 \
+        gstreamer1.0-qt5 gstreamer1.0-pulseaudio \
+        va-driver-all gstreamer1.0-vaapi \
+        libnvidia-fbc1-470 && \
+#   pip3 install python-uinput && \
+    # Set up virtualgl apt repo
+    curl -fsSL https://packagecloud.io/dcommander/virtualgl/gpgkey | gpg --yes --dearmor -o /usr/share/keyrings/virtualgl.gpg && \
+    echo 'deb [signed-by=/usr/share/keyrings/virtualgl.gpg] https://packagecloud.io/dcommander/virtualgl/any/ any main' > /etc/apt/sources.list.d/virtualgl.list && \
+    apt-get update -q && \
+    virtualgl_version="$(apt-cache madison virtualgl | grep -o "${VIRTUALGL_VERSION}-[0-9]*")" && \
+    apt-get install --no-install-recommends -y \
+        virtualgl=${virtualgl_version} && \
+    # Clean up repo setup packages
+    apt-get remove -y --purge \
+        gnupg lsb-release software-properties-common && \
+    apt-get autoremove -y --purge && \
+    # Create the xpra group and user
+    groupadd --gid 1001 xpra && \
+    useradd --create-home --shell /bin/bash xpra --gid 1001 --uid 1001
+
+# Install built xpra .deb packages from builder stage
+COPY --from=builder /build/debs/ /tmp/debs/
+RUN dpkg -i /tmp/debs/*.deb || apt-get install -f -y && \
+    rm -rf /tmp/debs && \
+    [ -f /etc/xpra/ssl-cert.pem ] && chmod 644 /etc/xpra/ssl-cert.pem || true
 
 # for nvenc
 RUN curl -sSO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb && \
     dpkg -i cuda-keyring_1.1-1_all.deb && \
-    apt-get update && \
+    rm cuda-keyring_1.1-1_all.deb && \
+    apt-get update -q && \
     apt-get -y install cuda
-
-RUN curl -fsSL https://deb.nodesource.com/setup_current.x | bash - && \
-    apt-get install -y nodejs && \
-    npm i uglify-js -g
-
-#RUN git clone https://github.com/HIP-infrastructure/xpra.git
-#ADD "https://api.github.com/repos/HIP-infrastructure/xpra/commits?sha=feat/keycloak-auth-groups&per_page=1" xpra_latest_commit
-
-RUN git clone https://github.com/Xpra-org/xpra.git
-ADD "https://api.github.com/repos/Xpra-org/xpra/commits?sha=master&per_page=1" xpra_latest_commit
-
-RUN cd xpra && \
-    #git fetch && \
-    git pull && \
-    #git checkout feat/keycloak-auth-groups && \
-    git checkout 759fb0c && \
-# building a deb package
-    debuild -us -uc -b && \
-    cd ..
-# building from source
-#    python3 ./setup.py install --prefix=/usr \
-#    --with-bencode \
-#    --with-cython_bencode \
-#    --with-server \
-#    --with-x11 && \
-#    sh packaging/debian/xpra/xpra.postinst configure && \
-#    cd ..
-
-#RUN git clone https://github.com/HIP-infrastructure/xpra-html5
-#ADD "https://api.github.com/repos/HIP-infrastructure/xpra-html5/commits?sha=fix/type-mismatch&per_page=1" xpra_html5_latest_commit
-
-RUN git clone https://github.com/Xpra-org/xpra-html5
-ADD "https://api.github.com/repos/Xpra-org/xpra-html5/commits?sha=master&per_page=1" xpra_html5_latest_commit
-
-RUN cd xpra-html5 && \
-    git pull && \
-    #git checkout fix/type-mismatch && \
-    #git checkout v11.0 && \
-    #git checkout 7dce93f && \
-    git checkout 085e0df && \
-    ./setup.py deb && \
-    cd ..
-
-RUN ls /xpra-*_amd64.deb /xpra_*_amd64.deb |grep -v nvidia |xargs dpkg -i && \
-    dpkg -i /xpra-html5/dist/xpra-html5-*.deb
-
-    #apt-get remove -y --purge gnupg && \
-    #apt-get autoremove -y --purge && \
-    #apt-get clean && \
-    #rm -rf /var/lib/apt/lists/* && \
-
-
-RUN chmod 644 /etc/xpra/ssl-cert.pem && \
-    # make all applications started with vglrun use video stream encoding
-    echo "\nclass-instance:vglrun=video" >> /etc/xpra/content-type/50_class.conf && \
-    # create the xpra user and socket directory
-    useradd --create-home --shell /bin/bash xpra --gid xpra --uid 1000 && \
-    mkdir -p /run/user/1000/xpra && \
-    chown -R 1000 /run/user/1000 && \
-    chmod -R 700 /run/user/1000
 
 HEALTHCHECK --interval=10s --timeout=10s --retries=5 --start-period=30s \
   CMD curl -fks https://localhost:8080
 
 WORKDIR /home/xpra
 
-# copy xpra config files
-COPY server/config/xpra.conf /etc/xpra/xpra.conf
-COPY server/config/10_content_security_policy.txt /etc/xpra/http-headers/10_content_security_policy.txt
-COPY server/config/default.png /usr/share/backgrounds/default.png
-COPY server/config/default-settings.txt /etc/xpra/html5-client/default-settings.txt
-
-RUN ln -sf /usr/share/backgrounds/default.png /usr/share/backgrounds/ubuntu-default-greyscale-wallpaper.png
-
-# copy entrypoint script and other scripts used in it
-COPY server/config/docker-entrypoint.sh /home/xpra/docker-entrypoint.sh
-COPY scripts/check-dri.sh /home/xpra/scripts/check-dri.sh
-COPY scripts/fix-video-groups.sh /home/xpra/scripts/fix-video-groups.sh
-COPY scripts/fix-audio-groups.sh /home/xpra/scripts/fix-audio-groups.sh
+# Copy xpra config files, entrypoint, and scripts
+RUN --mount=type=bind,source=config,target=/tmp/config \
+    --mount=type=bind,source=scripts,target=/tmp/scripts \
+    cp /tmp/config/10_content_security_policy.txt /etc/xpra/http-headers/ && \
+    cat /tmp/config/51_class.conf | tee -a /etc/xpra/content-type/50_class.conf && \
+    mkdir -p /usr/share/backgrounds/images && \
+    cp /tmp/config/default.png /usr/share/backgrounds/images/ && \
+    ln -sf /usr/share/backgrounds/images/default.png /usr/share/backgrounds/ubuntu-default-greyscale-wallpaper.png && \
+    cp /tmp/config/default-settings.txt /etc/xpra/html5-client/ && \
+    cp /tmp/config/docker-entrypoint.sh . && \
+    mkdir -p "/run/user/$(id -u xpra)/xpra" .xpra scripts && \
+    chmod -R 0700 "/run/user/$(id -u xpra)" .xpra scripts && \
+    cp /tmp/scripts/*.sh scripts/ && \
+    cp /tmp/config/xpra.conf .xpra/ && \
+    chmod 0644 .xpra/xpra.conf && \
+    chmod 0755 scripts/*.sh && \
+    chown -R xpra: "/run/user/$(id -u xpra)" .xpra scripts
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
