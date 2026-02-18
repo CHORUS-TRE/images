@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM ubuntu:24.04
+FROM harbor.build.chorus-tre.ch/docker_proxy/library/ubuntu:24.04
 SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 
 ARG APP_NAME
@@ -32,11 +32,9 @@ ENV APP_DATA_DIR_ARRAY=".local"
 ENV DATA_DIR_ARRAY=""
 
 # Install vgl + whatever is necessary for chorus use
-RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=false \
-    pushd /tmp/core_scripts && \
-    ./utilities/chorus-utils.sh && \
-    mv entrypoint/docker-entrypoint.sh / && \
-    mv entrypoint/1-create-user.sh /docker-entrypoint.d && \
-    popd 
+RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=true \
+    /tmp/core_scripts/shared/chorus-utils.sh && \
+    cp /tmp/core_scripts/app/docker-entrypoint.sh / && \
+    cp /tmp/core_scripts/app/2-symlink-appdata.sh /docker-entrypoint.d/
     
 ENTRYPOINT ["/docker-entrypoint.sh"]

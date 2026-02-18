@@ -2,12 +2,18 @@ APP_VERSION=$(ls /usr/local/freesurfer/)
 
 export FREESURFER_HOME=/usr/local/freesurfer/${APP_VERSION}
 export FS_LICENSE=$HOME/license.txt
+export SUBJECTS_DIR=/apps/freesurfer/subjects
 
-# Create a license file
-[[ -s "$HOME/config/.env" ]] && source "$HOME/config/.env"
-echo -e $FREESURFER_LICENSE > $HOME/license.txt
+# Use runtime env var if set, otherwise source .env file (local dev)
+if [ -z "$FREESURFER_LICENSE" ] && [ -s "/apps/freesurfer/config/.env" ]; then
+    . "/apps/freesurfer/config/.env"
+fi
 
-source $FREESURFER_HOME/SetUpFreeSurfer.sh
+echo -e "$FREESURFER_LICENSE" > "$HOME/license.txt"
+
+. "$FREESURFER_HOME/SetUpFreeSurfer.sh"
 
 # Load the default .profile
-[[ -s "$HOME/.profile" ]] && source "$HOME/.profile"
+if [ -s "$HOME/.profile" ]; then
+    . "$HOME/.profile"
+fi
