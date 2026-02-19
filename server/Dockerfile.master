@@ -176,17 +176,15 @@ RUN --mount=type=cache,target=/var/cache/apt,id=apt-runtime \
     groupadd --gid 1001 xpra && \
     useradd --create-home --shell /bin/bash xpra --gid 1001 --uid 1001
 
-# for nvenc (install only CUDA toolkit, not the full cuda metapackage which
-# pulls in NVIDIA display drivers that hijack EGL and crash Xvfb)
-# Placed before COPY --from=html5-builder so it stays cached during bisect
-RUN curl -sSO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb && \
-    dpkg -i cuda-keyring_1.1-1_all.deb && \
-    rm cuda-keyring_1.1-1_all.deb && \
-    apt-get update -q && \
-    apt-get -y install --no-install-recommends cuda-toolkit libnvidia-encode-550 && \
-    # Remove NVIDIA EGL/GBM configs that override Mesa and crash Xvfb on non-GPU hosts
-    rm -f /usr/share/glvnd/egl_vendor.d/10_nvidia.json \
-          /usr/share/egl/egl_external_platform.d/15_nvidia_gbm.json 2>/dev/null || true
+# for nvenc (disabled for local bisecting — no GPU, saves ~5GB)
+# RUN curl -sSO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb && \
+#     dpkg -i cuda-keyring_1.1-1_all.deb && \
+#     rm cuda-keyring_1.1-1_all.deb && \
+#     apt-get update -q && \
+#     apt-get -y install --no-install-recommends cuda-toolkit libnvidia-encode-550 && \
+#     # Remove NVIDIA EGL/GBM configs that override Mesa and crash Xvfb on non-GPU hosts
+#     rm -f /usr/share/glvnd/egl_vendor.d/10_nvidia.json \
+#           /usr/share/egl/egl_external_platform.d/15_nvidia_gbm.json 2>/dev/null || true
 
 # Install built xpra .deb packages from both builder stages
 COPY --from=builder /build/debs/ /tmp/debs/
