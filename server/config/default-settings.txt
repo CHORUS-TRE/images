@@ -18,3 +18,12 @@ sound = false
 
 # position the toolbar at the top-right corner
 toolbar_position = top-right
+
+# fix for menu ghost artifacts
+video = false
+
+# hide controller button
+cursor_lock_button = false
+
+# hide sound button
+sound_button = false
