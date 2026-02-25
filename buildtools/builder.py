@@ -127,6 +127,7 @@ class ImageBuilder:
         cmd = [
             "docker", "buildx", "build",
             "--pull",
+            "--no-cache",
             "--builder", self.build_config.builder_name,
             f"--platform={self.build_config.target_arch}",
             "-t", self.image_tag,

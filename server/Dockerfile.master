@@ -108,12 +108,6 @@ RUN cd /build/xpra-html5 && \
     #git checkout v11.0 && \
     #git checkout 7dce93f && \
     git checkout ${XPRA_HTML5_COMMIT} && \
-    # Fix: remove 'return' from jQuery mouse handlers — returning false calls \
-    # stopPropagation+preventDefault which breaks jQuery UI draggable (window move). \
-    # See xpra-html5 commit 50236a8. \
-    sed -i 's/return this\.mouse_down_cb(e, this)/this.mouse_down_cb(e, this)/' html5/js/Window.js && \
-    sed -i 's/return this\.mouse_up_cb(e, this)/this.mouse_up_cb(e, this)/' html5/js/Window.js && \
-    sed -i 's/return this\.mouse_move_cb(e, this)/this.mouse_move_cb(e, this)/' html5/js/Window.js && \
     ./setup.py deb
 
 ###############################################################################
