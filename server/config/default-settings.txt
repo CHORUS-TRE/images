@@ -13,8 +13,20 @@ clipboard = false
 file_transfer = false
 keyboard = false
 sound = false
-# swap keys swaps also on windows and creates trouble, so we can't use it
-#swap_keys = true
+
+# swap_keys auto-enables on macOS but is broken in a browser: the browser
+# intercepts Cmd+key before xpra sees it, and Ctrl gets swapped to Meta/Super.
+# Disabling it lets Mac users use Ctrl directly (browsers pass Ctrl+key through).
+swap_keys = false
 
 # position the toolbar at the top-right corner
 toolbar_position = top-right
+
+# fix for menu ghost artifacts
+video = false
+
+# hide controller button
+cursor_lock_button = false
+
+# hide sound button
+sound_button = false
