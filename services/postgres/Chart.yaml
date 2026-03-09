@@ -1,0 +1,13 @@
+apiVersion: v2
+name: postgres
+version: "1.6.1"
+description: A Helm chart for PostgreSQL on Kubernetes
+maintainers:
+  - name: iDmple
+    email: nathalie.casati@chuv.ch
+  - name: floriansipp
+    email: florian.sipp@chuv.ch
+dependencies:
+  - name: postgres
+    version: "1.6.1"
+    repository: https://groundhog2k.github.io/helm-charts/

@@ -1,0 +1,6 @@
+postgres:
+  image:
+    repository: harbor.build.chorus-tre.local/docker_proxy/library/postgres
+    tag: "16"
+  storage:
+    requestedSize: 10Gi
