@@ -15,21 +15,18 @@ mlflow:
       # password: injected per-workspace by operator credential mechanism
   artifactRoot:
     proxiedArtifactStorage: true
-  persistence:
-    enabled: true
-    size: 10Gi
 
 postgres:
   fullnameOverride: "mlflow-db"
   settings:
     superuser:
       value: postgres
-    # superuserPassword: existingSecret + secretKey set per-workspace in spec.services.mlflow.values
-    userDatabase:
-      name:
-        value: mlflow
-      user:
-        value: mlflow
-      # password.existingSecret + password.secretKey: set per-workspace in spec.services.mlflow.values
+    # superuserPassword.value: injected per-workspace by operator credential mechanism
+  userDatabase:
+    name:
+      value: mlflow
+    user:
+      value: mlflow
+    # existingSecret + password.secretKey: set per-workspace in spec.services.mlflow.values
   storage:
     requestedSize: 5Gi
