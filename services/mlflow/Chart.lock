@@ -1,0 +1,9 @@
+dependencies:
+- name: mlflow
+  repository: https://community-charts.github.io/helm-charts
+  version: 1.8.1
+- name: postgres
+  repository: https://groundhog2k.github.io/helm-charts/
+  version: 1.6.1
+digest: sha256:5db9b66f61ee776ac7521790f3dd2ccdd4c5152ec59692c00dee7b3484db76ad
+generated: "2026-03-12T22:07:10.547583+01:00"
