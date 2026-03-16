@@ -15,6 +15,12 @@ mlflow:
       # password: injected per-workspace by operator credential mechanism
   artifactRoot:
     proxiedArtifactStorage: true
+  log:
+    enabled: false  # prevents chart from injecting --gunicorn-opts; logging configured via uvicornOpts below
+  extraArgs:
+    host: "0.0.0.0"
+    allowedHosts: "*"
+    uvicornOpts: "--log-level info"
 
 postgres:
   fullnameOverride: "mlflow-db"
