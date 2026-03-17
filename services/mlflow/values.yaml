@@ -8,31 +8,27 @@ mlflow:
     databaseConnectionCheck: true
     postgres:
       enabled: true
-      host: "mlflow-db"
       port: 5432
       database: mlflow
       user: mlflow
-      # password: injected per-workspace by operator credential mechanism
   artifactRoot:
     proxiedArtifactStorage: true
   log:
-    enabled: false  # prevents chart from injecting --gunicorn-opts; logging configured via uvicornOpts below
+    enabled: false
   extraArgs:
     host: "0.0.0.0"
     allowedHosts: "*"
     uvicornOpts: "--log-level info"
 
 postgres:
-  fullnameOverride: "mlflow-db"
+  nameOverride: "mlflow-db"
   settings:
     superuser:
       value: postgres
-    # superuserPassword.value: injected per-workspace by operator credential mechanism
   userDatabase:
     name:
       value: mlflow
     user:
       value: mlflow
-    # existingSecret + password.secretKey: set per-workspace in spec.services.mlflow.values
   storage:
     requestedSize: 5Gi
