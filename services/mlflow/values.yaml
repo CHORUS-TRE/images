@@ -25,7 +25,7 @@ mlflow:
         claimName: mlflow-artifacts
   extraVolumeMounts:
     - name: artifacts
-      mountPath: /mlartifacts
+      mountPath: /mlflow/mlartifacts
 
 artifactStorage:
   size: 10Gi
