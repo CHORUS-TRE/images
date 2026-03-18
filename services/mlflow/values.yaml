@@ -19,6 +19,16 @@ mlflow:
     host: "0.0.0.0"
     allowedHosts: "*"
     uvicornOpts: "--log-level info"
+  extraVolumes:
+    - name: artifacts
+      persistentVolumeClaim:
+        claimName: mlflow-artifacts
+  extraVolumeMounts:
+    - name: artifacts
+      mountPath: /mlartifacts
+
+artifactStorage:
+  size: 10Gi
 
 postgres:
   nameOverride: "mlflow-db"
