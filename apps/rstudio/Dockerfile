@@ -21,7 +21,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     curl https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | gpg --dearmor -o /etc/apt/keyrings/cran-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/cran-archive-keyring.gpg] https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/" > /etc/apt/sources.list.d/cran.list && \
     apt-get update -qy && \
-    apt-get install --no-install-recommends -y r-base r-cran-rstan r-cran-tidyverse r-cran-devtools && \
+    apt-get install --no-install-recommends -y r-base r-base-dev && \
+    Rscript -e "install.packages(c('rstan', 'tidyverse', 'devtools'), repos='https://packagemanager.posit.co/cran/__linux__/noble/latest', Ncpus=parallel::detectCores())" && \
     curl -sSO https://download1.rstudio.org/electron/jammy/amd64/rstudio-${APP_VERSION}-${APP_PKG_REL}-amd64.deb && \
     dpkg -i rstudio-${APP_VERSION}-${APP_PKG_REL}-amd64.deb && \
     rm -rf rstudio-${APP_VERSION}-${APP_PKG_REL}-amd64.deb && \
