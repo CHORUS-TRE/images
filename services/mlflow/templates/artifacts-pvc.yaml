@@ -2,6 +2,8 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: mlflow-artifacts
+  annotations:
+    helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
