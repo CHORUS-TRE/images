@@ -21,8 +21,6 @@ mlflow:
     uvicornOpts: "--log-level info"
   extraVolumes:
     - name: artifacts
-      persistentVolumeClaim:
-        claimName: mlflow-artifacts
   extraVolumeMounts:
     - name: artifacts
       mountPath: /mlflow/mlartifacts
