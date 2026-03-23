@@ -33,7 +33,7 @@ images/
 │   ├── freesurfer/
 │   ├── ........
 │   └── vscode/
-├── services/          # Helm charts for backend services
+├── services/          # Helm charts for services
 │   ├── mlflow/
 │   └── postgres/
 └── README.md          # This file
