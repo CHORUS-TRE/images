@@ -33,6 +33,9 @@ images/
 │   ├── freesurfer/
 │   ├── ........
 │   └── vscode/
+├── services/          # Helm charts for services
+│   ├── mlflow/
+│   └── postgres/
 └── README.md          # This file
 ```
 
@@ -63,6 +66,7 @@ This guide covers:
 
 | Application | Description | Directory |
 |-------------|-------------|-----------|
+| **ANTs** | Advanced Normalization Tools for brain and image mapping | `apps/ants/` |
 | **ARX** | Data anonymization tool for sensitive personal data | `apps/arx/` |
 | **Benchmark** | Performance benchmarking tool for Chorus environment | `apps/benchmark/` |
 | **BIDSificator** | Tool for converting neuroimaging data to BIDS format | `apps/bidsificator/` |
@@ -80,13 +84,25 @@ This guide covers:
 | **JupyterLab** | Web-based interactive development environment for notebooks, code, and data | `apps/jupyterlab/` |
 | **Kiosk** | Kiosk mode browser for controlled web access | `apps/kiosk/` |
 | **Localizer** | Brain localization tool for neuroimaging analysis | `apps/localizer/` |
+| **Localizer Win** | Windows version of Localizer running via Wine | `apps/localizer-win/` |
+| **MRtrix3** | Advanced tools for the analysis of diffusion MRI data including tractography and connectomics | `apps/mrtrix/` |
 | **OnlyOffice** | Office suite for document, spreadsheet, and presentation editing | `apps/onlyoffice/` |
+| **ROBEX** | Robust brain extraction tool for T1-weighted MRI using a random forest classifier | `apps/robex/` |
 | **RStudio** | Integrated development environment for R programming language | `apps/rstudio/` |
 | **SciTerminal** | Scientific terminal environment for command-line research tools | `apps/sciterminal/` |
 | **3D Slicer** | Open-source platform for medical image informatics and visualization | `apps/slicer/` |
 | **TRC Anonymizer** | Anonymization tool for TRC format EEG data files | `apps/trcanonymizer/` |
 | **Tune Insight** | Privacy-preserving data collaboration platform with JupyterLab interface | `apps/tune-insight/` |
 | **Visual Studio Code** | Lightweight source code editor with debugging and Git integration | `apps/vscode/` |
+
+---
+
+## Available Services
+
+| Service | Description | Directory |
+|---------|-------------|-----------|
+| **MLflow** | Open source platform for the machine learning lifecycle (bundled PostgreSQL) | `services/mlflow/` |
+| **PostgreSQL** | PostgreSQL database on Kubernetes | `services/postgres/` |
 
 ---
 

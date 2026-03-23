@@ -34,7 +34,7 @@ set -e
 
 #installs kitty
 apt-get -qq update && \
-apt-get install -qq --no-install-recommends -y curl xz-utils libfontconfig1 libxcursor1 libxcb-xkb1 && \
+apt-get install -qq --no-install-recommends -y curl xz-utils libfontconfig1 libxcursor1 libxcb-xkb1 git && \
 curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin \
     dest=/usr/bin/kitty installer=version-$TERMINAL_VERSION launch=n
 
