@@ -85,6 +85,7 @@ This guide covers:
 | **Kiosk** | Kiosk mode browser for controlled web access | `apps/kiosk/` |
 | **Localizer** | Brain localization tool for neuroimaging analysis | `apps/localizer/` |
 | **Localizer Win** | Windows version of Localizer running via Wine | `apps/localizer-win/` |
+| **Matlab** | Numerical computing environment and programming language, used for signal processing and computational mathematics | `apps/matlab/` |
 | **MRtrix3** | Advanced tools for the analysis of diffusion MRI data including tractography and connectomics | `apps/mrtrix/` |
 | **OnlyOffice** | Office suite for document, spreadsheet, and presentation editing | `apps/onlyoffice/` |
 | **ROBEX** | Robust brain extraction tool for T1-weighted MRI using a random forest classifier | `apps/robex/` |
