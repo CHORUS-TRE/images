@@ -29,6 +29,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     rm freesurfer_ubuntu22-${APP_VERSION}_amd64.deb && \
     mkdir -p /apps/${APP_NAME}/subjects && \
     chown -R 1001:1001 /apps/${APP_NAME}/subjects && \
+    # Group-write needed: workbench users share GID 1001
     chmod 775 /apps/${APP_NAME}/subjects && \
     apt-get remove -y --purge curl && \
     apt-get autoremove -y --purge

@@ -45,6 +45,8 @@ images/
 
 ### For Application Developers
 
+> **Note:** Applications require the Chorus operator for license injection and user setup. For local testing, create the required Secrets in a Colima cluster.
+
 **📖 Read the comprehensive guide:** [core/README.md](./core/README.md)
 
 This guide covers:
