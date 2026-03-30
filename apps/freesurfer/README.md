@@ -1,17 +1,12 @@
 # Freesurfer
 
-## Setup license (local development)
+## License
 
-1) Request a license : https://surfer.nmr.mgh.harvard.edu/registration.html
-2) Copy **.env.template** to **.env** and replace the license fields inside
-3) Run **build.sh**
+The license is injected via environment variable by the workbench-operator.
+The operator reads from a Kubernetes Secret (configured via `--license-secret-name`) and sets
+`FREESURFER_LICENSE` from the `freesurfer` key. The `.bash_profile` writes it to `$HOME/license.txt` at startup.
 
-## Production / CI-CD
-
-For production deployments, the license is injected via environment variable by the workbench-operator.
-The operator reads from a Kubernetes Secret (configured via `--license-secret-name`) and sets `FREESURFER_LICENSE` from the `freesurfer` key.
-
-The `.bash_profile` checks for the env var first, so no `.env` file is needed in the image.
+To request a license: https://surfer.nmr.mgh.harvard.edu/registration.html
 
 Example secret:
 ```yaml
