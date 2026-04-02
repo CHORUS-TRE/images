@@ -272,12 +272,12 @@ Each app has a `labels` file that defines metadata embedded into the Docker imag
 
 The `ch.chorus-tre.app.stability` label indicates the readiness level of an app:
 
-| Value | Meaning |
-|-------|---------|
-| `ready` | Production-ready, fully tested and available to all users |
-| `beta` | Feature-complete but still under validation |
-| `alpha` | Early testing, may have known issues |
-| `off` | Deactivated -- the app should not be built or made available |
+| Value | Meaning | In Chorus |
+|-------|---------|-----------|
+| ready | Production-ready, fully tested and available to all users | Available
+| beta | Feature-complete but still under validation | Available with beta tag
+| alpha | Early testing, may have known issues | Not Available but built
+| off | Deactivated -- the app should not be built or made available | Not built
 
 Set this in the app's `labels` file:
 
