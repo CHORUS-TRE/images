@@ -241,6 +241,54 @@ python build.py <app-name> --dry-run
 
 ---
 
+## Labels
+
+Each app has a `labels` file that defines metadata embedded into the Docker image as OCI labels. These labels are read by the backend sync job to populate the app catalog.
+
+### Label Reference
+
+| Label | Required | Description |
+|-------|----------|-------------|
+| `org.opencontainers.image.title` | Yes | Display name of the app |
+| `org.opencontainers.image.description` | Yes | Short description |
+| `org.opencontainers.image.url` | No | Project homepage |
+| `org.opencontainers.image.documentation` | No | Documentation URL |
+| `org.opencontainers.image.licenses` | Yes | SPDX license identifier |
+| `org.opencontainers.image.authors` | Yes | Author or organization |
+| `org.opencontainers.image.vendor` | Yes | Always `Chorus-TRE` |
+| `org.opencontainers.image.source` | Yes | Source repository URL |
+| `ch.chorus-tre.app.icon` | Yes | Set to `AUTO_POPULATED_FROM_LOGO_PNG` (replaced at build time) |
+| `ch.chorus-tre.app.changelog` | No | Changelog text |
+| `ch.chorus-tre.app.license-url` | No | Direct link to the license file |
+| `ch.chorus-tre.app.category` | Yes | App category (`Development`, `Data Science`, `Neuroscience`, `Productivity`) |
+| `ch.chorus-tre.app.stability` | Yes | App stability level (see below) |
+| `ch.chorus-tre.resources.*` | No | Resource constraints (CPU, memory, ephemeral storage, shared memory) |
+| `ch.chorus-tre.build.app-version` | Yes | Upstream application version |
+| `ch.chorus-tre.build.pkg-rel` | Yes | Package release number (increment on rebuild without version change) |
+| `ch.chorus-tre.build.cache-mode` | No | BuildKit cache mode (`max` or `min`, defaults to `max`) |
+| `ch.chorus-tre.build.arg.*` | No | Build arguments passed to `docker build` |
+
+### App Stability
+
+The `ch.chorus-tre.app.stability` label indicates the readiness level of an app:
+
+| Value | Meaning | In Chorus |
+|-------|---------|-----------|
+| ready | Production-ready, fully tested and available to all users | Available
+| beta | Feature-complete but still under validation | Available with beta tag
+| alpha | Early testing, may have known issues | Not Available but built
+| off | Deactivated -- the app should not be built or made available | Not built
+
+Set this in the app's `labels` file:
+
+```
+ch.chorus-tre.app.stability="ready"
+```
+
+When an app needs to be temporarily disabled (e.g., due to a critical bug), change its stability to `off`. The CI pipeline will skip image builds for `off` apps.
+
+---
+
 ## Troubleshooting
 
 ### Common Issues
