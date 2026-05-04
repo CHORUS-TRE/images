@@ -12,5 +12,5 @@ dependencies:
     version: "1.8.1"
     repository: https://community-charts.github.io/helm-charts
   - name: postgres
-    version: "1.6.1"
+    version: "1.6.3"
     repository: https://groundhog2k.github.io/helm-charts/
