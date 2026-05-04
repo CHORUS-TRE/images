@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build dependencies - FreeSurfer
-FROM harbor.build.chorus-tre.ch/docker_proxy/library/ubuntu:24.04 AS freesurfer-builder
+FROM harbor.build.chorus-tre.ch/docker_proxy/library/ubuntu:26.04 AS freesurfer-builder
 SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -18,7 +18,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     rm freesurfer_ubuntu22-${FREESURFER_VERSION}_amd64.deb
 
 # Stage 2: Build dependencies - FSL
-FROM harbor.build.chorus-tre.ch/docker_proxy/library/ubuntu:24.04 AS fsl-builder
+FROM harbor.build.chorus-tre.ch/docker_proxy/library/ubuntu:26.04 AS fsl-builder
 SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -44,7 +44,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     rm fslinstaller.py
 
 # Stage 3: Final runtime stage
-FROM harbor.build.chorus-tre.ch/docker_proxy/library/ubuntu:24.04 AS final
+FROM harbor.build.chorus-tre.ch/docker_proxy/library/ubuntu:26.04 AS final
 SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 
 ARG APP_NAME
