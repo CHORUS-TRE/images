@@ -19,14 +19,14 @@ if [ -n "$KIOSK_JWT_TOKEN" ] && [ -n "$KIOSK_JWT_URL" ] ; then
       --headless=new \
       --disable-gpu \
       --no-sandbox \
-      --virtual-time-budget=10000 \
+      --virtual-time-budget=30000 \
       "${KIOSK_JWT_URL}#jwt=${KIOSK_JWT_TOKEN}" &
     
     EXCHANGE_PID=$!
     
     # Wait for token exchange to complete (adjust timeout as needed)
     echo "Waiting for token exchange to complete..."
-    sleep 10
+    sleep 30
     
     # Kill the headless instance
     kill $EXCHANGE_PID 2>/dev/null || true
