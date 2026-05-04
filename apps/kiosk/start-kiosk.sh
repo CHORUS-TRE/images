@@ -19,7 +19,7 @@ if [ -n "$KIOSK_JWT_TOKEN" ] && [ -n "$KIOSK_JWT_URL" ] ; then
       --headless=new \
       --disable-gpu \
       --no-sandbox \
-      --virtual-time-budget=30000 \
+      --dump-dom \
       "${KIOSK_JWT_URL}#jwt=${KIOSK_JWT_TOKEN}" &
     
     EXCHANGE_PID=$!
