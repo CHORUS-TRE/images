@@ -26,7 +26,7 @@ if [ -n "$KIOSK_JWT_TOKEN" ] && [ -n "$KIOSK_JWT_URL" ] ; then
     
     # Wait for token exchange to complete (adjust timeout as needed)
     echo "Waiting for token exchange to complete..."
-    sleep 30
+    sleep 10
     
     # Kill the headless instance
     kill $EXCHANGE_PID 2>/dev/null || true
