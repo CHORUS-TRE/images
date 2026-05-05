@@ -59,17 +59,20 @@ Apps set this in their `labels` file as `ch.chorus-tre.app.category`. Services s
 
 **📖 Read the comprehensive guide:** [core/README.md](./core/README.md)
 
-Covers:
+This guide covers:
 - Building Chorus-compatible application images
 - UID/GID requirements and security guidelines
 - Persistent storage configuration
 - Testing and debugging
 - Complete examples and checklist
 
-Quick links:
-- **Building your first app:** [Quick Start](./core/README.md#quick-start) in core/README.md
-- **Example applications:** Browse the `apps/` directory
-- **Init container:** See `app-init/` for user setup
+### Quick Links
+
+- **Building your first app:** See [Quick Start](./core/README.md#quick-start) in core/README.md
+- **Example applications:** Browse `apps/` directory for real-world examples
+- **Init container:** See `app-init/` for user setup container
+
+---
 
 ## Available Applications
 
@@ -104,6 +107,8 @@ Quick links:
 | **TRC Anonymizer** | Anonymization tool for TRC format EEG data files | `apps/trcanonymizer/` |
 | **Tune Insight** | Privacy-preserving data collaboration platform with JupyterLab interface | `apps/tune-insight/` |
 | **Visual Studio Code** | Lightweight source code editor with debugging and Git integration | `apps/vscode/` |
+
+---
 
 ## Architecture
 
@@ -142,6 +147,8 @@ ENV APP_DATA_DIR_ARRAY=".config/myapp .local/share/myapp"
 
 This creates symlinks from `~/.config/myapp` to persistent storage on `workspace-local`.
 
+---
+
 ## Build System
 
 All images are built using the unified `build.py` script at the repository root.
@@ -163,6 +170,8 @@ python build.py --list
 
 ### Dry Run
 
+Preview the build command without executing:
+
 ```bash
 python build.py <app-name> --dry-run
 ```
@@ -176,6 +185,8 @@ python build.py <app-name> --dry-run
 | `CACHE` | `cache` | Cache repository name |
 | `TARGET_ARCH` | `linux/amd64` | Target architecture |
 | `OUTPUT` | `docker` | Output type (`docker` or `registry`) |
+
+---
 
 ## Labels
 
@@ -215,7 +226,15 @@ The `ch.chorus-tre.app.stability` label indicates the readiness level of an app:
 | alpha | Early testing, may have known issues | Not Available but built |
 | off | Deactivated — the app should not be built or made available | Not built |
 
+Set this in the app's `labels` file:
+
+```
+ch.chorus-tre.app.stability="ready"
+```
+
 When an app needs to be temporarily disabled (e.g., due to a critical bug), change its stability to `off`. The CI pipeline will skip image builds for `off` apps.
+
+---
 
 ## Security Considerations
 
@@ -242,6 +261,8 @@ All applications run with:
 - Write to `/tmp` or `$HOME` only
 - Test with `--user 1234:1001 --cap-drop=ALL`
 
+---
+
 ## Contributing
 
 ### Adding a New Application
@@ -267,19 +288,35 @@ When updating:
 3. Update app-init if init/ scripts change
 4. Consider backward compatibility
 
+---
+
 ## Troubleshooting
 
+### Common Issues
+
 **Problem:** User appears as UID instead of username
+
 **Solution:** Check that `libnss-wrapper` is installed in app image
 
+---
+
 **Problem:** Permission denied errors
+
 **Solution:** Check file permissions, ensure group 1001 can write if needed
 
+---
+
 **Problem:** App fails to start
+
 **Solution:** Check logs for NSS wrapper errors, verify entrypoint script is executable
 
+---
+
 **Problem:** Config not persisting
+
 **Solution:** Verify `APP_DATA_DIR_ARRAY` is set and `2-symlink-appdata.sh` is included
+
+---
 
 ## Getting Help
 
@@ -303,12 +340,16 @@ Services are Helm charts deployed by the **workbench-operator** inside a Chorus 
 
 This split keeps `WorkspaceService` CRs thin — they only specify the chart pointer and per-instance overrides; everything else lives next to the chart.
 
+---
+
 ## Available Services
 
 | Service | Description | Directory |
 |---------|-------------|-----------|
 | **MLflow** | Open source platform for the machine learning lifecycle (bundled PostgreSQL) | `services/mlflow/` |
 | **PostgreSQL** | PostgreSQL database on Kubernetes | `services/postgres/` |
+
+---
 
 ## Chart.yaml Annotations
 
@@ -330,6 +371,8 @@ Each service `Chart.yaml` carries the same descriptive metadata as apps' OCI lab
 | `ch.chorus-tre.service.license-url` | `annotations` | Direct link to the license file |
 | `ch.chorus-tre.service.category` | `annotations` | One of the categories listed above |
 | `ch.chorus-tre.service.stability` | `annotations` | Service stability level (same scale as apps: `ready`, `beta`, `alpha`, `off`) |
+
+---
 
 ## `chorus.yaml`
 
@@ -374,6 +417,8 @@ The `WorkspaceService` CR fields `credentials.*` and `connectionInfoTemplate` ov
 
 For resources, the working convention (mirroring apps) is to set **limits only** and leave requests commented out — the cluster supplies tiny default requests.
 
+---
+
 ## Network Policy
 
 Service Pods must not be reachable from outside the workspace. Each service chart ships a `templates/networkpolicy.yaml` and a `templates/ciliumnetworkpolicy.yaml` (toggle by `networkPolicy.enabled` and `networkPolicy.enabled_l7_waf` in `values.yaml`), following the same pattern used by `chorus-tre/charts/i2b2-frontend`, `i2b2-postgres`, and `didata`.
@@ -384,6 +429,8 @@ Default posture:
 - **Egress**: allow DNS to in-cluster CoreDNS and to node-local-dns (`toEntities: [world]` on port 53, after the i2b2-wildfly fix). Deny all other egress unless `networkPolicy.egress` adds it. Database services typically end up with `egress: []` (no egress at all).
 
 `enabled_l7_waf: false` (default) renders a standard K8s NetworkPolicy. `enabled_l7_waf: true` renders a CiliumNetworkPolicy with the same shape — required when a chart needs L7 HTTP filtering (path/method allowlists), like didata.
+
+---
 
 ## Contributing
 
@@ -397,22 +444,41 @@ Default posture:
 6. **Test as standalone:** `helm install my-test ./services/your-service` — chart should produce a working release on its own (no operator needed for testing).
 7. **Submit PR:** Chart, `chorus.yaml`, `logo.png`, NetPol/CNP templates, and any subchart pin updates.
 
+---
+
 ## Troubleshooting
 
+### Common Issues
+
 **Problem:** PVC not bound after `helm install`
+
 **Solution:** The chart's PVC name is derived from `extraVolumes[0].persistentVolumeClaim.claimName` in values; for standalone install make sure that key has a non-empty default in `values.yaml`.
 
+---
+
 **Problem:** Operator deploys the service but `connectionInfo` is empty in `WorkspaceStatus`
+
 **Solution:** Verify the chart's `chorus.yaml` has `connectionInfoTemplate` set; the CR field can override but the metadata default should always be present.
 
+---
+
 **Problem:** Generated credentials secret is missing keys
+
 **Solution:** Each path in `chorus.yaml` `credentials.paths` becomes a Secret key. Confirm the path matches the rendered chart values structure (operator walks the value tree).
 
+---
+
 **Problem:** Subchart's values aren't picked up after a metadata change
+
 **Solution:** Helm replaces arrays wholesale on user-values merge. The operator's metadata is treated as a values overlay, so any `extraVolumes`-style array entry in `chorus.yaml` must be **complete** (not just a partial patch).
 
+---
+
 **Problem:** Workspace pods can't reach the service Pod
+
 **Solution:** The chart's NetworkPolicy default-denies cross-namespace ingress. Same-namespace ingress on the service's port should already be allowed; if the calling pod is in a different namespace, add an entry under `networkPolicy.ingress` in the env values.
+
+---
 
 ## Getting Help
 
