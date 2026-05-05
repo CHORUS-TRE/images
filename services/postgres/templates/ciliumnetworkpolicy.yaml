@@ -26,30 +26,9 @@ spec:
   {{- toYaml .Values.networkPolicy.egress | nindent 2 }}
   {{- end }}
   # Allow same-namespace egress.
+  # DNS egress is granted by the workspace-level CiliumNetworkPolicy that the
+  # workbench-operator installs in this namespace; not restated here.
   - toEndpoints:
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: {{ .Release.Namespace }}
-  # Allow DNS to in-cluster CoreDNS pods (clusters without node-local-dns).
-  - toEndpoints:
-    - matchLabels:
-        k8s:io.kubernetes.pod.namespace: kube-system
-        app: coredns
-    toPorts:
-    - ports:
-      - port: "53"
-        protocol: UDP
-      - port: "53"
-        protocol: TCP
-  # Allow DNS to node-local-dns (host network, link-local IP).
-  # Cilium classifies that link-local IP as the "world" entity (not "host" and
-  # not the node-local-dns pod identity, since the pod runs hostNetwork=true).
-  # Bounded to port 53 — does not allow general external egress.
-  - toEntities:
-    - world
-    toPorts:
-    - ports:
-      - port: "53"
-        protocol: UDP
-      - port: "53"
-        protocol: TCP
 {{- end }}

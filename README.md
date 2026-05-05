@@ -110,7 +110,7 @@ This guide covers:
 
 ---
 
-## Architecture
+## Architecture Overview
 
 ### Init Container Pattern
 
@@ -426,7 +426,7 @@ Service Pods must not be reachable from outside the workspace. Each service char
 Default posture:
 
 - **Ingress**: deny by default. Allow only same-namespace pods (the workspace) on the service's port — overridable via `networkPolicy.ingress` for special cases (e.g., letting the chorus-gateway namespace reach a service that's also exposed externally).
-- **Egress**: allow DNS to in-cluster CoreDNS and to node-local-dns (`toEntities: [world]` on port 53, after the i2b2-wildfly fix). Deny all other egress unless `networkPolicy.egress` adds it. Database services typically end up with `egress: []` (no egress at all).
+- **Egress**: allow same-namespace traffic only — overridable via `networkPolicy.egress`. **DNS is intentionally NOT allowed here**; it's granted by the workspace-level `CiliumNetworkPolicy` that the workbench-operator creates in the namespace, so the chart doesn't restate it. Charts installed standalone (outside a workspace) therefore have no DNS egress unless the operator is providing it; that's the intended posture and matches how `chorus-tre/charts/i2b2-postgres` ships (no egress beyond the platform-managed allows).
 
 `enabled_l7_waf: false` (default) renders a standard K8s NetworkPolicy. `enabled_l7_waf: true` renders a CiliumNetworkPolicy with the same shape — required when a chart needs L7 HTTP filtering (path/method allowlists), like didata.
 
