@@ -1,3 +1,9 @@
 postgres:
   storage:
     requestedSize: 1Gi
+
+networkPolicy:
+  enabled: true
+  enabled_l7_waf: false
+  ingress:
+  egress:

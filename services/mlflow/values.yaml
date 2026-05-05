@@ -21,6 +21,8 @@ mlflow:
     uvicornOpts: "--log-level info"
   extraVolumes:
     - name: artifacts
+      persistentVolumeClaim:
+        claimName: mlflow-artifacts
   extraVolumeMounts:
     - name: artifacts
       mountPath: /mlflow/mlartifacts
@@ -40,3 +42,9 @@ postgres:
       value: mlflow
   storage:
     requestedSize: 5Gi
+
+networkPolicy:
+  enabled: true
+  enabled_l7_waf: false
+  ingress:
+  egress:

@@ -1,0 +1,19 @@
+values:
+  settings:
+    superuser:
+      value: postgres
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+      # ephemeral-storage: ""
+    # requests:
+    #   cpu: ""
+    #   memory: ""
+    #   ephemeral-storage: ""
+
+credentials:
+  paths:
+    - settings.superuserPassword.value
+
+connectionInfoTemplate: "postgresql://postgres@{{.ReleaseName}}.{{.Namespace}}:5432/postgres"

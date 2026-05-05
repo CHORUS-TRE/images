@@ -1,7 +1,11 @@
 apiVersion: v2
 name: postgres
-version: "0.0.3"
+version: "0.0.4"
 description: A Helm chart for PostgreSQL on Kubernetes
+appVersion: "18.1"
+home: https://github.com/groundhog2k/helm-charts
+sources:
+  - https://github.com/CHORUS-TRE/images
 maintainers:
   - name: iDmple
     email: nathalie.casati@chuv.ch
@@ -11,3 +15,11 @@ dependencies:
   - name: postgres
     version: "1.6.1"
     repository: https://groundhog2k.github.io/helm-charts/
+annotations:
+  org.opencontainers.image.documentation: "https://www.postgresql.org/docs/"
+  org.opencontainers.image.licenses: "PostgreSQL"
+  org.opencontainers.image.vendor: "Chorus-TRE"
+  ch.chorus-tre.service.changelog: ""
+  ch.chorus-tre.service.license-url: "https://www.postgresql.org/about/licence/"
+  ch.chorus-tre.service.category: "Data Science"
+  ch.chorus-tre.service.stability: "ready"
