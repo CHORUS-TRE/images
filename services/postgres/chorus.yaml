@@ -13,6 +13,7 @@ values:
     #   ephemeral-storage: ""
 
 credentials:
+  secretName: "{{.ReleaseName}}-creds"
   paths:
     - settings.superuserPassword.value
 

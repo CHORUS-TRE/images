@@ -21,6 +21,7 @@ values:
       #   ephemeral-storage: ""
 
 credentials:
+  secretName: "{{.ReleaseName}}-creds"
   paths:
     - postgres.settings.superuserPassword.value
     - postgres.userDatabase.password.value|mlflow.backendStore.postgres.password

@@ -400,6 +400,7 @@ values:
       #   ephemeral-storage: ""
 
 credentials:
+  secretName: "{{.ReleaseName}}-creds"
   paths:
     - <chart-path-to-password>
     - <another-path>|<paired-path>      # values share the same generated secret entry
@@ -410,6 +411,7 @@ connectionInfoTemplate: "<scheme>://{{.ReleaseName}}.{{.Namespace}}"
 | Top-level key | Description |
 |---|---|
 | `values` | Helm values overlay merged below the user's `values:` and `computedValues:` from the `WorkspaceService` CR. The operator template-substitutes `{{.ReleaseName}}`, `{{.Namespace}}`, `{{.SecretName}}` over the entire block before merging. |
+| `credentials.secretName` | Name of the Secret the operator creates for generated passwords. Supports template placeholders. The operator falls back to `<release-name>-creds` when neither chorus.yaml nor the CR specifies a name. |
 | `credentials.paths` | List of dot-notation paths in the rendered chart values whose leaf is a password the operator should generate. Each path becomes a key in the credentials Secret. Multiple paths joined with `|` share the same generated value. |
 | `connectionInfoTemplate` | Surfaced in `WorkspaceStatus.services[].connectionInfo`. Supports the same template placeholders as above. |
 
