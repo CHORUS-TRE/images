@@ -2,6 +2,8 @@ values:
   mlflow:
     backendStore:
       postgres:
+        # Service name = "<release>-<postgres.nameOverride>". The "-mlflow-db"
+        # suffix here MUST match `postgres.nameOverride` in values.yaml.
         host: "{{.ReleaseName}}-mlflow-db"
     extraVolumes:
       - name: artifacts

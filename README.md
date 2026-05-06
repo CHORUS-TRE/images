@@ -432,15 +432,16 @@ For resources, the working convention (mirroring apps) is to set **limits only**
 
 ## Network Policy
 
-Service Pods must not be reachable from outside the workspace. Each service chart ships a `templates/networkpolicy.yaml` and a `templates/ciliumnetworkpolicy.yaml` (toggle by `networkPolicy.enabled` and `networkPolicy.enabledL7Waf` in `values.yaml`), following the same pattern used by `chorus-tre/charts/i2b2-frontend`, `i2b2-postgres`, and `didata`.
+Service Pods must not be reachable from outside the workspace. Each service chart ships a `templates/networkpolicy.yaml` and a `templates/ciliumnetworkpolicy.yaml` (toggle by `networkPolicy.enabled` and `networkPolicy.enabledL7Waf` in `values.yaml`).
 
 Default posture:
 
 - **Ingress**: deny by default. Allow only same-namespace pods (the workspace), all ports. Setting `networkPolicy.ingress` **replaces** that default with whatever the env supplies (e.g., letting the chorus-gateway namespace reach a service that's also exposed externally — the env values must restate same-namespace if it's still wanted).
-- **Egress**: allow same-namespace traffic only, all ports. Setting `networkPolicy.egress` **replaces** that default — same precedence as ingress. **DNS is intentionally NOT allowed here**; it's granted by the workspace-level `CiliumNetworkPolicy` that the workbench-operator creates in the namespace, so the chart doesn't restate it. Charts installed standalone (outside a workspace) therefore have no DNS egress unless the operator is providing it; that's the intended posture and matches how `chorus-tre/charts/i2b2-postgres` ships (no egress beyond the platform-managed allows).
+- **Egress**: allow same-namespace traffic only, all ports. Setting `networkPolicy.egress` **replaces** that default — same precedence as ingress. **DNS is intentionally NOT allowed here**; it's granted by the workspace-level `CiliumNetworkPolicy` that the workbench-operator creates in the namespace, so the chart doesn't restate it. Charts installed standalone (outside a workspace) therefore have no DNS egress unless the operator is providing it; that's the intended posture (no egress beyond the platform-managed allows).
 - **Note on port restriction**: chart NetPols intentionally do not restrict to specific service ports. The workspace-level `CiliumNetworkPolicy` selects every pod in the namespace and grants all-port intra-namespace traffic, so any chart-level port restriction would be overridden by union-of-allows semantics. If a chart needs real per-port enforcement (e.g. for standalone installs outside a workspace), set `networkPolicy.ingress` / `networkPolicy.egress` in env values with the desired `ports` clause.
+- **`networkPolicy.ingress: []` does NOT deny-all**: Helm/Sprig treats an empty slice as a falsy value, so the template's `{{- if .Values.networkPolicy.ingress }}` falls through to the same-namespace default. To truly deny all ingress, set `networkPolicy.enabled: false` and ship a separate, custom-named NetworkPolicy / CiliumNetworkPolicy with `ingress: []` and `policyTypes: [Ingress]`. Same caveat applies to `networkPolicy.egress: []`.
 
-`enabledL7Waf: false` (default) renders a standard K8s NetworkPolicy. `enabledL7Waf: true` renders a CiliumNetworkPolicy with the same shape — required when a chart needs L7 HTTP filtering (path/method allowlists), like didata.
+`enabledL7Waf: false` (default) renders a standard K8s NetworkPolicy. `enabledL7Waf: true` renders a CiliumNetworkPolicy with the same shape — required when a chart needs L7 HTTP filtering (path/method allowlists).
 
 ---
 
@@ -489,6 +490,21 @@ Default posture:
 **Problem:** Workspace pods can't reach the service Pod
 
 **Solution:** The chart's NetworkPolicy default-denies cross-namespace ingress. Same-namespace ingress on the service's port is already allowed by the chart default. If the calling pod is in a different namespace, set `networkPolicy.ingress` in the env values — note this **replaces** the default, so include the same-namespace rule too if you still want it.
+
+---
+
+**Problem:** Standalone `helm install ./services/mlflow` fails because chart values don't render
+
+**Solution:** The mlflow chart has three values that the workbench-operator normally injects from `chorus.yaml` (the `credentials` block) plus a chart-side computed host. For a standalone install (without the operator) you must pass them yourself:
+
+```bash
+helm install my-mlflow ./services/mlflow \
+  --set postgres.userDatabase.password.value=<userDbPassword> \
+  --set mlflow.backendStore.postgres.host=<postgres-service-host> \
+  --set mlflow.backendStore.postgres.password=<userDbPassword>
+```
+
+The same three flags are what `helm lint services/mlflow/` needs to render successfully outside the operator — see the chart-author workflow in *Contributing*.
 
 ---
 
