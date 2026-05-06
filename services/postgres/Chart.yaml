@@ -19,7 +19,7 @@ annotations:
   org.opencontainers.image.documentation: "https://www.postgresql.org/docs/"
   org.opencontainers.image.licenses: "PostgreSQL"
   org.opencontainers.image.vendor: "Chorus-TRE"
-  ch.chorus-tre.service.changelog: ""
+  ch.chorus-tre.service.changelog: "Updated PostgreSQL to 18.3"
   ch.chorus-tre.service.license-url: "https://www.postgresql.org/about/licence/"
   ch.chorus-tre.service.category: "Data Science"
   ch.chorus-tre.service.stability: "ready"

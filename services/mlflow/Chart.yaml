@@ -22,7 +22,7 @@ annotations:
   org.opencontainers.image.documentation: "https://mlflow.org/docs/"
   org.opencontainers.image.licenses: "Apache-2.0"
   org.opencontainers.image.vendor: "Chorus-TRE"
-  ch.chorus-tre.service.changelog: ""
+  ch.chorus-tre.service.changelog: "Security and stability improvements"
   ch.chorus-tre.service.license-url: "https://github.com/mlflow/mlflow/blob/master/LICENSE.txt"
   ch.chorus-tre.service.category: "Data Science"
   ch.chorus-tre.service.stability: "ready"

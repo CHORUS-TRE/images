@@ -51,6 +51,15 @@ Apps set this in their `labels` file as `ch.chorus-tre.app.category`. Services s
 
 ---
 
+## Changelog
+
+Both apps (`ch.chorus-tre.app.changelog` in their `labels` file) and services (`ch.chorus-tre.service.changelog` annotation in `Chart.yaml`) carry a short changelog string surfaced in the Chorus catalog UI when a new version of the app/service is released. The audience is the end user, so keep it short and only mention things that actually impact them. The field must never be empty — every release of an app or service ships some user-visible improvement, even if minor.
+
+- **App / service software version updates** (the upstream program changed) — say so explicitly: e.g. *"Updated PostgreSQL to 18.3"*, *"Updated MLflow to 3.8.0"*.
+- **Anything else** (chart-level repackaging, network policy adjustments, internal helm-chart restructuring, dependency bumps that don't change the deployed program version) — use a generic phrase: e.g. *"Security and stability improvements"*, *"Stability improvements"*.
+
+---
+
 # Applications
 
 ## Getting Started
@@ -473,7 +482,7 @@ Default posture:
 
 **Problem:** Subchart's values aren't picked up after a metadata change
 
-**Solution:** Helm replaces arrays wholesale on user-values merge. The operator's metadata is treated as a values overlay, so any `extraVolumes`-style array entry in `chorus.yaml` must be **complete** (not just a partial patch).
+**Solution:** Both the operator (chorus.yaml × WorkspaceService values) and Helm (operator-output × chart `values.yaml`) merge arrays the same way: maps merge recursively; slices are wholesale-replaced. So any `extraVolumes`-style array entry in `chorus.yaml` must be **complete** — if the WorkspaceService CR also defines the array, its entries replace yours wholesale.
 
 ---
 
