@@ -1,4 +1,4 @@
-{{- if and .Values.networkPolicy.enabled .Values.networkPolicy.enabled_l7_waf }}
+{{- if and .Values.networkPolicy.enabled .Values.networkPolicy.enabledL7Waf }}
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
@@ -24,11 +24,12 @@ spec:
   egress:
   {{- if .Values.networkPolicy.egress }}
   {{- toYaml .Values.networkPolicy.egress | nindent 2 }}
-  {{- end }}
-  # Allow same-namespace egress.
+  {{- else }}
+  # Default: allow same-namespace egress only.
   # DNS egress is granted by the workspace-level CiliumNetworkPolicy that the
   # workbench-operator installs in this namespace; not restated here.
   - toEndpoints:
     - matchLabels:
         k8s:io.kubernetes.pod.namespace: {{ .Release.Namespace }}
+  {{- end }}
 {{- end }}

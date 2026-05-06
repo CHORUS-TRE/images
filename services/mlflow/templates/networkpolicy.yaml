@@ -1,4 +1,4 @@
-{{- if and .Values.networkPolicy.enabled (not .Values.networkPolicy.enabled_l7_waf) }}
+{{- if and .Values.networkPolicy.enabled (not .Values.networkPolicy.enabledL7Waf) }}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -28,12 +28,14 @@ spec:
   egress:
   {{- if .Values.networkPolicy.egress }}
   {{- toYaml .Values.networkPolicy.egress | nindent 2 }}
-  {{- end }}
-  # Allow same-namespace egress (mlflow → bundled PostgreSQL on 5432).
-  # DNS egress is granted by the workspace-level CiliumNetworkPolicy that the
-  # workbench-operator installs in this namespace; not restated here.
+  {{- else }}
+  # Default: allow same-namespace egress (all ports) so mlflow can reach the
+  # bundled PostgreSQL pod and any other release-local component. DNS egress is
+  # granted by the workspace-level CiliumNetworkPolicy the workbench-operator
+  # installs in this namespace, so it is not restated here.
   - to:
     - namespaceSelector:
         matchLabels:
           kubernetes.io/metadata.name: {{ .Release.Namespace }}
+  {{- end }}
 {{- end }}

@@ -2,8 +2,8 @@ apiVersion: v2
 name: postgres
 version: "0.0.4"
 description: A Helm chart for PostgreSQL on Kubernetes
-appVersion: "18.1"
-home: https://github.com/groundhog2k/helm-charts
+appVersion: "18.3"
+home: https://www.postgresql.org
 sources:
   - https://github.com/CHORUS-TRE/images
 maintainers:
@@ -13,7 +13,7 @@ maintainers:
     email: florian.sipp@chuv.ch
 dependencies:
   - name: postgres
-    version: "1.6.1"
+    version: "1.6.3"
     repository: https://groundhog2k.github.io/helm-charts/
 annotations:
   org.opencontainers.image.documentation: "https://www.postgresql.org/docs/"
