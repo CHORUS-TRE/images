@@ -366,13 +366,16 @@ Each service `Chart.yaml` carries the same descriptive metadata as apps' OCI lab
 
 | Field | Where in Chart.yaml | Description |
 |---|---|---|
-| Title | `name` | Helm chart name |
+| Chart name | `name` | Helm chart name |
 | Version | `version` | Helm chart semver |
 | App version | `appVersion` | Upstream application version |
-| Description | `description` | Short description |
+| Chart description | `description` | One-line description for chart maintainers (Helm convention). Not surfaced in the catalog UI. |
 | Project home | `home` | Upstream project homepage |
 | Source repo | `sources: [...]` | This repository (`https://github.com/CHORUS-TRE/images`) |
 | Maintainers | `maintainers: [...]` | CHORUS-TRE maintainers |
+| `org.opencontainers.image.title` | `annotations` | User-facing display name shown in the catalog (e.g. `"MLflow"`, `"PostgreSQL"`). |
+| `org.opencontainers.image.description` | `annotations` | User-facing one-liner shown in the catalog. Marketing copy from the upstream project, not chart-author wording. |
+| `org.opencontainers.image.authors` | `annotations` | Upstream project's canonical attribution from the project's website footer (e.g. `"The PostgreSQL Global Development Group"`). |
 | `org.opencontainers.image.documentation` | `annotations` | Documentation URL |
 | `org.opencontainers.image.licenses` | `annotations` | SPDX license identifier |
 | `org.opencontainers.image.vendor` | `annotations` | Always `Chorus-TRE` |
@@ -495,16 +498,17 @@ Default posture:
 
 **Problem:** Standalone `helm install ./services/mlflow` fails because chart values don't render
 
-**Solution:** The mlflow chart has three values that the workbench-operator normally injects from `chorus.yaml` (the `credentials` block) plus a chart-side computed host. For a standalone install (without the operator) you must pass them yourself:
+**Solution:** The mlflow chart relies on values that the workbench-operator normally injects from `chorus.yaml`: two generated passwords from the `credentials` block (postgres superuser + the user-DB password, the latter aliased into mlflow's backend-store config via the `|` syntax — three injection points) plus the chart-side computed postgres host. For a standalone install (without the operator) you must pass all four `--set` flags yourself:
 
 ```bash
 helm install my-mlflow ./services/mlflow \
+  --set postgres.settings.superuserPassword.value=<superuserPassword> \
   --set postgres.userDatabase.password.value=<userDbPassword> \
-  --set mlflow.backendStore.postgres.host=<postgres-service-host> \
+  --set mlflow.backendStore.postgres.host=<mlflow-postgres-host> \
   --set mlflow.backendStore.postgres.password=<userDbPassword>
 ```
 
-The same three flags are what `helm lint services/mlflow/` needs to render successfully outside the operator — see the chart-author workflow in *Contributing*.
+The same four flags are what `helm lint services/mlflow/` needs to render successfully outside the operator — see the chart-author workflow in *Contributing*.
 
 ---
 

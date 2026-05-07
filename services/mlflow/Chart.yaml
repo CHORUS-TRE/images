@@ -19,6 +19,9 @@ dependencies:
     version: "1.6.3"
     repository: https://groundhog2k.github.io/helm-charts/
 annotations:
+  org.opencontainers.image.title: "MLflow"
+  org.opencontainers.image.description: "Open Source AI Platform for Agents, LLMs & Models"
+  org.opencontainers.image.authors: "MLflow Project, a Series of LF Projects, LLC"
   org.opencontainers.image.documentation: "https://mlflow.org/docs/"
   org.opencontainers.image.licenses: "Apache-2.0"
   org.opencontainers.image.vendor: "Chorus-TRE"
