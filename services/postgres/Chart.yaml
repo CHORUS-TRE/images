@@ -2,6 +2,8 @@ apiVersion: v2
 name: postgres
 version: "0.0.3"
 description: A Helm chart for PostgreSQL on Kubernetes
+annotations:
+  ch.chorus-tre.app.category: "Infrastructure"
 maintainers:
   - name: iDmple
     email: nathalie.casati@chuv.ch
