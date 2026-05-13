@@ -21,6 +21,8 @@ mlflow:
     uvicornOpts: "--log-level info"
   extraVolumes:
     - name: artifacts
+      persistentVolumeClaim:
+        claimName: mlflow-artifacts
   extraVolumeMounts:
     - name: artifacts
       mountPath: /mlflow/mlartifacts
@@ -29,6 +31,9 @@ artifactStorage:
   size: 10Gi
 
 postgres:
+  # Service name = "<release>-<nameOverride>". This suffix is referenced
+  # verbatim by `mlflow.backendStore.postgres.host` in chorus.yaml; if you
+  # change it here, update chorus.yaml too or mlflow won't reach the DB.
   nameOverride: "mlflow-db"
   settings:
     superuser:
@@ -40,3 +45,7 @@ postgres:
       value: mlflow
   storage:
     requestedSize: 5Gi
+
+networkPolicy:
+  enabled: true
+  enabledL7Waf: false

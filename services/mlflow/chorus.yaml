@@ -1,0 +1,31 @@
+values:
+  mlflow:
+    backendStore:
+      postgres:
+        # Service name = "<release>-<postgres.nameOverride>". The "-mlflow-db"
+        # suffix here MUST match `postgres.nameOverride` in values.yaml.
+        host: "{{.ReleaseName}}-mlflow-db"
+    extraVolumes:
+      - name: artifacts
+        persistentVolumeClaim:
+          claimName: "{{.ReleaseName}}-artifacts"
+    extraVolumeMounts:
+      - name: artifacts
+        mountPath: /mlflow/mlartifacts
+    resources:
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+        # ephemeral-storage: ""
+      # requests:
+      #   cpu: ""
+      #   memory: ""
+      #   ephemeral-storage: ""
+
+credentials:
+  secretName: "{{.ReleaseName}}-creds"
+  paths:
+    - postgres.settings.superuserPassword.value
+    - postgres.userDatabase.password.value|mlflow.backendStore.postgres.password
+
+connectionInfoTemplate: "http://{{.ReleaseName}}.{{.Namespace}}"

@@ -1,0 +1,41 @@
+{{- if and .Values.networkPolicy.enabled (not .Values.networkPolicy.enabledL7Waf) }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Release.Name }}-mlflow-netpol
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: mlflow
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  {{- if .Values.networkPolicy.ingress }}
+  {{- toYaml .Values.networkPolicy.ingress | nindent 2 }}
+  {{- else }}
+  # Default: allow ingress from same namespace only.
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: {{ .Release.Namespace }}
+  {{- end }}
+  egress:
+  {{- if .Values.networkPolicy.egress }}
+  {{- toYaml .Values.networkPolicy.egress | nindent 2 }}
+  {{- else }}
+  # Default: allow same-namespace egress (all ports) so mlflow can reach the
+  # bundled PostgreSQL pod and any other release-local component. DNS egress is
+  # granted by the workspace-level CiliumNetworkPolicy the workbench-operator
+  # installs in this namespace, so it is not restated here.
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: {{ .Release.Namespace }}
+  {{- end }}
+{{- end }}

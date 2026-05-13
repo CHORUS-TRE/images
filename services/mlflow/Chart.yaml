@@ -1,7 +1,11 @@
 apiVersion: v2
 name: mlflow
-version: "0.0.8"
+version: "0.0.9"
 description: A Helm chart for MLflow open source platform for the machine learning lifecycle (bundled PostgreSQL)
+appVersion: "3.7.0"
+home: https://mlflow.org
+sources:
+  - https://github.com/CHORUS-TRE/images
 maintainers:
   - name: iDmple
     email: nathalie.casati@chuv.ch
@@ -12,5 +16,16 @@ dependencies:
     version: "1.8.1"
     repository: https://community-charts.github.io/helm-charts
   - name: postgres
-    version: "1.6.1"
+    version: "1.6.3"
     repository: https://groundhog2k.github.io/helm-charts/
+annotations:
+  org.opencontainers.image.title: "MLflow"
+  org.opencontainers.image.description: "Open Source AI Platform for Agents, LLMs & Models"
+  org.opencontainers.image.authors: "MLflow Project, a Series of LF Projects, LLC"
+  org.opencontainers.image.documentation: "https://mlflow.org/docs/"
+  org.opencontainers.image.licenses: "Apache-2.0"
+  org.opencontainers.image.vendor: "Chorus-TRE"
+  ch.chorus-tre.service.changelog: "Security and stability improvements"
+  ch.chorus-tre.service.license-url: "https://github.com/mlflow/mlflow/blob/master/LICENSE.txt"
+  ch.chorus-tre.service.category: "Data Science"
+  ch.chorus-tre.service.stability: "ready"
