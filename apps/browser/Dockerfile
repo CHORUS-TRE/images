@@ -23,9 +23,9 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     libgdk-pixbuf2.0-common libglib2.0-bin gsettings-desktop-schemas \
     fonts-liberation xdg-utils && \
     # Check latest version at https://github.com/ungoogled-software/ungoogled-chromium-portablelinux/releases
-    curl -ssL "https://github.com/ungoogled-software/ungoogled-chromium-portablelinux/releases/download/${APP_VERSION}-1/ungoogled-chromium_${APP_VERSION}-1_linux.tar.xz" -o chromium.tar.xz && \
+    curl -fsSL "https://github.com/ungoogled-software/ungoogled-chromium-portablelinux/releases/download/${APP_VERSION}-1/ungoogled-chromium-${APP_VERSION}-1-x86_64_linux.tar.xz" -o chromium.tar.xz && \
     tar -xf chromium.tar.xz && \
-    mv ungoogled-chromium_${APP_VERSION}-1_linux /usr/local/bin/chrome-linux && \
+    mv ungoogled-chromium-${APP_VERSION}-1-x86_64_linux /usr/local/bin/chrome-linux && \
     rm chromium.tar.xz && \
     apt-get remove -y --purge curl xz-utils && \
     apt-get autoremove -y --purge
