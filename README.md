@@ -93,6 +93,7 @@ This guide covers:
 | **BIDSificator** | Tool for converting neuroimaging data to BIDS format | `apps/bidsificator/` |
 | **BIDS I/O** | Input/output utility for BIDS formatted neuroimaging datasets | `apps/bidsio/` |
 | **Brainstorm** | MEG and EEG analysis application for brain imaging data | `apps/brainstorm/` |
+| **Browser** | Open-source Chromium browser for safer, faster, more stable web access | `apps/browser/` |
 | **BTV Replay** | Viewer and replay tool for BTV format medical data | `apps/btvreplay/` |
 | **Chorus Assistant** | AI-powered assistant for Chorus research environment | `apps/chorus-assistant/` |
 | **CiCLONE** | Computational imaging pipeline for neuroimaging analysis | `apps/ciclone/` |

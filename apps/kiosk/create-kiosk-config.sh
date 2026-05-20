@@ -9,12 +9,12 @@ cat > /apps/${APP_NAME}/index.html << EOF
 <head>
     <title>Kiosk Browser</title>
     <script>
-        window.location.href = "${KIOSK_URL}";
+        window.location.href = "${BROWSER_URL}";
     </script>
 </head>
 <body>
     <h1>Hello!</h1>
-    <p>Redirecting to the URL provided in the KIOSK_URL environment variable...</p>
+    <p>Redirecting to the URL provided in the BROWSER_URL environment variable...</p>
 </body>
 </html>
 EOF

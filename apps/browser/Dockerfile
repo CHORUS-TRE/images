@@ -23,7 +23,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     libgdk-pixbuf2.0-common libglib2.0-bin gsettings-desktop-schemas \
     fonts-liberation xdg-utils && \
     # Check latest version at https://github.com/ungoogled-software/ungoogled-chromium-portablelinux/releases
-    # Download and install Ungoogled Chromium portable (most reliable Woolyss option)
     curl -ssL "https://github.com/ungoogled-software/ungoogled-chromium-portablelinux/releases/download/${APP_VERSION}-1/ungoogled-chromium_${APP_VERSION}-1_linux.tar.xz" -o chromium.tar.xz && \
     tar -xf chromium.tar.xz && \
     mv ungoogled-chromium_${APP_VERSION}-1_linux /usr/local/bin/chrome-linux && \
@@ -32,7 +31,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get autoremove -y --purge
 
 ENV APP_SPECIAL="no"
-ENV APP_CMD="/apps/${APP_NAME}/start-kiosk.sh"
+ENV APP_CMD="/apps/${APP_NAME}/start-browser.sh"
 ENV PROCESS_NAME="chrome"
 ENV APP_DATA_DIR_ARRAY=""
 ENV DATA_DIR_ARRAY=""
@@ -43,7 +42,7 @@ RUN --mount=type=bind,source=./core,target=/tmp/core_scripts,readonly=true \
     cp /tmp/core_scripts/app/docker-entrypoint.sh /
 
 ENV APP_NAME=${APP_NAME}
-ENV BROWSER_URL="https://www.chorus-tre.ch"
-COPY start-kiosk.sh /apps/${APP_NAME}
+ENV BROWSER_URL="about:blank"
+COPY start-browser.sh /apps/${APP_NAME}
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
