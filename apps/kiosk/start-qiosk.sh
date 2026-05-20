@@ -20,7 +20,7 @@ export QTWEBENGINE_CHROMIUM_FLAGS="--disable-gpu --enable-software-rasterizer --
 export QT_FONT_DPI=96
 export QT_SCALE_FACTOR=1
 
-qiosk -m automaticvisibility --display-scroll-bars $KIOSK_URL
+qiosk -m automaticvisibility --display-scroll-bars $BROWSER_URL
 QIOSK_PID=$!
 
 wait $QIOSK_PID

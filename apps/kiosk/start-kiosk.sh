@@ -9,8 +9,8 @@ export GOOGLE_DEFAULT_CLIENT_SECRET="no"
 PROFILE_DIR="$HOME/.chrome-data"
 mkdir -p "$PROFILE_DIR"
 
-# JWT token exchange if KIOSK_JWT_TOKEN and KIOSK_JWT_URL is defined
-if [ -n "$KIOSK_JWT_TOKEN" ] && [ -n "$KIOSK_JWT_URL" ] ; then
+# JWT token exchange if BROWSER_JWT_TOKEN and BROWSER_JWT_URL is defined
+if [ -n "$BROWSER_JWT_TOKEN" ] && [ -n "$BROWSER_JWT_URL" ] ; then
     echo "Exchanging JWT token for session cookie..."
     
     # Launch headless Chrome to perform token exchange without leaving history
@@ -20,7 +20,7 @@ if [ -n "$KIOSK_JWT_TOKEN" ] && [ -n "$KIOSK_JWT_URL" ] ; then
       --disable-gpu \
       --no-sandbox \
       --dump-dom \
-      "${KIOSK_JWT_URL}#jwt=${KIOSK_JWT_TOKEN}" &
+      "${BROWSER_JWT_URL}#jwt=${BROWSER_JWT_TOKEN}" &
     
     EXCHANGE_PID=$!
     
@@ -40,7 +40,7 @@ else
       --headless=new \
       --disable-gpu \
       --no-sandbox \
-      "${KIOSK_URL}" > /dev/null 2>&1 &
+      "${BROWSER_URL}" > /dev/null 2>&1 &
 
     WARMUP_PID=$!
     sleep 2
@@ -57,13 +57,13 @@ fi
   --disable-infobars \
   --disable-session-crashed-bubble \
   --enable-features=NetworkService,NetworkServiceInProcess \
-  --app="${KIOSK_URL}" \
+  --app="${BROWSER_URL}" \
   --window-size=1200,700 \
   --user-data-dir="$PROFILE_DIR" &
 
 CHROMIUM_PID=$!
 
-echo "Waiting for ${KIOSK_URL} Chromium window to appear..."
+echo "Waiting for ${BROWSER_URL} Chromium window to appear..."
 WIN_ID=""
 while [ -z "$WIN_ID" ]; do
     WIN_ID=$(xdotool search --pid "$CHROMIUM_PID" --onlyvisible | head -n1 || true)
