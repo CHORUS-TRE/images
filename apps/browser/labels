@@ -1,5 +1,5 @@
 org.opencontainers.image.title="Browser"
-org.opencontainers.image.description="Open-source Chromium browser for safer, faster, more stable web access"
+org.opencontainers.image.description="Open-source Chromium web browser"
 org.opencontainers.image.url="https://github.com/CHORUS-TRE/images"
 org.opencontainers.image.licenses="MIT"
 org.opencontainers.image.authors="Chorus-TRE"
