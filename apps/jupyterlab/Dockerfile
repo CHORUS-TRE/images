@@ -86,6 +86,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         spacy \
         streamlit \
         tqdm && \
+    conda run -n bioinformatics_env pip install --no-cache-dir "pyfirecrest==3.7.1" && \
     apt-get remove -y --purge \
         curl && \
     apt-get autoremove -y --purge
