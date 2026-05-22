@@ -6,10 +6,10 @@
   "customManagers": [
     {
       "customType": "regex",
-      "description": "Manage pinned pip dependencies inlined in apps/*/Dockerfile (`pkg==X.Y.Z`).",
-      "fileMatch": ["^apps/[^/]+/Dockerfile$"],
+      "description": "Manage pinned pip dependencies inlined in apps/*/Dockerfile (and Dockerfile.<variant>) — `pkg==X.Y.Z`.",
+      "fileMatch": ["^apps/[^/]+/Dockerfile(\\..+)?$"],
       "matchStrings": [
-        "\"?(?<depName>[a-zA-Z][\\w-]*)==(?<currentValue>\\d+(?:\\.\\d+)+[\\w.+-]*?)\"?"
+        "\"?(?<depName>[a-zA-Z][\\w-]*)==(?<currentValue>\\d+(?:\\.\\d+)+[\\w.+-]*)\"?"
       ],
       "datasourceTemplate": "pypi",
       "versioningTemplate": "pep440"
