@@ -25,7 +25,7 @@
 # Everything else (tool versions, the conda/pip `micapipe` env, AFNI, MATLAB MCR,
 # c3d, MRtrix3 3.0.1, R packages) mirrors the upstream Dockerfile.
 
-FROM harbor.build.chorus-tre.ch/docker_proxy/library/ubuntu:24.04
+FROM harbor.build.chorus-tre.ch/docker_proxy/library/ubuntu:26.04
 SHELL ["/bin/bash", "-xe", "-o", "pipefail", "-c"]
 
 ARG APP_NAME
