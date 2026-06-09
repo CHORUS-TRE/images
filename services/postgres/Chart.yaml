@@ -13,7 +13,7 @@ maintainers:
     email: florian.sipp@chuv.ch
 dependencies:
   - name: postgres
-    version: "1.6.3"
+    version: "1.6.4"
     repository: https://groundhog2k.github.io/helm-charts/
 annotations:
   org.opencontainers.image.title: "PostgreSQL"
