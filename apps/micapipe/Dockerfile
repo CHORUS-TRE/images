@@ -201,6 +201,10 @@ RUN mkdir -p /opt/fix1.068
 # mamba (libsolv) does the solve instead of conda's classic solver — same channels
 # and pins, identical resulting packages, but a fraction of the memory/time (the
 # classic solver OOMs solving this 60-package env, especially under emulation).
+# python is pinned to 3.9 (the base interpreter; matplotlib 3.4.3 has no conda-forge
+# build past py39 and numpy 1.21.5 admits no newer, so 3.9 is the only solution
+# anyway). Leaving it unpinned makes libsolv explore every python series across the
+# whole 60-package graph and abort with "queue count overflow" after hours — keep it.
 # ---------------------------------------------------------------------------
 ENV CONDA_DIR="/opt/miniconda-22.11.1" \
     PATH="/opt/miniconda-22.11.1/bin:$PATH"
@@ -215,7 +219,7 @@ RUN echo "Downloading Miniconda installer ..." \
     && conda clean -y --all \
     && mamba create -y -q --name micapipe \
     && mamba install -y -q --name micapipe \
-        "python" \
+        "python=3.9" \
         "aiohttp" "aiosignal" "asn1crypto" "async-timeout" "astropy" "attrs" \
         "bokeh" "cffi" "charset-normalizer" "click" "contourpy" "cryptography" \
         "cycler" "fonttools" "frozenlist" "html5lib" "idna" "importlib-resources" \
