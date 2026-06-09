@@ -137,12 +137,15 @@ RUN export TMPDIR="$(mktemp -d)" \
     && rm -rf "$TMPDIR"
 
 # ---------------------------------------------------------------------------
-# AFNI (generic linux_openmp_64 build, as upstream). Pulls two legacy shared libs
-# (libXp6, libpng12) that are not in the 24.04 archive, and aliases libgsl -> .so.0.
-# The AFNI binaries (incl. the 3d* tools micapipe calls) dlopen libXp.so.6 and
-# libpng12.so.0, so both .deb fetches use -f and the sonames are asserted present
-# after ldconfig: a failed download or missing lib fails the build instead of
-# silently shipping a half-broken AFNI (otherwise it only surfaces at runtime).
+# AFNI (generic linux_openmp_64 build, as upstream). The AFNI binaries (incl. the
+# 3d* tools micapipe calls) dlopen libXp.so.6 and libpng12.so.0, which 24.04 dropped.
+# The only published .debs are from trusty/wheezy and Pre-Depend on multiarch-support
+# (a transitional package gone from noble), so `dpkg -i` refuses them and `apt-get -f`
+# cannot fix it. We fetch with -f, extract the payload with `dpkg-deb -x`, and copy the
+# .so files into the multiarch libdir — no dpkg dep check, and nothing a later apt run
+# can remove. Both sonames are then asserted present after ldconfig, so a missing lib
+# fails the build instead of silently shipping a half-broken AFNI. Also aliases
+# libgsl -> .so.0.
 # ---------------------------------------------------------------------------
 ENV PATH="/opt/afni-latest:$PATH" \
     AFNI_PLUGINPATH="/opt/afni-latest"
@@ -153,9 +156,12 @@ RUN apt-get update -qq \
     && apt-get clean && rm -rf /var/lib/apt/lists/* \
     && echo "Installing legacy libs required by the AFNI binaries ..." \
     && curl -fsSL --retry 5 -o /tmp/libxp6.deb http://launchpadlibrarian.net/160108232/libxp6_1.0.2-1ubuntu1_amd64.deb \
-    && (dpkg -i /tmp/libxp6.deb || apt-get install -fy) && rm /tmp/libxp6.deb \
+    && dpkg-deb -x /tmp/libxp6.deb /tmp/libxp6 \
+    && cp -a /tmp/libxp6/usr/lib/x86_64-linux-gnu/libXp.so.* /usr/lib/x86_64-linux-gnu/ \
     && curl -fsSL --retry 5 -o /tmp/libpng12.deb "http://snapshot.debian.org/archive/debian-security/20160113T213056Z/pool/updates/main/libp/libpng/libpng12-0_1.2.49-1%2Bdeb7u2_amd64.deb" \
-    && (dpkg -i /tmp/libpng12.deb || apt-get install -fy) && rm /tmp/libpng12.deb \
+    && dpkg-deb -x /tmp/libpng12.deb /tmp/libpng12 \
+    && cp -a /tmp/libpng12/lib/x86_64-linux-gnu/libpng12.so.* /usr/lib/x86_64-linux-gnu/ \
+    && rm -rf /tmp/libxp6 /tmp/libxp6.deb /tmp/libpng12 /tmp/libpng12.deb \
     && gsl_path="$(find / -name 'libgsl.so.*' ! -name '*.so.0' 2>/dev/null | head -n1 || printf '')" \
     && if [ -n "$gsl_path" ]; then ln -sfv "$gsl_path" "$(dirname "$gsl_path")/libgsl.so.0"; fi \
     && ldconfig \
