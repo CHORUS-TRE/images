@@ -9,10 +9,10 @@ export GOOGLE_DEFAULT_CLIENT_SECRET="no"
 PROFILE_DIR="$HOME/.chrome-data"
 mkdir -p "$PROFILE_DIR"
 
-# JWT token exchange if BROWSER_JWT_TOKEN and BROWSER_JWT_URL is defined
-if [ -n "$BROWSER_JWT_TOKEN" ] && [ -n "$BROWSER_JWT_URL" ] ; then
+# JWT token exchange if IDP_SL_TOKEN and IDP_JWT_URL is defined
+if [ -n "$IDP_SL_TOKEN" ] && [ -n "$IDP_JWT_URL" ] ; then
     echo "Exchanging JWT token for session cookie..."
-    
+
     # Launch headless Chrome to perform token exchange without leaving history
     /usr/local/bin/chrome-linux/chrome \
       --user-data-dir="$PROFILE_DIR" \
@@ -20,7 +20,7 @@ if [ -n "$BROWSER_JWT_TOKEN" ] && [ -n "$BROWSER_JWT_URL" ] ; then
       --disable-gpu \
       --no-sandbox \
       --dump-dom \
-      "${BROWSER_JWT_URL}#jwt=${BROWSER_JWT_TOKEN}" &
+      "${IDP_JWT_URL}#jwt=${IDP_SL_TOKEN}" &
     
     EXCHANGE_PID=$!
     
