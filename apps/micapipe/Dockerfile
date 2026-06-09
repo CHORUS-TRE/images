@@ -139,6 +139,10 @@ RUN export TMPDIR="$(mktemp -d)" \
 # ---------------------------------------------------------------------------
 # AFNI (generic linux_openmp_64 build, as upstream). Pulls two legacy shared libs
 # (libXp6, libpng12) that are not in the 24.04 archive, and aliases libgsl -> .so.0.
+# The AFNI binaries (incl. the 3d* tools micapipe calls) dlopen libXp.so.6 and
+# libpng12.so.0, so both .deb fetches use -f and the sonames are asserted present
+# after ldconfig: a failed download or missing lib fails the build instead of
+# silently shipping a half-broken AFNI (otherwise it only surfaces at runtime).
 # ---------------------------------------------------------------------------
 ENV PATH="/opt/afni-latest:$PATH" \
     AFNI_PLUGINPATH="/opt/afni-latest"
@@ -148,13 +152,16 @@ RUN apt-get update -qq \
         libjpeg-turbo8 libxm4 netpbm tcsh xfonts-base xvfb \
     && apt-get clean && rm -rf /var/lib/apt/lists/* \
     && echo "Installing legacy libs required by the AFNI binaries ..." \
-    && curl -sSL --retry 5 -o /tmp/libxp6.deb http://launchpadlibrarian.net/160108232/libxp6_1.0.2-1ubuntu1_amd64.deb \
+    && curl -fsSL --retry 5 -o /tmp/libxp6.deb http://launchpadlibrarian.net/160108232/libxp6_1.0.2-1ubuntu1_amd64.deb \
     && (dpkg -i /tmp/libxp6.deb || apt-get install -fy) && rm /tmp/libxp6.deb \
-    && curl -sSL --retry 5 -o /tmp/libpng12.deb "http://snapshot.debian.org/archive/debian-security/20160113T213056Z/pool/updates/main/libp/libpng/libpng12-0_1.2.49-1%2Bdeb7u2_amd64.deb" \
+    && curl -fsSL --retry 5 -o /tmp/libpng12.deb "http://snapshot.debian.org/archive/debian-security/20160113T213056Z/pool/updates/main/libp/libpng/libpng12-0_1.2.49-1%2Bdeb7u2_amd64.deb" \
     && (dpkg -i /tmp/libpng12.deb || apt-get install -fy) && rm /tmp/libpng12.deb \
     && gsl_path="$(find / -name 'libgsl.so.*' ! -name '*.so.0' 2>/dev/null | head -n1 || printf '')" \
     && if [ -n "$gsl_path" ]; then ln -sfv "$gsl_path" "$(dirname "$gsl_path")/libgsl.so.0"; fi \
     && ldconfig \
+    && echo "Verifying the legacy AFNI libs are installed and on the loader path ..." \
+    && ldconfig -p | grep -q 'libXp\.so\.6' \
+    && ldconfig -p | grep -q 'libpng12\.so\.0' \
     && echo "Downloading AFNI ..." \
     && mkdir -p /opt/afni-latest \
     && curl -fsSL --retry 5 https://afni.nimh.nih.gov/pub/dist/tgz/linux_openmp_64.tgz \
