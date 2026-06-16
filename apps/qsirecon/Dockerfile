@@ -11,10 +11,20 @@ WORKDIR /apps/${APP_NAME}
 # noninteractive: chorus-utils.sh -a terminal pulls in keyboard-configuration
 ARG DEBIAN_FRONTEND=noninteractive
 
-# World-readable for the workbench UID — targeted (not chmod -R) to avoid copying up the whole image
-RUN find /opt /app/.pixi -type d ! -perm -o+rx -exec chmod o+rx {} + 2>/dev/null; \
-    find /opt /app/.pixi -type f ! -perm -o+r  -exec chmod o+rX {} + 2>/dev/null; \
+# World-readable for the workbench UID — targeted (not chmod -R) to avoid copying up the whole
+# image. Scope = the upstream install prefixes: /opt, /app/.pixi, /usr/local (AFNI), /src (TORTOISE).
+RUN find /opt /app/.pixi /usr/local /src -type d ! -perm -o+rx -exec chmod o+rx {} + 2>/dev/null; \
+    find /opt /app/.pixi /usr/local /src -type f ! -perm -o+r  -exec chmod o+rX {} + 2>/dev/null; \
     true
+
+# AFNI 3d* tools (from the qsiprep base) link against libgsl.so.23, but jammy ships only .so.27;
+# add the matching lib from Debian buster so they load (legacy-lib pattern, cf. micapipe).
+RUN curl -fsSL --retry 5 -o /tmp/libgsl23.deb \
+        http://archive.debian.org/debian/pool/main/g/gsl/libgsl23_2.5+dfsg-6_amd64.deb \
+    && dpkg-deb -x /tmp/libgsl23.deb /tmp/libgsl23 \
+    && cp -a /tmp/libgsl23/usr/lib/x86_64-linux-gnu/libgsl.so.23* /usr/lib/x86_64-linux-gnu/ \
+    && rm -rf /tmp/libgsl23 /tmp/libgsl23.deb \
+    && ldconfig && ldconfig -p | grep -q 'libgsl\.so\.23'
 
 ENV APP_SPECIAL="no"
 ENV APP_CMD="/usr/bin/kitty/kitty.app/bin/kitty"

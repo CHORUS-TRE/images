@@ -60,18 +60,26 @@ FreeSurfer, ANTs, MRtrix3, MRtrix3Tissue, DSI Studio, AFNI, and TORTOISE, plus a
 
 The Chorus layer adds only: the interactive terminal (`kitty`),
 `libnss-wrapper`, VirtualGL, the Chorus entrypoint, the FreeSurfer license
-wiring in `config/.bash_profile`, and the catalog metadata in `labels`.
+wiring in `config/.bash_profile`, the catalog metadata in `labels`, and a
+one-off `libgsl.so.23` fix for the inherited AFNI tools (see Notes).
 
 ### Notes
 
 - **GPU**: the upstream base is a CUDA runtime image, but the reconstruction
   workflows run **CPU-only** in Chorus. GPU-accelerated paths (e.g.
   TORTOISE-cuda) are not currently exposed.
+- **AFNI / libgsl**: the AFNI `3d*` tools inherited from the qsiprep base are
+  built against `libgsl.so.23`, but the jammy base ships only `libgsl.so.27`;
+  the Dockerfile installs the matching lib from Debian buster so they load.
+  qsirecon's recon workflows don't call AFNI, but the tools are now usable.
 - **Image size**: large (CUDA runtime + the full neuro stack). `cache-mode` is
   set to `min` accordingly.
 - **Resource limits** in `labels` mirror micapipe as a starting point;
   tractography and autotrack can be memory-heavy — revisit after validating on a
   representative dataset.
 - **Maintenance**: bump the `FROM` tag in the `Dockerfile` and the
-  `app-version` / `changelog` in `labels` on each upstream release —
-  https://github.com/PennLINC/qsirecon/releases.
+  `app-version` / `changelog` in `labels` on each upstream release
+  (https://github.com/PennLINC/qsirecon/releases). The `FROM` is tag-pinned
+  (not digest-pinned), per the repo's `library/ubuntu` convention — a re-pushed
+  upstream `26.0.0` would silently change the whole baked toolchain, so pin by
+  digest if strict reproducibility is needed.
