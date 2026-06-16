@@ -111,6 +111,7 @@ This guide covers:
 | **micapipe** | Multimodal MRI processing pipeline producing modality-based connectomes from BIDS datasets | `apps/micapipe/` |
 | **MRtrix3** | Advanced tools for the analysis of diffusion MRI data including tractography and connectomics | `apps/mrtrix/` |
 | **OnlyOffice** | Office suite for document, spreadsheet, and presentation editing | `apps/onlyoffice/` |
+| **QSIPrep** | Preprocessing of raw diffusion MRI: motion and distortion correction, denoising, coregistration, and spatial normalization of BIDS dMRI datasets | `apps/qsiprep/` |
 | **ROBEX** | Robust brain extraction tool for T1-weighted MRI using a random forest classifier | `apps/robex/` |
 | **RStudio** | Integrated development environment for R programming language | `apps/rstudio/` |
 | **SciTerminal** | Scientific terminal environment for command-line research tools | `apps/sciterminal/` |
