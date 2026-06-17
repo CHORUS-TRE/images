@@ -17,7 +17,7 @@ RUN find /opt /app/.pixi /usr/local /src -type d ! -perm -o+rx -exec chmod o+rx 
     find /opt /app/.pixi /usr/local /src -type f ! -perm -o+r  -exec chmod o+rX {} + 2>/dev/null; \
     true
 
-# AFNI 3d* tools (from the qsiprep base) link against libgsl.so.23, but jammy ships only .so.27;
+# AFNI 3d* tools (from the qsirecon base) link against libgsl.so.23, but jammy ships only .so.27;
 # add the matching lib from Debian buster so they load (legacy-lib pattern, cf. micapipe).
 # Fetched over HTTPS and pinned by sha256: `dpkg-deb -x` bypasses apt's signed-Release check, so the
 # hash is the only thing that authenticates this binary and pins the build to one exact, reproducible
