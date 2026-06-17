@@ -23,8 +23,13 @@ RUN find /opt /app/.pixi /usr/local /src -type d ! -perm -o+rx -exec chmod o+rx 
 
 # AFNI 3d* tools (used in the preprocessing pipeline) link against libgsl.so.23, but jammy ships
 # only .so.27; add the matching lib from Debian buster so they load (legacy-lib pattern, cf. micapipe).
+# Fetched over HTTPS and pinned by sha256: `dpkg-deb -x` bypasses apt's signed-Release check, so the
+# hash is the only thing that authenticates this binary and pins the build to one exact, reproducible
+# artifact — a silently changed or replaced upstream .deb then fails the build instead of shipping.
 RUN curl -fsSL --retry 5 -o /tmp/libgsl23.deb \
-        http://archive.debian.org/debian/pool/main/g/gsl/libgsl23_2.5+dfsg-6_amd64.deb \
+        https://archive.debian.org/debian/pool/main/g/gsl/libgsl23_2.5+dfsg-6_amd64.deb \
+    && echo "01148ec117ef4d52337a6b8f9b101ec9412bab3b14a806bd8ff6a451931ea887  /tmp/libgsl23.deb" \
+       | sha256sum -c - \
     && dpkg-deb -x /tmp/libgsl23.deb /tmp/libgsl23 \
     && cp -a /tmp/libgsl23/usr/lib/x86_64-linux-gnu/libgsl.so.23* /usr/lib/x86_64-linux-gnu/ \
     && rm -rf /tmp/libgsl23 /tmp/libgsl23.deb \
