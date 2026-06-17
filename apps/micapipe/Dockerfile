@@ -146,6 +146,9 @@ RUN export TMPDIR="$(mktemp -d)" \
 # can remove. Both sonames are then asserted present after ldconfig, so a missing lib
 # fails the build instead of silently shipping a half-broken AFNI. Also aliases
 # libgsl -> .so.0.
+# Both .debs are fetched over HTTPS and pinned by sha256: dpkg-deb -x bypasses apt's signed-Release
+# check, so the hash is the only thing that authenticates these binaries and pins the build to exact,
+# reproducible artifacts — a silently changed or replaced upstream .deb then fails the build.
 # ---------------------------------------------------------------------------
 ENV PATH="/opt/afni-latest:$PATH" \
     AFNI_PLUGINPATH="/opt/afni-latest"
@@ -155,10 +158,12 @@ RUN apt-get update -qq \
         libjpeg-turbo8 libxm4 netpbm tcsh xfonts-base xvfb \
     && apt-get clean && rm -rf /var/lib/apt/lists/* \
     && echo "Installing legacy libs required by the AFNI binaries ..." \
-    && curl -fsSL --retry 5 -o /tmp/libxp6.deb http://launchpadlibrarian.net/160108232/libxp6_1.0.2-1ubuntu1_amd64.deb \
+    && curl -fsSL --retry 5 -o /tmp/libxp6.deb https://launchpadlibrarian.net/160108232/libxp6_1.0.2-1ubuntu1_amd64.deb \
+    && echo "2c39283d0c15a062c418e67bf9ab770c9715f7fbd1de3ffc43349764867dab53  /tmp/libxp6.deb" | sha256sum -c - \
     && dpkg-deb -x /tmp/libxp6.deb /tmp/libxp6 \
     && cp -a /tmp/libxp6/usr/lib/x86_64-linux-gnu/libXp.so.* /usr/lib/x86_64-linux-gnu/ \
-    && curl -fsSL --retry 5 -o /tmp/libpng12.deb "http://snapshot.debian.org/archive/debian-security/20160113T213056Z/pool/updates/main/libp/libpng/libpng12-0_1.2.49-1%2Bdeb7u2_amd64.deb" \
+    && curl -fsSL --retry 5 -o /tmp/libpng12.deb "https://snapshot.debian.org/archive/debian-security/20160113T213056Z/pool/updates/main/libp/libpng/libpng12-0_1.2.49-1%2Bdeb7u2_amd64.deb" \
+    && echo "a2095d2fa94c890a507d7f3824f7d499b93722cf636fcd037db3ae59c46c8b5d  /tmp/libpng12.deb" | sha256sum -c - \
     && dpkg-deb -x /tmp/libpng12.deb /tmp/libpng12 \
     && cp -a /tmp/libpng12/lib/x86_64-linux-gnu/libpng12.so.* /usr/lib/x86_64-linux-gnu/ \
     && rm -rf /tmp/libxp6 /tmp/libxp6.deb /tmp/libpng12 /tmp/libpng12.deb \
@@ -194,7 +199,8 @@ RUN echo "Downloading ANTs 2.4.1 ..." \
 # ---------------------------------------------------------------------------
 RUN echo "Installing Connectome Workbench 1.3.2 ..." \
     && curl -fsSL --retry 5 -o /tmp/cw.deb \
-        "http://neuro.debian.net/debian/pool/main/c/connectome-workbench/connectome-workbench_1.3.2-2~nd16.04+1_amd64.deb" \
+        "https://neuro.debian.net/debian/pool/main/c/connectome-workbench/connectome-workbench_1.3.2-2~nd16.04+1_amd64.deb" \
+    && echo "61ac1ee52b7a6d201d4823de81d495c714bd115b9f7c8f0bf0a654388ae83ab2  /tmp/cw.deb" | sha256sum -c - \
     && apt-get update -qq \
     && (dpkg -i /tmp/cw.deb || apt-get install -fy --no-install-recommends) \
     && rm /tmp/cw.deb \
