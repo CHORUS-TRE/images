@@ -3,7 +3,7 @@
 # This container runs as root with limited capabilities to create users and setup directories
 # Security: Only use trusted, audited code in this image
 
-FROM ubuntu:24.04
+FROM ubuntu:26.04
 
 # Install minimal dependencies for user creation and directory setup
 RUN apt-get update && \
