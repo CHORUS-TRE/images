@@ -256,7 +256,7 @@ RUN echo "Downloading Miniconda installer ..." \
     && pip install --no-cache-dir \
         "argparse==1.1" "brainspace==0.1.10" "tedana==0.0.12" "duecredit" \
         "pyhanko==0.17.2" "mapca==0.0.3" "xhtml2pdf==0.2.9" "oscrypto==1.3.0" \
-        "tzdata==2022.7" "arabic-reshaper==3.0.0" "cssselect2==0.7.0" \
+        "tzdata==2022.7" "arabic-reshaper==3.0.1" "cssselect2==0.7.0" \
         "pygeodesic==0.1.8" "seaborn==0.11.2" \
     && rm -rf ~/.cache/pip/*
 
