@@ -16,7 +16,7 @@ dependencies:
     version: "1.8.1"
     repository: https://community-charts.github.io/helm-charts
   - name: postgres
-    version: "1.6.3"
+    version: "1.6.4"
     repository: https://groundhog2k.github.io/helm-charts/
 annotations:
   org.opencontainers.image.title: "MLflow"
